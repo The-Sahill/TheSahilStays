@@ -88,8 +88,8 @@ exports.logout = async (req, res) => {
         // مسح الـ Cookie الخاصة بالتوكن عن طريق إبطالها وتصفير وقت الصلاحية
         res.clearCookie('token', {
             httpOnly: true,
-            secure: false, // يجب أن تتطابق مع إعدادات الـ cookie عند تسجيل الدخول
-            sameSite: 'Lax',
+            secure: true, // يجب أن تتطابق مع إعدادات الـ cookie عند تسجيل الدخول
+            sameSite: 'None',
         });
 
         return res.status(200).json({
