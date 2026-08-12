@@ -29,7 +29,7 @@ import {
   Tooltip, 
   Legend 
 } from 'recharts';
-import SideMenu from './sideMenu'; // تأكد من مسار ملف القائمة الجانبية لديك
+import SideMenu from './SideMenu'; // تأكد من مسار ملف القائمة الجانبية لديك
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function CleanMasterDashboard() {
