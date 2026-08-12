@@ -1,0 +1,486 @@
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, Eye, X, Truck, Package, Loader2, ChevronRight, ChevronLeft, CheckCircle2, XCircle } from 'lucide-react';
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
+const DeliveryBatches = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const [batchesData, setBatchesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // حالات خاصة بالنافذة المنبثقة (Modal)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState(null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  // حالة الملاحظة عند الرفض أو الاعتماد
+  const [customNote, setCustomNote] = useState('');
+  const [actionType, setActionType] = useState(null); // لتحديد ما إذا كان الإجراء الحالي هو اعتماد أو رفض
+
+  // حالة لتخزين اسم المستخدم الحالي من السيرفر
+  const [currentUsername, setCurrentUsername] = useState('');
+
+  // حالات الـ Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // عدد الدفعات في كل صفحة
+
+  // جلب الدفعات ومعرفة اسم المستخدم من الباك إند عند تحميل الصفحة
+  useEffect(() => {
+    fetchBatches();
+    fetchCurrentUsername();
+  }, []);
+
+  // دالة لجلب اسم المستخدم الحالي عبر الـ API بأمان
+  const fetchCurrentUsername = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/batches/user`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const username = typeof data === 'object' ? (data.username || data.name || '') : data;
+        setCurrentUsername(username);
+      } else {
+        console.error('فشل في جلب بيانات المستخدم');
+      }
+    } catch (e) {
+      console.error('خطأ في الاتصال أثناء جلب هوية المستخدم:', e);
+    }
+  };
+
+  // التحقق مما إذا كان المستخدم الحالي هو abd أو yehia
+  const canModifyStatus = ['abd', 'yehia'].includes(currentUsername.toLowerCase());
+
+  const fetchBatches = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${apiUrl}/batches`, {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      
+      const batches = Array.isArray(data) ? data : data.batches || [];
+      
+      // الترتيب الصحيح للأحدث أولاً (من الأجدد إلى الأقدم) اعتماداً على تاريخ الإنشاء أو الـ _id
+      const sortedBatches = batches.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return String(b._id).localeCompare(String(a._id));
+      });
+
+      setBatchesData(sortedBatches);
+    } catch (error) {
+      console.error('خطأ في جلب دفعات التوصيل:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // دالة لتحديث حالة الدفعة (Approved أو Rejected) مع إرسال الـ customNote
+  const handleUpdateStatus = async (newStatus) => {
+    if (!selectedBatch) return;
+
+    // التحقق من كتابة سبب الرفض إذا كانت الحالة Rejected
+    if (newStatus === 'Rejected' && !customNote.trim()) {
+      alert('الرجاء كتابة سبب الرفض في حقل الملاحظات.');
+      return;
+    }
+
+    // تحديد قيمة الملاحظة بناءً على الحالة المطلوبة
+    const finalNote = newStatus === 'Approved' ? 'لا يوجد مشاكل' : customNote;
+
+    try {
+      setUpdatingStatus(true);
+      const response = await fetch(`${apiUrl}/batches/${selectedBatch._id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          status: newStatus,
+          customNote: customNote 
+        }),
+      });
+
+      if (!response.ok) throw new Error('فشل تحديث حالة الدفعة');
+
+      // تحديث الحالة محلياً في القائمة وفي الدفعة المحددة
+      const updatedBatches = batchesData.map(b => 
+        b._id === selectedBatch._id ? { ...b, status: newStatus, customNote: customNote } : b
+      );
+      setBatchesData(updatedBatches);
+      setSelectedBatch(prev => ({ ...prev, status: newStatus, customNote: customNote }));
+
+      alert(`تم تحديث حالة الدفعة إلى (${newStatus}) بنجاح!`);
+      
+      // إعادة تعيين حقل الملاحظات ونوع الإجراء
+      setCustomNote('');
+      setActionType(null);
+    } catch (error) {
+      console.error('خطأ أثناء تحديث الحالة:', error);
+      alert('حدث خطأ أثناء تحديث الحالة.');
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  // تصفية الدفعات حسب رقم الـ ID أو حالة الدفعة
+  const filteredBatches = batchesData.filter((batch) => {
+    const idStr = batch._id ? String(batch._id) : '';
+    const statusStr = batch.status ? String(batch.status) : '';
+
+    const matchesSearch = idStr.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || statusStr.toLowerCase() === statusFilter.toLowerCase();
+
+    return matchesSearch && matchesStatus;
+  });
+
+  // حساب بيانات الـ Pagination
+  const totalPages = Math.ceil(filteredBatches.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentBatches = filteredBatches.slice(indexOfFirstItem, indexOfLastItem);
+
+  // إعادة الصفحة الأولى عند البحث أو تغيير الفلتر
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
+  // فتح نافذة التفاصيل وتعبئة الملاحظة السابقة إن وجدت
+  const handleViewBatch = (batch) => {
+    setSelectedBatch(batch);
+    setCustomNote(batch.customNote || '');
+    setActionType(null);
+    setIsModalOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center mx-auto justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans relative w-full" dir="rtl">
+      
+      {/* رأس الصفحة */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">دفعات التوصيل</h1>
+        <p className="text-sm text-slate-500 mt-0.5">تتبع الدفعات المرسلة والمستلمة إلى المغسلة (الأحدث أولاً).</p>
+      </div>
+
+      {/* شريط البحث والفلترة */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+        <div className="relative w-full sm:w-80">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
+            <Search size={18} />
+          </div>
+          <input
+            type="text"
+            placeholder="ابحث برقم الدفعة (_id)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pr-10 pl-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 shadow-sm"
+          />
+        </div>
+
+        <div className="relative w-full sm:w-48">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
+            <Filter size={16} />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full pr-10 pl-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-600 shadow-sm appearance-none cursor-pointer"
+          >
+            <option value="all">جميع الحالات</option>
+            <option value="Dispatched">Dispatched (تم الإرسال)</option>
+            <option value="Approved">Approved (معتمد)</option>
+            <option value="Rejected">Rejected (مرفوض)</option>
+            <option value="Received">Received (مستلم)</option>
+          </select>
+        </div>
+      </div>
+
+      {/* جدول البيانات */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+        <div className="overflow-x-auto">
+          <table className="w-full text-right border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase bg-slate-50/50">
+                <th className="py-4 px-6">رقم الدفعة (ID)</th>
+                <th className="py-4 px-6">تاريخ الإنشاء</th>
+                <th className="py-4 px-6">حالة الدفعة</th>
+                <th className="py-4 px-6">عدد الطلبات</th>
+                <th className="py-4 px-6">إجمالي القطع</th>
+                <th className="py-4 px-6">التكلفة الإجمالية</th>
+                <th className="py-4 px-6 text-left">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-sm">
+              {currentBatches.map((batch) => (
+                <tr key={batch._id} className="hover:bg-slate-50/80 transition-colors">
+                  <td className="py-4 px-6 font-bold text-blue-600 text-xs font-mono">{batch._id}</td>
+                  <td className="py-4 px-6 text-slate-600">
+                    {batch.createdAt ? new Date(batch.createdAt).toLocaleDateString() : 'غير متوفر'}
+                  </td>
+                  <td className="py-4 px-6">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold border ${
+                      batch.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      batch.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      'bg-blue-50 text-blue-700 border-blue-200'
+                    }`}>
+                      {batch.status || 'Dispatched'}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalRequests}</td>
+                  <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalItems}</td>
+                  <td className="py-4 px-6 font-semibold text-slate-900">{batch.totalCost}</td>
+                  <td className="py-4 px-6 text-left">
+                    <button
+                      onClick={() => handleViewBatch(batch)}
+                      className="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl transition-colors cursor-pointer"
+                      title="عرض التفاصيل وإدارة الحالة"
+                    >
+                      <Eye size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {currentBatches.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="text-center py-10 text-slate-400">
+                    لا توجد دفعات تطابق بحثك.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* شريط الـ Pagination */}
+        {filteredBatches.length > 0 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/30">
+            <span className="text-xs text-slate-500">
+              عرض من <span className="font-semibold text-slate-700">{indexOfFirstItem + 1}</span> إلى <span className="font-semibold text-slate-700">{Math.min(indexOfLastItem, filteredBatches.length)}</span> من أصل <span className="font-semibold text-slate-700">{filteredBatches.length}</span> دفعة
+            </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="الصفحة السابقة"
+              >
+                <ChevronRight size={16} />
+              </button>
+
+              <span className="text-xs font-medium text-slate-700 px-2">
+                صفحة {currentPage} من {totalPages || 1}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                title="الصفحة التالية"
+              >
+                <ChevronLeft size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* نافذة تفاصيل الدفعة الشاملة (Modal) */}
+      {isModalOpen && selectedBatch && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+            
+            {/* رأس النافذة */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-2">
+                <Truck className="w-5 h-5 text-blue-600" />
+                <h3 className="font-bold text-lg text-slate-900">تفاصيل الدفعة وإدارة الحالة</h3>
+              </div>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* محتوى التفاصيل (قابل للتمرير) */}
+            <div className="p-6 space-y-6 overflow-y-auto">
+              
+              {/* معلومات عامة */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div>
+                  <span className="block text-xs text-slate-400 mb-1">معرف الدفعة (ID)</span>
+                  <span className="font-bold text-slate-800 text-xs font-mono">{selectedBatch._id}</span>
+                </div>
+                <div>
+                  <span className="block text-xs text-slate-400 mb-1">تاريخ الإنشاء</span>
+                  <span className="font-bold text-slate-800 text-sm">
+                    {selectedBatch.createdAt ? new Date(selectedBatch.createdAt).toLocaleString() : 'غير متوفر'}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-xs text-slate-400 mb-1">الحالة الحالية</span>
+                  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-semibold border ${
+                    selectedBatch.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                    selectedBatch.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                    'bg-blue-100 text-blue-700 border-blue-200'
+                  }`}>
+                    {selectedBatch.status || 'Dispatched'}
+                  </span>
+                </div>
+              </div>
+
+              {/* عرض الملاحظة الحالية إن وجدت */}
+              {selectedBatch.customNote && (
+                <div className="bg-slate-100 p-3 rounded-xl text-xs space-y-1">
+                  <span className="font-semibold text-slate-500 block">الملاحظة المسجلة:</span>
+                  <p className="text-slate-800 font-medium">{selectedBatch.customNote}</p>
+                </div>
+              )}
+
+              {/* أزرار تغيير الحالة (تظهر فقط إذا كان المستخدم abd أو yehia) */}
+              {canModifyStatus ? (
+                <div className="bg-amber-50/60 border border-amber-200/60 p-4 rounded-xl space-y-3">
+                  <span className="block text-xs font-semibold text-amber-800">
+                    لوحة تحكم الصلاحيات (مرحباً {currentUsername}): يمكنك اعتماد أو رفض هذه الدفعة
+                  </span>
+
+                  {/* اختيار نوع الإجراء أو كتابة الملاحظة في حالة الرفض */}
+                  {actionType === 'Rejected' && (
+                    <div className="space-y-1.5 animate-in fade-in duration-150">
+                      <label className="block text-xs font-semibold text-rose-700">
+                        سبب الرفض (إلزامي):
+                      </label>
+                      <textarea
+                        value={customNote}
+                        onChange={(e) => setCustomNote(e.target.value)}
+                        placeholder="اكتب سبب رفض هذه الدفعة..."
+                        rows="2"
+                        className="w-full p-2.5 bg-white border border-rose-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-rose-500 shadow-sm"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      onClick={() => handleUpdateStatus('Approved')}
+                      disabled={updatingStatus}
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      <CheckCircle2 size={16} />
+                      <span>اعتماد الدفعة (Approved)</span>
+                    </button>
+                    
+                    {actionType !== 'Rejected' ? (
+                      <button
+                        onClick={() => {
+                          setActionType('Rejected');
+                          setCustomNote(''); // تفريغ الحقل للكتابة الجديدة
+                        }}
+                        disabled={updatingStatus}
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                      >
+                        <XCircle size={16} />
+                        <span>رفض الدفعة (Rejected)</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUpdateStatus('Rejected')}
+                        disabled={updatingStatus}
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-rose-700 hover:bg-rose-800 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                      >
+                        <XCircle size={16} />
+                        <span>تأكيد الرفض وإرسال السبب</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-slate-100 p-3 rounded-xl text-center text-xs text-slate-500">
+                  ملاحظة: الصلاحيات المتاحة لتغيير الحالة مقتصرة على المستخدمين (Abd أو Yehia) فقط.
+                </div>
+              )}
+
+              {/* جدول الطلبات المتضمنة في الدفعة */}
+              <div>
+                <h4 className="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
+                  <Package size={16} className="text-blue-600" />
+                  <span>الطلبات المتضمنة في هذه الدفعة:</span>
+                </h4>
+                <div className="border border-slate-100 rounded-xl overflow-hidden">
+                  <table className="w-full text-right text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-400 border-b border-slate-100">
+                        <th className="py-3 px-4 font-semibold">رقم الغرفة</th>
+                        <th className="py-3 px-4 font-semibold">الموظف</th>
+                        <th className="py-3 px-4 font-semibold">نوع الطلب</th>
+                        <th className="py-3 px-4 font-semibold text-left">التكلفة</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                      {selectedBatch.requests && selectedBatch.requests.map((req, index) => (
+                        <tr key={req._id || index} className="hover:bg-slate-50/50">
+                          <td className="py-3 px-4 font-medium text-slate-900">{req.number || '---'}</td>
+                          <td className="py-3 px-4">{req.employee || '---'}</td>
+                          <td className="py-3 px-4 text-slate-600">{req.type || 'غسيل'}</td>
+                          <td className="py-3 px-4 font-semibold text-slate-900 text-left">{req.total || 0}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* السعر الإجمالي النهائي */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-blue-50/40 p-4 rounded-xl border border-blue-100/60 text-xs">
+                <div>
+                  <span className="block text-slate-400 mb-1">إجمالي الطلبات:</span>
+                  <span className="font-bold text-slate-800 text-sm">{selectedBatch.totalRequests}</span>
+                </div>
+                <div>
+                  <span className="block text-slate-400 mb-1">إجمالي القطع:</span>
+                  <span className="font-bold text-slate-800 text-sm">{selectedBatch.totalItems}</span>
+                </div>
+                <div>
+                  <span className="block text-slate-400 mb-1">التكلفة الكلية:</span>
+                  <span className="font-bold text-blue-600 text-sm">{selectedBatch.totalCost}</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* تذييل النافذة */}
+            <div className="flex items-center justify-end px-6 py-3 border-t border-slate-100 bg-slate-50/50">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+              >
+                إغلاق
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default DeliveryBatches;
