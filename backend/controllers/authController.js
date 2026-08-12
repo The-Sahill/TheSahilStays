@@ -66,8 +66,8 @@ try{
 
 res.cookie('token', token, {
   httpOnly: true,
-  secure: false, // ضروري إذا تستخدم https
-  sameSite: 'Lax', // يسمح بالإرسال عبر النطاقات
+  secure: true, // ضروري إذا تستخدم https
+  sameSite: 'None', // يسمح بالإرسال عبر النطاقات
   maxAge: 24 * 60 * 60 * 1000 // 1 يوم مثلاً
 });
 
