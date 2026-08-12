@@ -90,6 +90,7 @@ exports.logout = async (req, res) => {
             httpOnly: true,
             secure: true, // يجب أن تتطابق مع إعدادات الـ cookie عند تسجيل الدخول
             sameSite: 'None',
+            maxAge: 24 * 60 * 60 * 1000,
         });
 
         return res.status(200).json({
