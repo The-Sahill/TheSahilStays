@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import Home from './components/dryClean/Home';
 import Systems from './components/home/Home';
 import DeliveryBatches from './components/dryClean/Deliveries';
+import Transportation from './components/transportation/Home';
 import { Loader2 } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -89,6 +90,17 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
+<Route 
+          path="/Dashboard/transportation" 
+          element={
+            <ProtectedRoute>
+              <Transportation />
+            </ProtectedRoute>
+          } 
+        />
+
+
       </Routes>
     </>
   );

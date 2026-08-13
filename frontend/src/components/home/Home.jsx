@@ -4,13 +4,12 @@ import {Link} from 'react-router-dom';
 import { 
   Wrench, 
   Shirt, 
-  UtensilsCrossed, 
+  Road, 
   ArrowLeft, 
   Search, 
   Sparkles, 
   ShieldCheck, 
   Layers,
-  Activity
 } from 'lucide-react';
 
 const systems = [
@@ -30,25 +29,24 @@ const systems = [
     id: 'dry-clean',
     title: 'نظام الدراي كلين ',
     description: 'إدارة دورة حياة الغسيل، استلام وتسليم العملاء، وتتبع الحالة  بدقة.',
-    icon: <Shirt className="w-6 h-6 text-indigo-600" />,
+    icon: <Shirt className="w-6 h-6 text-green-600" />,
     href: '/Dashboard/dry-clean',
-    gradient: 'from-indigo-500/10 via-indigo-500/5 to-transparent',
-    borderColor: 'hover:border-indigo-500/50',
+    gradient: 'from-green-500/10 via-green-500/5 to-transparent',
+    borderColor: 'hover:border-green-500/50',
     badge: 'نشط',
-    badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    badgeColor: 'bg-green-50 text-green-700 border-green-200',
     stats: '45 قطعة اليوم'
   },
   {
-    id: 'restaurant',
-    title: 'نظام المطاعم (الريت)',
-    description: 'إدارة الطاولات، نقاط البيع POS، المنيو الإلكتروني، ومتابعة الطلبات المباشرة.',
-    icon: <UtensilsCrossed className="w-6 h-6 text-amber-600" />,
-    href: '/restaurant',
+    id: 'transportation',
+    title: 'نظام التوصيل ',
+    description: 'ادارة الرحلات من و الى المطار و تتبع الطلبات',
+    icon: <Road className="w-6 h-6 text-amber-600" />,
+    href: '/Dashboard/transportation',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
     borderColor: 'hover:border-amber-500/50',
     badge: 'سريع',
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
-    stats: '8 طاولات مشغولة'
   },
   
 ];
