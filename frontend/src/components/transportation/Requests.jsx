@@ -416,7 +416,7 @@ export default function Requests() {
             <form onSubmit={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
               {/* القسم الأيسر: المدخلات والبيانات */}
-              <div className="lg:col-span-8 flex flex-col gap-6">
+              <div className="lg:col-span-12 flex flex-col gap-6">
                 
                 {/* بطاقة: الضيف والرحلة */}
                 <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
@@ -579,73 +579,7 @@ export default function Requests() {
               </div>
 
               {/* القسم الأيمن: بطاقة ملخص الإرسال */}
-              <div className="lg:col-span-4">
-                <div className="bg-[#1b2a32] text-white p-6 md:p-8 rounded-3xl sticky top-24 shadow-xl flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-2">اجعل الموافقة سهلة.</h3>
-                    <p className="text-xs text-gray-300 leading-relaxed mb-8">
-                      الطلب المحدد بالسعر والواضح يتم الموافقة عليه بشكل أسرع.
-                    </p>
-
-                    <div className="space-y-4 mb-6">
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2">نوع المركبة</label>
-                        <select 
-                          name="vehicle" 
-                          value={formData.vehicle}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm focus:outline-none cursor-pointer"
-                        >
-                          <option className="bg-[#1b2a32] text-white">سيارة عادية</option>
-                          <option className="bg-[#1b2a32] text-white">فان</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2">شركة الشريك</label>
-                        <select 
-                          name="partner" 
-                          value={formData.partner}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm focus:outline-none cursor-pointer"
-                        >
-                          <option className="bg-[#1b2a32] text-white">أطلس للتنقل</option>
-                          <option className="bg-[#1b2a32] text-white">سكايلاين للتنقل</option>
-                          <option className="bg-[#1b2a32] text-white">نورثستار رايدز</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2">سعر الضيف</label>
-                        <div className="relative">
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
-                          <input 
-                            type="text" 
-                            name="price" 
-                            value={formData.price}
-                            onChange={handleInputChange}
-                            className="w-full pr-8 pl-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm focus:outline-none" 
-                          />
-                        </div>
-                        <span className="text-[11px] text-gray-400 mt-1.5 block">تسعير السيارة العادية: $35 - $40</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <button 
-                      type="submit"
-                      className="w-full flex items-center justify-center gap-2 bg-[#e5b667] text-[#1b2a32] py-3.5 rounded-xl font-bold hover:bg-[#d8a95d] transition-colors shadow-lg"
-                    >
-                      <Send className="w-4 h-4" /> إرسال الطلب
-                    </button>
-                    <p className="text-[10px] text-center text-gray-400 mt-3">
-                      يتم احتساب تكلفة الشريك من الشركة المعينة.
-                    </p>
-                  </div>
-
-                </div>
-              </div>
+             
 
             </form>
 

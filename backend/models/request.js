@@ -27,6 +27,11 @@ status:{
     default: false
 },
 
+approved:{
+    type: String,
+    default: "قيد الانتظار"
+},
+
 
     // قائمة المستلزمات
     towels: { // مناشف

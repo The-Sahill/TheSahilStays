@@ -12,7 +12,7 @@ const DryCleaningDispatch = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // عدد الطلبات في كل صفحة
 
-  // 1. جلب الطلبات غير المُرسلة بناءً على status === false
+  // 1. جلب الطلبات التي تمت الموافقة عليها فقط (approved === 'تم الموافقة')
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -25,8 +25,8 @@ const DryCleaningDispatch = () => {
       
       const allRequests = Array.isArray(data) ? data : data.requests || [];
       
-      // التصفية بناءً على حقل status (false تعني لم يُرسل بعد)
-      const pendingDispatch = allRequests.filter(item => item.status === false);
+      // التصفية بناءً على حقل approved (يظهر فقط إذا كان 'تم الموافقة')
+      const pendingDispatch = allRequests.filter(item => item.approved === 'تم الموافقة');
       
       // ترتيب تنازلي (الأحدث أولاً)
       const sortedList = pendingDispatch.reverse();
@@ -72,7 +72,7 @@ const DryCleaningDispatch = () => {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  // حساب إجماليات ملخص الطابور للطلبات المعروضة (أو القائمة كاملة حسب رغبتك، هنا حسب المفلترة بالكامل)
+  // حساب إجماليات ملخص الطابور
   const totalRequests = filteredList.length;
   const totalItems = filteredList.reduce((sum, item) => sum + calculateTotalItems(item), 0);
   const totalCost = filteredList.reduce((sum, item) => sum + (item.total || 0), 0);
@@ -80,14 +80,14 @@ const DryCleaningDispatch = () => {
   // 2. إرسال الدفعة للمغسلة
   const handleDispatchBatch = async () => {
     if (filteredList.length === 0) {
-      alert('لا توجد طلبات للإرسال حالياً!');
+      alert('لا توجد طلبات موافق عليها للإرسال حالياً!');
       return;
     }
 
     try {
       setDispatching(true);
       
-      // استخراج الـ IDs الخاصة بالطلبات المراد إرسالها (للـ filteredList بالكامل أو الحالية)
+      // استخراج الـ IDs الخاصة بالطلبات المراد إرسالها (التي تمت الموافقة عليها فقط)
       const requestIds = filteredList.map(r => r._id);
 
       const response = await fetch(`${apiUrl}/dispatch`, {
@@ -131,7 +131,7 @@ const DryCleaningDispatch = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">إرسال الدراي كلين</h1>
-          <p className="text-sm text-slate-500 mt-0.5">الطلبات المسجلة في انتظار إرسالها إلى المغسلة (الأحدث أولاً).</p>
+          <p className="text-sm text-slate-500 mt-0.5">الطلبات التي تم الموافقة عليها في انتظار إرسالها إلى المغسلة (الأحدث أولاً).</p>
         </div>
         
         <button
@@ -189,7 +189,7 @@ const DryCleaningDispatch = () => {
                         </span>
                       </td>
                       <td className="py-4 px-6 font-semibold text-slate-800">{itemsCount} قطعة</td>
-                      <td className="py-4 px-6 font-bold text-blue-600">{item.total || 0}</td>
+                      <td className="py-4 px-6 font-bold text-blue-600">{Number(item.total || 0).toFixed(2)}</td>
                     </tr>
                   );
                 })}
@@ -197,7 +197,7 @@ const DryCleaningDispatch = () => {
                 {currentRequests.length === 0 && (
                   <tr>
                     <td colSpan="5" className="text-center py-10 text-slate-400">
-                      لا توجد طلبات معتمدة في انتظار الإرسال حالياً.
+                      لا توجد طلبات تمت الموافقة عليها في انتظار الإرسال حالياً.
                     </td>
                   </tr>
                 )}
@@ -258,7 +258,9 @@ const DryCleaningDispatch = () => {
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-100">
               <span className="text-sm font-semibold text-slate-700">التكلفة الإجمالية</span>
-              <span className="font-bold text-blue-600 text-xl">{totalCost}</span>
+              <span className="font-bold text-blue-600 text-xl">
+                {Number(totalCost || 0).toFixed(2)}
+              </span>
             </div>
           </div>
         </div>

@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, X, Shirt, Loader2, ChevronRight, ChevronLeft, Calendar } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
+import axios from 'axios';
 
 const DryCleaningRequests = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  const [permission, setPermission] = useState(false);
+
   const [requestsData, setRequestsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // حالة النافذة المنبثقة (Modal) والطلب المحدد
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +50,50 @@ const DryCleaningRequests = () => {
     }
   };
 
+  // دالة لتحديث حالة الطلب (موافقة / رفض) وإرسالها للباك إند
+  // دالة لتحديث حالة الطلب (موافقة / رفض) وإرسالها للباك إند
+  const handleUpdateStatus = async (isApproved) => {
+    if (!selectedRequest) return;
+    
+    try {
+      setActionLoading(true);
+      // استخدام _id أو رقم الطلب حسب المتوفر في قاعدة البيانات لديك
+      const requestId = selectedRequest._id || selectedRequest.number;
+
+      const response = await fetch(`${apiUrl}/requests/${requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // إرسال الحقل approved مباشرة كما يطلبه الباك إند
+        body: JSON.stringify({ approved: isApproved }),
+      });
+
+      if (!response.ok) {
+        throw new Error('فشل تحديث حالة الطلب');
+      }
+
+      const data = await response.json();
+
+      // تحديث البيانات في الـ State محلياً لتنعكس النتيجة مباشرة في الجدول
+      setRequestsData(prevData =>
+        prevData.map(req => 
+          (req._id === selectedRequest._id ? { ...req, approved: isApproved } : req)
+        )
+      );
+
+      // تحديث الطلب المحدد وإغلاق النافذة المنبثقة
+      setSelectedRequest(prev => ({ ...prev, approved: isApproved }));
+      setIsModalOpen(log => false);
+      
+    } catch (error) {
+      console.error('خطأ أثناء تحديث الحالة:', error);
+      alert('حدث خطأ أثناء تحديث حالة الطلب، يرجى المحاولة مرة أخرى.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   // دالة لتنسيق التاريخ والوقت بشكل مقروء
   const formatDate = (dateString) => {
     if (!dateString) return 'غير متوفر';
@@ -70,6 +118,28 @@ const DryCleaningRequests = () => {
     });
     return sum;
   };
+
+  
+  useEffect(() => {
+    const getUser = async () => {
+try{
+const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
+if(data.name != "abd" && data.name != "yehia"){
+ setPermission(false)
+}else{
+  setPermission(true)
+}
+
+}
+catch(error){
+console.log(error)
+}
+
+    }
+
+    getUser()
+
+  }, []);
 
   // تصفية الطلبات حسب البحث والحالة
   const filteredRequests = requestsData.filter((req) => {
@@ -105,6 +175,7 @@ const DryCleaningRequests = () => {
       </div>
     );
   }
+
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans relative w-full" dir="rtl">
@@ -142,6 +213,7 @@ const DryCleaningRequests = () => {
             <option value="all">جميع الحالات</option>
             <option value="Pending Approval">قيد الانتظار</option>
             <option value="Approved">تم الموافقة</option>
+            <option value="Rejected">تم الرفض</option>
           </select>
         </div>
       </div>
@@ -158,6 +230,7 @@ const DryCleaningRequests = () => {
                 <th className="py-4 px-6">النزيل</th>
                 <th className="py-4 px-6">القطع</th>
                 <th className="py-4 px-6">الإجمالي</th>
+                <th className="py-4 px-6">الحالة</th>
                 <th className="py-4 px-6">تاريخ الطلب</th>
                 <th className="py-4 px-6 text-left">الإجراءات</th>
               </tr>
@@ -182,6 +255,14 @@ const DryCleaningRequests = () => {
                     </td>
                     <td className="py-4 px-6 text-slate-600">{totalItems} قطعة</td>
                     <td className="py-4 px-6 font-semibold text-slate-900">{req.total || 0}</td>
+                    <td className="py-4 px-6">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${
+                        req.approved === "تم الموافقة" ? 'bg-emerald-50 text-emerald-600' :
+                        req.approved === "تم الرفض" ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'
+                      }`}>
+                        {req.approved === "تم الموافقة" ? 'موافق عليه' : req.approved === "تم الرفض" ? 'مرفوض' : 'قيد الانتظار'}
+                      </span>
+                    </td>
                     <td className="py-4 px-6 text-slate-500 text-xs font-medium">
                       {formatDate(req.createdAt)}
                     </td>
@@ -200,7 +281,7 @@ const DryCleaningRequests = () => {
 
               {currentRequests.length === 0 && (
                 <tr>
-                  <td colSpan="8" className="text-center py-10 text-slate-400">
+                  <td colSpan="9" className="text-center py-10 text-slate-400">
                     لا توجد طلبات مسجلة في النظام حالياً.
                   </td>
                 </tr>
@@ -283,7 +364,7 @@ const DryCleaningRequests = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100 max-h-40 overflow-y-auto">
                 <span className="block text-xs font-semibold text-slate-500 mb-2">تفاصيل القطع المطلوبة:</span>
                 
                 {[
@@ -314,10 +395,30 @@ const DryCleaningRequests = () => {
                 )}
               </div>
 
-              <div className="flex justify-between items-center py-2 px-2">
+              <div className="flex justify-between items-center py-2 px-2 bg-slate-50 rounded-lg">
                 <span className="text-sm font-semibold text-slate-600">التكلفة الإجمالية:</span>
                 <span className="text-base font-bold text-emerald-600">{selectedRequest.total || 0}</span>
               </div>
+
+
+              {permission && (
+  <div className='flex gap-3 mt-4'>
+    <button 
+      onClick={() => handleUpdateStatus("تم الموافقة")}
+      disabled={actionLoading}
+      className='bg-green-500 hover:bg-green-600 transition-colors text-white px-5 py-2 rounded-xl w-full font-semibold text-sm disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2'
+    >
+      {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'موافقة (True)'}
+    </button>
+    <button 
+      onClick={() => handleUpdateStatus("تم الرفض")}
+      disabled={actionLoading}
+      className='bg-red-500 hover:bg-red-600 transition-colors text-white px-5 py-2 rounded-xl w-full font-semibold text-sm disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2'
+    >
+      {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'رفض (False)'}
+    </button>
+  </div>
+)}
 
             </div>
 

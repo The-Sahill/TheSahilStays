@@ -57,3 +57,38 @@ exports.getRequests = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+exports.updateRequestStatus = async (req, res) => {
+    try{
+    // 1. تصحيح اسم المتغير من requestId إلى id (حسب الـ Route :id)
+    const { id } = req.params; 
+    
+    // 2. استقبال status بدلاً من approved (أو استقبال الاثنين لدعم الحالتين)
+    const { status, approved } = req.body; 
+    
+    // تحديد القيمة المراد تحديثها (سواء أرسلت status أو approved)
+    const updateValue = status !== undefined ? status : approved;
+    
+    console.log(`تحديث حالة الطلب: ${id} إلى ${updateValue}`);
+    
+    const updatedRequest = await Request.findByIdAndUpdate(
+        id,
+        { approved: updateValue }, // أو الحقل المناسب عندك في الـ Schema
+        { returnDocument: 'after' } // حل تحذير Mongoose الجديد
+    );
+    
+    if (!updatedRequest) {
+        return res.status(404).json({ success: false, message: 'الطلب غير موجود' });
+    }
+    
+    res.status(200).json({
+        success: true,
+        message: 'تم تحديث حالة الطلب بنجاح',
+        request: updatedRequest
+    });
+    
+    }
+    catch(error){
+        console.error('خطأ في تحديث حالة الطلب:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+    };

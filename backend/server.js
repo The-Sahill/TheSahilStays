@@ -10,6 +10,7 @@ const roomRoutes = require('./routes/room'); // مسار ملف الـ Routes
 const requestRoute = require('./routes/requestRoute') // مسار ملف الـ Routes
 const batchRoute = require('./routes/batchRoute') // مسار ملف الـ Routes
 const dashboardRoute = require('./routes/dashboardRoute') // مسار ملف الـ Routes
+const transportation = require('./routes/transportation/requestRoute.js') // مسار ملف الـ Routes
 
 
 app.use(cors({
@@ -26,6 +27,7 @@ app.use('/', roomRoutes);
 app.use('/',requestRoute)
 app.use('/',batchRoute)
 app.use('/',dashboardRoute) // ربط مسار لوحة التحكم
+app.use('/',transportation)
 
 
 mongoose.connect(process.env.MongoDB_URL).then(() => {

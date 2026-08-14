@@ -9,6 +9,7 @@ const RoomConfig = () => {
   const [currentRoomData, setCurrentRoomData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+    const [permission, setPermission] = useState(false);
 
   // حالات نموذج إضافة غرفة جديدة
   const [showAddModal, setShowAddModal] = useState(false);
@@ -69,6 +70,30 @@ const RoomConfig = () => {
     setSelectedRoomId(room._id);
     setCurrentRoomData({ ...room });
   };
+
+
+  
+  
+  useEffect(() => {
+    const getUser = async () => {
+try{
+const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
+if(data.name != "abd"){
+ setPermission(false)
+}else{
+  setPermission(true)
+}
+
+}
+catch(error){
+console.log(error)
+}
+
+    }
+
+    getUser()
+
+  }, []);
 
   // دالة تحديث الكمية
   const updateCount = (itemKey, delta) => {
@@ -159,6 +184,8 @@ const RoomConfig = () => {
       </div>
     );
   }
+
+  
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans w-full" dir="rtl">
