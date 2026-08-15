@@ -3,25 +3,9 @@ const TransportationRequest = require('../../models/transportation/request');
 // جلب جميع الطلبات مع دعم البحث والفلاتر
 exports.getRequests = async (req, res) => {
   try {
-    const { search, status, vehicle } = req.query;
-    let query = {};
-
-    if (search) {
-      query.$or = [
-        { guestName: { $regex: search, $options: 'i' } },
-        { requestId: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    if (status && status !== 'all') {
-      query.status = status;
-    }
-
-    if (vehicle && vehicle !== 'all') {
-      query.vehicle = vehicle;
-    }
-
-    const requests = await TransportationRequest.find(query).sort({ createdAt: -1 });
+ 
+    const requests = await TransportationRequest.find().sort({ createdAt: -1 });
+    console.log('Retrieved requests:', requests); // Log the retrieved requests for debugging
 
     res.status(200).json({
       success: true,
@@ -35,27 +19,14 @@ exports.getRequests = async (req, res) => {
 // إنشاء طلب نقل جديد
 exports.createRequest = async (req, res) => {
   try {
-    const { guestName, transferType, airport, travelDate, transferTime, vehicle, partner, guestPrice } = req.body;
+    const { guestName,mobileNumber, transferType, airport, travelDate, transferTime,passengers,bags,baggageSize } = req.body;
 
-    // توليد معرف فريد للطلب
-    const requestId = `TR-${Math.floor(1000 + Math.random() * 9000)}`;
-    
-    // حساب تكلفة الشريك والربح افتراضياً
-    const parsedPrice = parseFloat(guestPrice) || 0;
-    const partnerCost = parsedPrice * 0.5;
-    const profit = parsedPrice - partnerCost;
+ 
 
-    let ticketPath = '';
-    if (req.file) {
-      ticketPath = req.file.path;
-    }
 
     const newRequest = await TransportationRequest.create({
       ...req.body,
-      requestId,
-      partnerCost,
-      profit,
-      ticketPath,
+    
       status: 'بانتظار الموافقة',
       paymentStatus: 'غير مدفوع'
     });

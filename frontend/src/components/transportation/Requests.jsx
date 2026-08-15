@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, ChevronDown, Search, Plus, ArrowLeft, X, Upload, Send, CheckCircle2, Plane, Calendar, Clock, Users, Car, CreditCard, Star } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const initialRequestsData = [
-  { id: 'TR-1039', name: 'دانيال أوكافور', type: 'استقبال من المطار - أورلي (ORY)', date: '12 أغسطس 2026', time: '07:30', vehicle: 'سيارة عادية', passengers: '3 ركاب', status: 'مكتمل', provider: 'أطلس للتنقل', flight: 'BA 304', guestPrice: '$40.00', partnerCost: '$20.00', profit: '$20.00', paymentStatus: 'غير مدفوع', rating: 4, review: 'خدمة رائعة، ولكن كان من الصعب بعض الشيء العثور على نقطة الوصول.' },
-  { id: 'TR-1042', name: 'صوفيا لوران', type: 'استقبال من المطار - شارل ديغول (CDG)', date: '14 أغسطس 2026', time: '09:45', vehicle: 'سيارة عادية', passengers: '2 ركاب', status: 'بانتظار الموافقة', provider: 'أطلس للتنقل', flight: 'AF 112', guestPrice: '$40.00', partnerCost: '$20.00', profit: '$20.00', paymentStatus: 'غير مدفوع', rating: 5, review: 'ممتاز جداً.' },
-  { id: 'TR-1037', name: 'آرثر بينيت', type: 'استقبال من المطار - شارل ديغول (CDG)', date: '16 أغسطس 2026', time: '20:50', vehicle: 'سيارة عادية', passengers: '2 ركاب', status: 'ملغي', provider: 'سكايلاين للتنقل', flight: 'EZ 554', guestPrice: '$35.00', partnerCost: '$18.00', profit: '$17.00', paymentStatus: 'مسترد', rating: 3, review: 'تم إلغاء الرحلة لظروف طارئة.' },
-  { id: 'TR-1041', name: 'ماركوس تشين', type: 'توصيل إلى المطار - شارل ديغول (CDG)', date: '14 أغسطس 2026', time: '16:20', vehicle: 'فان', passengers: '4 ركاب', status: 'تمت الموافقة', provider: 'سكايلاين للتنقل', flight: 'LH 920', guestPrice: '$60.00', partnerCost: '$35.00', profit: '$25.00', paymentStatus: 'مدفوع', rating: 5, review: 'سائق محترف ومركبة واسعة.' },
-  { id: 'TR-1038', name: 'هانا سوزوكي', type: 'توصيل إلى المطار - شارل ديغول (CDG)', date: '15 أغسطس 2026', time: '05:15', vehicle: 'فان', passengers: '5 ركاب', status: 'مرفوض', provider: 'نورثستار رايدز', flight: 'JL 401', guestPrice: '$65.00', partnerCost: '$40.00', profit: '$25.00', paymentStatus: 'غير مدفوع', rating: 1, review: 'تم الرفض لعدم توفر سيارات.' },
-  { id: 'TR-1040', name: 'إيلينا روسي', type: 'استقبال من المطار - أورلي (ORY)', date: '13 أغسطس 2026', time: '11:10', vehicle: 'سيارة عادية', passengers: 'راكب واحد', status: 'مكتمل', provider: 'نورثستار رايدز', flight: 'AZ 322', guestPrice: '$35.00', partnerCost: '$18.00', profit: '$17.00', paymentStatus: 'مدفوع', rating: 4, review: 'تجربة جيدة جداً.' },
-];
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+ 
 
 export default function Requests() {
-  const [requestsData, setRequestsData] = useState(initialRequestsData);
+  const [requestsData, setRequestsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -21,17 +17,17 @@ export default function Requests() {
     guestName: '',
     mobileNumber: '',
     transferType: 'استقبال من المطار',
-    airport: 'مطار دبلن (DUB)',
+    airport: 'مطار الملكة علياء الدولي',
     travelDate: '',
     transferTime: '',
     flightNumber: '',
-    passengers: '1',
-    bags: '0',
-    baggageSize: 'صغير',
+    passengers: '',
+    bags: '',
+    baggageSize: '',
     baggageNotes: '',
-    vehicle: 'سيارة عادية',
-    partner: 'أطلس للتنقل',
-    price: '40'
+    vehicle: 'لم يتم التحديد بعد',
+    partner: '',
+    price: ''
   });
 
   const handleInputChange = (e) => {
@@ -39,31 +35,7 @@ export default function Requests() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newRequest = {
-      id: `TR-${Math.floor(1000 + Math.random() * 9000)}`,
-      name: formData.guestName || 'ضيف جديد',
-      type: `${formData.transferType} - ${formData.airport}`,
-      date: formData.travelDate || '18 أغسطس 2026',
-      time: formData.transferTime || '12:00',
-      vehicle: formData.vehicle,
-      passengers: `${formData.passengers} ركاب`,
-      status: 'بانتظار الموافقة',
-      provider: formData.partner,
-      flight: formData.flightNumber || 'EI 0612',
-      guestPrice: `$${formData.price}.00`,
-      partnerCost: '$20.00',
-      profit: '$20.00',
-      paymentStatus: 'غير مدفوع',
-      rating: 5,
-      review: 'طلب جديد تم إنشاؤه عبر النظام.'
-    };
-
-    setRequestsData([newRequest, ...requestsData]);
-    setIsModalOpen(false);
-  };
-
+ 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'مكتمل':
@@ -81,7 +53,45 @@ export default function Requests() {
     }
   };
 
+  
+useEffect(() => {
+  const getRequests = async () => {
+  try{
+  const {data} = await axios.get(`${apiUrl}/`, { withCredentials: true });
+ 
+  if(data.success==true){
+    setRequestsData(data.data)
+    console.log(data.data)
+  }
+  }
+  catch(error){
+  console.log(error)
+  }
+  
+  
+  }
+  getRequests()
+  },[])
+  
+
+  const createRequest = async () => {
+try{
+const {data} = await axios.post(`${apiUrl}/createRequest`, formData,{withCredentials:true})
+
+
+if(data.success == true){
+  toast.success(data.message)
+}
+}
+catch(error){
+console.log(error)
+toast.error("حدث خطأ أثناء إنشاء الطلب")
+}
+
+  }
+
   return (
+    
     <div className="min-h-screen w-full bg-[#fbfaf6] text-[#1b2a32] font-sans">
       
       {/* الشريط العلوي */}
@@ -93,17 +103,7 @@ export default function Requests() {
             </div>
             <div className="font-bold text-lg">صباح الخير، مايا</div>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-full hover:bg-gray-50 text-gray-500 relative">
-              <Bell className="w-5 h-5" />
-              <span className='absolute top-1.5 left-1.5 w-2 h-2 bg-yellow-400 rounded-full border-2 border-white'/>
-            </button>
-            <button className="flex items-center gap-2.5 pr-3 pl-1.5 py-1.5 rounded-full hover:bg-gray-50 border border-gray-100">
-              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Maya" className="w-8 h-8 rounded-full" />
-              <span className="font-semibold text-sm">مايا سينغ</span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-          </div>
+        
         </nav>
       </header>
 
@@ -164,38 +164,42 @@ export default function Requests() {
           </div>
 
           <div className="divide-y divide-gray-100">
-            {requestsData
-              .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()) || item.id.toLowerCase().includes(searchTerm.toLowerCase()))
-              .map((item, index) => (
-              <div 
-                key={index} 
-                onClick={() => setSelectedRequest(item)}
-                className="grid grid-cols-12 px-6 py-5 items-center hover:bg-gray-50/80 transition-colors cursor-pointer group"
-              >
-                <div className="col-span-4 flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-[#1b2a32]">{item.name}</span>
-                    <span className="text-xs text-gray-400 font-mono">{item.id}</span>
-                  </div>
-                  <span className="text-xs text-gray-500 mt-0.5">{item.type}</span>
-                </div>
+          {
+  requestsData .map((item, index) => (
+    <div 
+      key={index} 
+      onClick={() => setSelectedRequest(item)}
+      className="grid grid-cols-12 px-6 py-5 items-center hover:bg-gray-50/80 transition-colors cursor-pointer group"
+    >
+      <div className="col-span-4 flex flex-col">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-[#1b2a32]">{item.guestName}</span>
+        </div>
+        <span className="text-xs text-gray-500 mt-0.5">{item.transferType}</span>
+      </div>
 
-                <div className="col-span-3 flex flex-col">
-                  <span className="font-medium text-[#1b2a32] text-sm">{item.date}</span>
-                  <span className="text-xs text-gray-400 mt-0.5">{item.time}</span>
-                </div>
+      <div className="col-span-3 flex flex-col">
+      <span className="font-medium text-[#1b2a32] text-sm">
+  {new Date(item.travelDate).toLocaleDateString('ar-JO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })}
+</span>
+        <span className="text-xs text-gray-400 mt-0.5">{item.transferTime}</span>
+      </div>
 
-                <div className="col-span-3 flex flex-col">
-                  <span className="font-medium text-[#1b2a32] text-sm">{item.vehicle}</span>
-                  <span className="text-xs text-gray-400 mt-0.5">{item.passengers} • {item.provider}</span>
-                </div>
+      <div className="col-span-3 flex flex-col">
+        <span className="font-medium text-[#1b2a32] text-sm">{item.vehicle}</span>
+        <span className="text-xs text-gray-400 mt-0.5">{item.passengers} </span>
+      </div>
 
-                <div className="col-span-2 flex items-center justify-between">
-                  <div>{getStatusBadge(item.status)}</div>
-                  <ArrowLeft className="w-4 h-4 text-gray-300 group-hover:text-[#1b2a32] transition-colors" />
-                </div>
-              </div>
-            ))}
+      <div className="col-span-2 flex items-center justify-between">
+        <div>{getStatusBadge(item.status)}</div>
+        <ArrowLeft className="w-4 h-4 text-gray-300 group-hover:text-[#1b2a32] transition-colors" />
+      </div>
+    </div>
+  ))}
           </div>
         </div>
 
@@ -223,10 +227,20 @@ export default function Requests() {
             </button>
 
             <div className="flex flex-wrap items-center gap-4 mb-2">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32]">{selectedRequest.name}</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32]">{selectedRequest.guestName}</h2>
               {getStatusBadge(selectedRequest.status)}
             </div>
-            <p className="text-xs text-gray-400 mb-8">{selectedRequest.id} · تم الإنشاء 13 أغسطس 2026</p>
+            <p className="text-xs text-gray-400 mb-8">
+  {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }) + ' - ' + new Date(selectedRequest.createdAt).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }) : ''}
+</p>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
@@ -250,7 +264,7 @@ export default function Requests() {
                       <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
                       <div>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">تاريخ السفر</span>
-                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.date}</span>
+                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.travelDate}</span>
                       </div>
                     </div>
 
@@ -258,15 +272,15 @@ export default function Requests() {
                       <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
                       <div>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">وقت الاستقبال</span>
-                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.time}</span>
+                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.transferTime}</span>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-3">
                       <Plane className="w-5 h-5 text-gray-400 mt-0.5" />
                       <div>
-                        <span className="block text-[10px] font-bold text-gray-400 uppercase">الرحلة الجوية</span>
-                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.flight}</span>
+                        <span className="block text-[10px] font-bold text-gray-400 uppercase">الرحلة </span>
+                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.transferType}</span>
                       </div>
                     </div>
 
@@ -274,7 +288,7 @@ export default function Requests() {
                       <span className="w-5 h-5 flex items-center justify-center text-gray-400 mt-0.5 font-bold">📍</span>
                       <div>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">المطار</span>
-                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.type.includes('أورلي') ? 'أورلي (ORY)' : 'شارل ديغول (CDG)'}</span>
+                        <span className="block text-[10px] font-bold text-gray-400 uppercase">{selectedRequest.airport}</span>
                       </div>
                     </div>
 
@@ -413,7 +427,7 @@ export default function Requests() {
               <p className="text-sm text-gray-600">سجل التفاصيل مرة واحدة. سيتلقى شريكك ملخصاً واضحاً وكاملاً.</p>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div  className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
               {/* القسم الأيسر: المدخلات والبيانات */}
               <div className="lg:col-span-12 flex flex-col gap-6">
@@ -493,26 +507,8 @@ export default function Requests() {
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#1b2a32]" 
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">رقم الرحلة</label>
-                      <input 
-                        type="text" 
-                        name="flightNumber" 
-                        placeholder="EI 0612" 
-                        value={formData.flightNumber}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#1b2a32]" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">تذكرة الرحلة</label>
-                      <label className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white cursor-pointer hover:bg-gray-50">
-                        <span className="text-gray-400">اختر ملفاً...</span>
-                        <Upload className="w-4 h-4 text-gray-500" />
-                        <input type="file" className="hidden" />
-                      </label>
-                      <span className="text-[10px] text-gray-400 mt-1 block">JPG, PNG, or PDF - اختياري</span>
-                    </div>
+                   
+                 
                   </div>
                 </div>
 
@@ -574,6 +570,8 @@ export default function Requests() {
                     />
                     <span className="text-[10px] text-gray-400 mt-1 block">اختياري</span>
                   </div>
+
+                  <button onClick={() => createRequest()} className='mt-3 bg-black text-white px-5 py-3 w-full rounded-md'>ارسال الطلب</button>
                 </div>
 
               </div>
@@ -581,7 +579,7 @@ export default function Requests() {
               {/* القسم الأيمن: بطاقة ملخص الإرسال */}
              
 
-            </form>
+            </div>
 
           </div>
         </div>

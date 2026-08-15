@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const transportationRequestSchema = new mongoose.Schema({
-  requestId: { type: String, required: true, unique: true },
   guestName: { type: String, required: true },
   mobileNumber: { type: String },
   transferType: { type: String, required: true },
@@ -9,14 +8,12 @@ const transportationRequestSchema = new mongoose.Schema({
   travelDate: { type: Date, required: true },
   transferTime: { type: String, required: true },
   flightNumber: { type: String },
-  ticketPath: { type: String },
   passengers: { type: Number, default: 1 },
   bags: { type: Number, default: 0 },
   baggageSize: { type: String },
   baggageNotes: { type: String },
   vehicle: { type: String, required: true },
-  partner: { type: String, required: true },
-  guestPrice: { type: Number, required: true },
+  guestPrice: { type: Number, default: 0 },
   partnerCost: { type: Number, default: 0 },
   profit: { type: Number, default: 0 },
   paymentStatus: { type: String, default: 'غير مدفوع' },

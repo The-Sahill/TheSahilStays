@@ -85,7 +85,7 @@ exports.getCurrentUser = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log("Decoded token:", decoded); // تحقق من محتوى التوكن بعد فك التشفير
         
-        res.status(200).json({ name: decoded.name });
+        res.status(200).json({error:false, name: decoded.name });
     } catch (error) {
         res.status(401).json({ name: '' });
     }

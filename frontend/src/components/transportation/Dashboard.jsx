@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bell, ChevronDown, Search, FileText, DollarSign, Building2, Users, ArrowRight, Star, CornerDownLeft, Plus } from 'lucide-react';
+import Header from './Header';
 
 // --- مكونات فرعية (Sub-components) مضمنة للتسهيل ---
 
@@ -74,27 +75,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#fbfaf6] text-[#1b2a32] font-sans">
       {/* الشريط العلوي */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <nav className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-10">
-            <div className="flex items-center gap-2 font-medium text-sm">
-                <span className='text-gray-400'>مساحة العمل /</span> نظرة عامة
-            </div>
-            <div className="font-bold text-lg">صباح الخير، مايا</div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-full hover:bg-gray-50 text-gray-500 relative">
-              <Bell className="w-5 h-5" />
-              <span className='absolute top-1.5 left-1.5 w-2 h-2 bg-yellow-400 rounded-full border-2 border-white'/>
-            </button>
-            <button className="flex items-center gap-2.5 pr-3 pl-1.5 py-1.5 rounded-full hover:bg-gray-50 border border-gray-100">
-              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Maya" className="w-8 h-8 rounded-full" />
-              <span className="font-semibold text-sm">مايا سينغ</span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-          </div>
-        </nav>
-      </header>
+    <Header />
 
       {/* المحتوى الرئيسي */}
       <main className="max-w-[1600px] mx-auto p-6 md:p-10 grid grid-cols-1 xl:grid-cols-3 gap-8">

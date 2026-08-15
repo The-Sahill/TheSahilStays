@@ -4,7 +4,7 @@ const transportationController = require('../../controllers/transportation/reque
 
 // مسارات النقل
 router.get('/', transportationController.getRequests);          // جلب كل الطلبات
-router.post('/', transportationController.createRequest);         // إضافة طلب جديد
+router.post('/createRequest', transportationController.createRequest);         // إضافة طلب جديد
 router.get('/:id', transportationController.getRequestById);      // عرض طلب محدد
 router.patch('/:id/pay', transportationController.updatePaymentStatus); // تحديث الدفع
 

@@ -14,7 +14,7 @@ export default function FinancialDesk() {
   const [filter, setFilter] = useState('all');
 
   return (
-    <div className="min-h-screen bg-[#fbfaf6] text-[#1b2a32] font-sans">
+    <div className="min-h-screen w-full bg-[#fbfaf6] text-[#1b2a32] font-sans">
       
       {/* الشريط العلوي */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -25,17 +25,7 @@ export default function FinancialDesk() {
             </div>
             <div className="font-bold text-lg">صباح الخير، مايا</div>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-full hover:bg-gray-50 text-gray-500 relative">
-              <Bell className="w-5 h-5" />
-              <span className='absolute top-1.5 left-1.5 w-2 h-2 bg-yellow-400 rounded-full border-2 border-white'/>
-            </button>
-            <button className="flex items-center gap-2.5 pr-3 pl-1.5 py-1.5 rounded-full hover:bg-gray-50 border border-gray-100">
-              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Maya" className="w-8 h-8 rounded-full" />
-              <span className="font-semibold text-sm">مايا سينغ</span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-          </div>
+       
         </nav>
       </header>
 
@@ -49,9 +39,9 @@ export default function FinancialDesk() {
             <h1 className="text-4xl md:text-5xl font-extrabold text-[#1b2a32] mb-3">المال، بدون أي غموض.</h1>
             <p className="text-gray-600 max-w-2xl">الإيرادات الواردة، تكاليف الشركاء، والهامش الذي يحتفظ به فندقك في كل رحلة.</p>
           </div>
-          <button className="flex items-center gap-2 bg-white border border-gray-200 text-[#1b2a32] px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm shrink-0 text-sm">
+          <h1 className="flex items-center gap-2 bg-white border border-gray-200 text-[#1b2a32] px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm shrink-0 text-sm">
             <Calendar className="w-4 h-4 text-gray-500" /> هذه الفترة
-          </button>
+          </h1>
         </div>
 
         {/* بطاقات الإحصائيات العليا */}
@@ -173,95 +163,7 @@ export default function FinancialDesk() {
         </div>
 
         {/* دفتر الأستاذ (Payment Ledger Table) */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-          
-          <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-bold text-[#1b2a32]">دفتر الأستاذ للمدفوعات</h3>
-              <p className="text-sm text-gray-500">تكلفة الشريك حسب طلب النقل.</p>
-            </div>
-            
-            {/* أزرار التصفية (All / Unpaid / Paid) */}
-            <div className="bg-gray-100 p-1 rounded-xl flex items-center text-xs font-semibold">
-              <button 
-                onClick={() => setFilter('all')} 
-                className={`px-4 py-2 rounded-lg transition-all ${filter === 'all' ? 'bg-white text-[#1b2a32] shadow-sm' : 'text-gray-500 hover:text-[#1b2a32]'}`}
-              >
-                الكل
-              </button>
-              <button 
-                onClick={() => setFilter('unpaid')} 
-                className={`px-4 py-2 rounded-lg transition-all ${filter === 'unpaid' ? 'bg-white text-[#1b2a32] shadow-sm' : 'text-gray-500 hover:text-[#1b2a32]'}`}
-              >
-                غير مدفوع
-              </button>
-              <button 
-                onClick={() => setFilter('paid')} 
-                className={`px-4 py-2 rounded-lg transition-all ${filter === 'paid' ? 'bg-white text-[#1b2a32] shadow-sm' : 'text-gray-500 hover:text-[#1b2a32]'}`}
-              >
-                مدفوع
-              </button>
-            </div>
-          </div>
-
-          {/* ترويسة الجدول */}
-          <div className="grid grid-cols-12 px-6 py-4 bg-gray-50/50 border-b border-gray-100 text-xs font-bold text-gray-400 tracking-wider">
-            <div className="col-span-4">النزيل والمعرف</div>
-            <div className="col-span-3">الشريك</div>
-            <div className="col-span-2">المبلغ</div>
-            <div className="col-span-3 text-left pl-6">الحالة</div>
-          </div>
-
-          {/* صفوف الجدول */}
-          <div className="divide-y divide-gray-100">
-            {ledgerData
-              .filter(item => {
-                if (filter === 'unpaid') return item.status === 'غير مدفوع';
-                if (filter === 'paid') return item.status === 'مدفوع';
-                return true;
-              })
-              .map((item, index) => (
-                <div key={index} className="grid grid-cols-12 px-6 py-4 items-center hover:bg-gray-50/80 transition-colors">
-                  
-                  {/* النزيل والمعرف */}
-                  <div className="col-span-4 flex flex-col">
-                    <span className="font-semibold text-[#1b2a32] text-sm">{item.name}</span>
-                    <span className="text-xs text-gray-400 mt-0.5">{item.id} • {item.date}</span>
-                  </div>
-
-                  {/* الشريك */}
-                  <div className="col-span-3 text-sm text-gray-600 font-medium">
-                    {item.partner}
-                  </div>
-
-                  {/* المبلغ */}
-                  <div className="col-span-2 text-sm font-semibold text-[#1b2a32]">
-                    {item.amount}
-                  </div>
-
-                  {/* الحالة وزر التعليم */}
-                  <div className="col-span-3 flex items-center justify-end gap-3">
-                    {item.status === 'غير مدفوع' ? (
-                      <>
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                          غير مدفوع
-                        </span>
-                        <button className="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors">
-                          <Check className="w-3.5 h-3.5" /> تحديد كمدفوع
-                        </button>
-                      </>
-                    ) : (
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                        مدفوع
-                      </span>
-                    )}
-                  </div>
-
-                </div>
-            ))}
-          </div>
-
-        </div>
+       
 
       </main>
     </div>
