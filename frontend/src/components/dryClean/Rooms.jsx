@@ -33,7 +33,7 @@ const RoomsStatus = () => {
         { key: 'pillows', name: 'مخدات (Pillows)' },
         { key: 'floorMats', name: 'أغطية أرضيات (Floor Mats)' },
         { key: 'bedSheets', name: 'شراشف (Bed Sheets)' },
-        { key: 'robeCovers', name: 'كفر روب (Robe Covers)' },
+        { key: 'robeCovers', name: 'كفر  (Robe Covers)' },
       ]
     },
   ];

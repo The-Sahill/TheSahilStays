@@ -191,7 +191,7 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
 
       <div className="col-span-3 flex flex-col">
         <span className="font-medium text-[#1b2a32] text-sm">{item.vehicle}</span>
-        <span className="text-xs text-gray-400 mt-0.5">{item.passengers} </span>
+        <span className="text-xs text-gray-400 mt-0.5">الركاب: {item.passengers} </span>
       </div>
 
       <div className="col-span-2 flex items-center justify-between">
@@ -305,6 +305,13 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                       <div>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">المركبة</span>
                         <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.vehicle}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
+                      <div>
+                        <span className="block text-[10px] font-bold text-gray-400 uppercase">طريقة الحجز</span>
+                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.method}</span>
                       </div>
                     </div>
                   </div>
@@ -464,6 +471,18 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#1b2a32]" 
                       />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-2">طريقة الحجز</label>
+                      <select 
+                        name="method" 
+                        value={formData.method}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
+                      >
+                        <option>Reception</option>
+                        <option>Booking</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 mb-2">نوع النقل</label>

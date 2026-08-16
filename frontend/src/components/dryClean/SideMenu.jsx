@@ -130,11 +130,11 @@ const SideMenu = ({ setPage, page }) => {
             <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase px-3 mb-2">العمليات</p>
             <nav className="space-y-1">
               {[
-                { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-                { id: 'rooms', label: 'Rooms', icon: <DoorClosed size={18} /> },
-                { id: 'requests', label: 'Requests', icon: <FileText size={18} /> },
-                { id: 'dry-cleaning', label: 'Dry Cleaning', icon: <Shirt size={18} /> },
-                { id: 'batches', label: 'Batches', icon: <Layers size={18} /> },
+                { id: 'dashboard', label: 'الاحصائيات', icon: <LayoutDashboard size={18} /> },
+                { id: 'rooms', label: 'الغرف', icon: <DoorClosed size={18} /> },
+                { id: 'requests', label: 'الطلبات', icon: <FileText size={18} /> },
+                { id: 'dry-cleaning', label: 'ارسال الدفعة', icon: <Shirt size={18} /> },
+                { id: 'batches', label: 'الدفعات', icon: <Layers size={18} /> },
                 // { id: 'audit-log', label: 'Audit Log', icon: <FileSpreadsheet size={18} /> },
               ].map((item) => (
                 <button
@@ -158,7 +158,7 @@ const SideMenu = ({ setPage, page }) => {
             <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase px-3 mb-2">Settings</p>
             <nav className="space-y-1">
               {[
-                { id: 'room-config', label: 'Room Config', icon: <Settings size={18} /> },
+                { id: 'room-config', label: 'تكوين الغرفة', icon: <Settings size={18} /> },
               ].map((item) => (
                 <button
                   key={item.id}

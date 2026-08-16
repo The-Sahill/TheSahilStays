@@ -15,8 +15,8 @@ import {
 const systems = [
   {
     id: 'maintenance',
-    title: 'نظام الصيانة والأعطال',
-    description: 'متابعة الأعطال الفنية، طلبات الصيانة، جدولة الفنيين، وإدارة قطع الغيار.',
+    title: 'ادارة المخزن',
+    description: 'متابعة كميات المخزون و ادارة الطلبات و المشتريات و متابعة الموردين.',
     icon: <Wrench className="w-6 h-6 text-blue-600" />,
     href: '/maintenance',
     gradient: 'from-blue-500/10 via-blue-500/5 to-transparent',
@@ -40,7 +40,7 @@ const systems = [
   {
     id: 'transportation',
     title: 'نظام التوصيل ',
-    description: 'ادارة الرحلات من و الى المطار و تتبع الطلبات',
+    description: 'ادارة الرحلات من و الى المطار و تتبع الطلبات وادارة الامور المالية',
     icon: <Road className="w-6 h-6 text-amber-600" />,
     href: '/Dashboard/transportation',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',

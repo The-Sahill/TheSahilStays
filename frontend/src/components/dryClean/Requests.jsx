@@ -374,7 +374,7 @@ console.log(error)
                   { key: 'pillows', name: 'مخدات (Pillows)' },
                   { key: 'floorMats', name: 'أغطية أرضيات (Floor Mats)' },
                   { key: 'bedSheets', name: 'شراشف (Bed Sheets)' },
-                  { key: 'robeCovers', name: 'كفر روب (Robe Covers)' },
+                  { key: 'robeCovers', name: 'كفر  (Robe Covers)' },
                 ].map((item) => {
                   const itemData = selectedRequest[item.key];
                   if (!itemData || itemData.count <= 0) return null;

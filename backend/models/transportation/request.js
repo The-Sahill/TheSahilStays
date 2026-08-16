@@ -11,6 +11,7 @@ const transportationRequestSchema = new mongoose.Schema({
   passengers: { type: Number, default: 1 },
   bags: { type: Number, default: 0 },
   baggageSize: { type: String },
+  method:{type: String, required: true},
   baggageNotes: { type: String },
   vehicle: { type: String, required: true },
   guestPrice: { type: Number, default: 0 },

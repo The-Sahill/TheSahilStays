@@ -58,7 +58,7 @@ approved:{
         count: { type: Number},
         price: { type: Number }
     },
-    robeCovers: { // كفر روب
+    robeCovers: { // كفر 
         count: { type: Number},
         price: { type: Number}
     },

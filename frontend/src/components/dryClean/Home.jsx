@@ -15,14 +15,14 @@ const Home = () => {
   return (
     <div className='flex h-screen bg-slate-50 text-slate-900 font-sans' dir='rtl'>
         <SideMenu setPage={setPage} page={page} />
-       {page === "Dashboard" && <Dashboard />}
-       {page === "Rooms" && <Rooms />}
-       {page === "Requests" && <Requests />}
-       {page === "Dry Cleaning" && <DryCleaningDispatch />}
-       {page === "Batches" && <DeliveryBatches />}
+       {page === "الاحصائيات" && <Dashboard />}
+       {page === "الغرف" && <Rooms />}
+       {page === "الطلبات" && <Requests />}
+       {page === "ارسال الدفعة" && <DryCleaningDispatch />}
+       {page === "الدفعات" && <DeliveryBatches />}
        {page === "Audit Log" && <AuditLog />}
        {page === "Item Types" && <ItemTypesAndPricing />}
-       {page === "Room Config" && <RoomConfig />}
+       {page === "تكوين الغرفة" && <RoomConfig />}
     </div>
   )
 }

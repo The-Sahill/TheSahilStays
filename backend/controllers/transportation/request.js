@@ -19,7 +19,7 @@ exports.getRequests = async (req, res) => {
 // إنشاء طلب نقل جديد
 exports.createRequest = async (req, res) => {
   try {
-    const { guestName,mobileNumber, transferType, airport, travelDate, transferTime,passengers,bags,baggageSize } = req.body;
+    const { guestName,mobileNumber, transferType, airport, travelDate, transferTime,passengers,bags,baggageSize,method } = req.body;
 
  
 

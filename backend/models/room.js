@@ -33,7 +33,7 @@ const roomSchema = new mongoose.Schema({
         count: { type: Number, default: 1 },
         price: { type: Number, default: 0.35 }
     },
-    robeCovers: { // كفر روب
+    robeCovers: { // كفر 
         count: { type: Number, default: 1 },
         price: { type: Number, default: 1 }
     }
