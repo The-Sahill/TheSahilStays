@@ -64,9 +64,10 @@ exports.getRequestById = async (req, res) => {
 // تحديث حالة الدفع للشريك
 exports.updatePaymentStatus = async (req, res) => {
   try {
+    const formData = req.body;
     const requestItem = await TransportationRequest.findByIdAndUpdate(
       req.params.id,
-      { paymentStatus: 'مدفوع' },
+      formData,
       { new: true }
     );
 

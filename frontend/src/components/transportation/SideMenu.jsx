@@ -5,6 +5,7 @@ export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
   const menuItems = [
     { id: 'Dashboard', label: 'نظرة عامة', icon: LayoutDashboard },
     { id: 'Requests', label: 'طلبات النقل', icon: FileText },
+    { id: 'Update Requests', label: 'تعديل الطلبات', icon: DollarSign },
     { id: 'Financial', label: 'القسم المالي', icon: DollarSign },
   ];
 

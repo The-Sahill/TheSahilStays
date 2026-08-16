@@ -231,16 +231,16 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
               {getStatusBadge(selectedRequest.status)}
             </div>
             <p className="text-xs text-gray-400 mb-8">
-  {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }) + ' - ' + new Date(selectedRequest.createdAt).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  }) : ''}
-</p>
+           {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                }) + ' - ' + new Date(selectedRequest.createdAt).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                }) : ''}
+              </p>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
@@ -317,41 +317,7 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                   </div>
                 </div>
 
-                {/* بطاقة مسار العمل (Workflow) */}
-                <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
-                  <div className="flex justify-between items-center mb-6">
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">مسار العمل</p>
-                      <h3 className="text-xl font-bold text-[#1b2a32]">متابعة التوصيل</h3>
-                    </div>
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">مباشر</span>
-                  </div>
-
-                  <div className="relative flex items-center justify-between max-w-2xl mx-auto py-6">
-                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-gray-200 z-0"></div>
-                    
-                    <div className="flex flex-col items-center relative z-10">
-                      <div className="w-8 h-8 rounded-full bg-[#1b2a32] text-white flex items-center justify-center shadow-md">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-600 mt-2">إرسال الطلب</span>
-                    </div>
-
-                    <div className="flex flex-col items-center relative z-10">
-                      <div className="w-8 h-8 rounded-full bg-[#1b2a32] text-white flex items-center justify-center shadow-md">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-600 mt-2">قرار الشريك</span>
-                    </div>
-
-                    <div className="flex flex-col items-center relative z-10">
-                      <div className="w-8 h-8 rounded-full bg-[#1b2a32] text-white flex items-center justify-center shadow-md">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-semibold text-gray-600 mt-2">اكتمال الرحلة</span>
-                    </div>
-                  </div>
-                </div>
+              
 
               </div>
 
@@ -386,25 +352,10 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                     </span>
                   </div>
 
-                  <button className="w-full py-3 bg-[#cce0db] text-[#1b2a32] rounded-xl font-bold text-sm hover:bg-[#b8d4ce] transition-colors flex items-center justify-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" /> تحديد الشريك كمدفوع
-                  </button>
+              
                 </div>
 
-                {/* بطاقة تقييم الضيف */}
-                <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">تقييم الضيف</p>
-                  <div className="flex items-center gap-1 mb-3 text-amber-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`w-4 h-4 ${i < selectedRequest.rating ? 'fill-current' : 'text-gray-200'}`} 
-                      />
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-600 italic mb-4">"{selectedRequest.review}"</p>
-                  <span className="text-[10px] text-gray-400 block">{selectedRequest.date}</span>
-                </div>
+                
 
               </div>
 

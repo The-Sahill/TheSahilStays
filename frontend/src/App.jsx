@@ -7,6 +7,7 @@ import Home from './components/dryClean/Home';
 import Systems from './components/home/Home';
 import DeliveryBatches from './components/dryClean/Deliveries';
 import Transportation from './components/transportation/Home';
+import UpdateStatus from './components/transportation/UpdateStatus';
 import { Loader2 } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -60,10 +61,15 @@ function App() {
     <>
       <ToastContainer />
       <Routes>
+
+
         {/* صفحة التسجيل والدخول عامة (يمكنك وضع حماية لها أيضاً لو أردت منع الدخول إليها لمن سجل مسبقاً) */}
         <Route path="/" element={<SignUp />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/DeliveryBatches" element={<DeliveryBatches />} />
+        <Route path="/Update" element={<UpdateStatus />} />
+
+
 
         {/* الصفحات المحمية بالكامل */}
         <Route 
@@ -74,6 +80,10 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
+
+{/* dry-clean */}
+
         <Route 
           path="/Dashboard/dry-clean" 
           element={
@@ -91,6 +101,8 @@ function App() {
           } 
         />
 
+{/* transportation */}
+
 <Route 
           path="/Dashboard/transportation" 
           element={
@@ -99,6 +111,7 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
 
 
       </Routes>

@@ -6,6 +6,6 @@ const transportationController = require('../../controllers/transportation/reque
 router.get('/', transportationController.getRequests);          // جلب كل الطلبات
 router.post('/createRequest', transportationController.createRequest);         // إضافة طلب جديد
 router.get('/:id', transportationController.getRequestById);      // عرض طلب محدد
-router.patch('/:id/pay', transportationController.updatePaymentStatus); // تحديث الدفع
+router.put('/:id/updateRequest', transportationController.updatePaymentStatus); // تحديث الدفع
 
 module.exports = router;

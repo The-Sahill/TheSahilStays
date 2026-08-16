@@ -4,6 +4,7 @@ import Dashboard from './Dashboard'
 import Requests from './Requests'
 import Financial from './Financial'
 import Sidebar from './SideMenu';
+import UpdateRequest from './UpdateRequest'
 
 const Home = () => {
 
@@ -20,6 +21,7 @@ const Home = () => {
        {page === "Dashboard" && <Dashboard />}
        {page === "Requests" && <Requests />}
        {page === "Financial" && <Financial />}
+       {page === "Update Requests" && <UpdateRequest />}
      
     </div>
   )
