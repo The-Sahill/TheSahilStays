@@ -10,6 +10,7 @@ import Transportation from './components/transportation/Home';
 import UpdateStatus from './components/transportation/UpdateStatus';
 import { Loader2 } from 'lucide-react';
 import CustomerForm from './components/transportation/CustomerForm';
+import Rate from './components/transportation/Rate';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 // مكون لحماية المسارات يتأكد من تسجيل الدخول
@@ -69,7 +70,8 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/DeliveryBatches" element={<DeliveryBatches />} />
         <Route path="/Update" element={<UpdateStatus />} />
-        <Route path="/CustomerForm" element={<CustomerForm />} />
+        <Route path="/TransportationForm" element={<CustomerForm />} />
+        <Route path="/Rate" element={<Rate />} />
 
 
 
