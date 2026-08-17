@@ -11,6 +11,7 @@ const requestRoute = require('./routes/requestRoute') // مسار ملف الـ 
 const batchRoute = require('./routes/batchRoute') // مسار ملف الـ Routes
 const dashboardRoute = require('./routes/dashboardRoute') // مسار ملف الـ Routes
 const transportation = require('./routes/transportation/requestRoute.js') // مسار ملف الـ Routes
+const financialtransportation = require('./routes/transportation/financialRoute.js') // مسار ملف الـ Routes
 
 
 app.use(cors({
@@ -27,6 +28,7 @@ app.use('/', roomRoutes);
 app.use('/',requestRoute)
 app.use('/',batchRoute)
 app.use('/',dashboardRoute) // ربط مسار لوحة التحكم
+app.use('/',financialtransportation)
 app.use('/',transportation)
 
 

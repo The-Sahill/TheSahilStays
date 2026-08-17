@@ -85,12 +85,17 @@ export default function Dashboard() {
           
           {/* قسم النظرة العامة */}
           <section>
-            <p className="text-xs font-bold text-yellow-600 tracking-wider uppercase mb-2">الخميس، 13 أغسطس 2026</p>
+          <p className="text-xs font-bold text-yellow-600 tracking-wider uppercase mb-2">
+  {new Date().toLocaleDateString("ar-JO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })}
+</p>
             <h1 className="text-5xl font-extrabold text-[#1b2a32] mb-3">نظرة سريعة على المكتب.</h1>
             <p className="text-gray-600 mb-8 max-w-2xl">قراءة هادئة لوصول اليوم، التزامات الشركاء، وتجربة الضيوف.</p>
-            <button className="flex items-center gap-2 bg-[#1b2a32] text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-lg">
-                <Plus className="w-5 h-5" /> نقل جديد
-            </button>
+    
           </section>
 
           {/* بطاقات الإحصائيات */}

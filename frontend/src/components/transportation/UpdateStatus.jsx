@@ -201,7 +201,8 @@ const UpdateRequest = () => {
                         onChange={handleChange} 
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                       >
-                        <option>سبارة عادية</option>
+                        <option>لم يتم التحديد بعد</option>
+                        <option>سيارة عادية</option>
                         <option>فان</option>
                       </select>
                     </div>

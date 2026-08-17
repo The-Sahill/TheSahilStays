@@ -91,10 +91,11 @@ toast.success('تم تسجيل الدخول بنجاح')
           {/* زر التسجيل */}
           <div className="pt-4">
             <button
+            disabled={loading}
              onClick={()=> login()}
-              className="w-full py-4 bg-white hover:bg-blue-50 text-slate-950 font-bold text-lg rounded-2xl shadow-lg shadow-white/10 transition duration-300 text-center"
+              className={`${loading? "cursor-not-allowed" : "cursor-pointer"} w-full py-4 bg-white hover:bg-blue-50 text-slate-950 font-bold text-lg rounded-2xl shadow-lg shadow-white/10 transition duration-300 text-center`}
             >
-              تسجيل
+              {loading ? "جاري تسجيل الدخول...." : "تسجيل الدخول"}
             </button>
           </div>
 

@@ -1,56 +1,69 @@
-const Request = require('../../models/transportation/request');
+const TransportationRequest = require("../../models/transportation/request");
 
-const getFinancialData = (requests) => {
-try{
+exports.getFinancialData = async (req, res) => {
+  try {
+    const requests = await TransportationRequest.find();
 
     let totalCost = 0;
-    Request.forEach((request) => {
-        totalCost += request.guestPrice;
-        });
+    let partnerCost = 0;
+    let profit = 0;
 
-        partnerCost = 0;
-        Request.forEach((request) => {
-        partnerCost += request.partnerCost;
-        })
+    requests.forEach((request) => {
+      totalCost += Number(request.guestPrice || 0);
+      partnerCost += Number(request.partnerCost || 0);
+      profit += Number(request.profit || 0);
+    });
 
-        let profit = 0;
-        Request.forEach((request) => {
-        profit += request.profit;
-        })
+    return res.status(200).json({
+      success: true,
+      totalCost,
+      partnerCost,
+      profit,
+    });
 
-        return res.status(200).json({totalCost, partnerCost, profit,success: true});
+  } catch (error) {
+    console.log("FINANCIAL DATA ERROR:", error);
 
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
-
-}
-catch (error) {
-console.log(error);
-return res.status(500).json({ message: 'حدث خطأ أثناء حساب التكاليف' });
-}
-
-
-
-}
-
-
-const calcFinancialByVehicle = async (req, res) => {
+exports.calcFinancialByVehicle = async (req, res) => {
 try{
-const  car = Request.forEach((request) => {
+    
+
+const requests = await TransportationRequest.find()
+
+let totalCostCar = 0;
+let partnerCostCar = 0;
+let profitCar = 0;
+
+let totalCostVan = 0;
+let partnerCostVan = 0;
+let profitVan = 0;
+
+requests.forEach((request) => {
     if(request.vehicle === "سيارة عادية"){
-        totalCost += request.guestPrice;
-        partnerCost += request.partnerCost;
-        profit += request.profit;
-    }})
-
-    const  van = Request.forEach((request) => {
-        if(request.vehicle === "فان"){
-            totalCost += request.guestPrice;
-            partnerCost += request.partnerCost;
-            profit += request.profit;
-        }})
+        totalCostCar += request.guestPrice;
+        partnerCostCar += request.partnerCost;
+        profitCar += request.profit;
+    }
 
 
-        res.status(200).json({car, van, success: true});
+    if(request.vehicle === "فان"){
+        totalCostVan += request.guestPrice;
+        partnerCostVan += request.partnerCost;
+        profitVan += request.profit;
+    }
+
+})
+
+
+
+        res.status(200).json({totalCostCar, partnerCostCar,profitCar,totalCostVan, partnerCostVan,profitVan,success: true});
 
 }
 catch(error){

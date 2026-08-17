@@ -19,8 +19,8 @@ const transportationRequestSchema = new mongoose.Schema({
   profit: { type: Number, default: 0 },
   paymentStatus: { type: String, default: 'غير مدفوع' },
   status: { type: String, default: 'بانتظار الموافقة' },
-  rating: { type: Number },
-  review: { type: String }
+  rating: { type: Number, default: 0 },
+  review: { type: String, defualt: '' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('TransportationRequest', transportationRequestSchema);

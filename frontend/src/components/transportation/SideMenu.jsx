@@ -1,5 +1,6 @@
-import React from 'react';
-import { LayoutDashboard, FileText, DollarSign, Building2, X, Menu } from 'lucide-react';
+import React, { useState } from 'react';
+import { LayoutDashboard, FileText, DollarSign, Building2, X, Menu,LogOut } from 'lucide-react';
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
   const menuItems = [
@@ -8,6 +9,34 @@ export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
     { id: 'Update Requests', label: 'تعديل الطلبات', icon: DollarSign },
     { id: 'Financial', label: 'القسم المالي', icon: DollarSign },
   ];
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
+  // دالة تسجيل الخروج والاتصال بالباك إند
+  const handleLogout = async () => {
+
+
+    try {
+      setIsLoggingOut(true);
+      const response = await fetch(`${apiUrl}/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        window.location.href = '/login';
+      } else {
+        alert('فشل تسجيل الخروج، يرجى المحاولة مرة أخرى.');
+      }
+    } catch (error) {
+      console.error('خطأ في الاتصال أثناء تسجيل الخروج:', error);
+      alert('حدث خطأ ما أثناء الاتصال بالسيرفر.');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+
 
   return (
     <>
@@ -95,6 +124,17 @@ export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
               })}
             </nav>
           </div>
+        </div>
+          {/* زر تسجيل الخروج في أسفل القائمة */}
+          <div className="p-4 border-t border-slate-800/80">
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-400 bg-rose-500/10 hover:text-rose-300 transition-all disabled:opacity-50 cursor-pointer"
+          >
+            <LogOut size={18} />
+            <span>{isLoggingOut ? 'جاري تسجيل الخروج...' : 'تسجيل الخروج'}</span>
+          </button>
         </div>
       </aside>
     </>

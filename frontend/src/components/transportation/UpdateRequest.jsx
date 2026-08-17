@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, X, CheckCircle2, Plane, Calendar, Clock, Users, Car, CreditCard, Star, Edit3 } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { ArrowLeft, X, Plane, Calendar, Clock, Users, Car, Edit3, Search, ChevronRight, ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -12,8 +12,12 @@ const UpdateRequest = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
 
-    // جلب بيانات الطلبات عند تحميل المكون
-  
+    // حالات البحث والفلترة والصفحات
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [vehicleFilter, setVehicleFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6; // عدد العناصر في كل صفحة
 
     const getRequests = async () => {
         try {
@@ -29,9 +33,11 @@ const UpdateRequest = () => {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         getRequests();
     }, []);
+
     // عند النقر على طلب لعرضه
     const handleRowClick = (request) => {
         setSelectedRequest(request);
@@ -48,9 +54,7 @@ const UpdateRequest = () => {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            // استبدل الـ URL برابط التحديث الخاص بك، مثلاً `${apiUrl}/${formData._id}`
             const { data } = await axios.put(`${apiUrl}/${formData._id}/updateRequest`, formData, { withCredentials: true });
-            console.log("Response from update API:", formData);
             if (data.success === true) {
                 toast.success("تم تحديث الطلب بنجاح");
                 setSelectedRequest(data.requestItem);
@@ -59,12 +63,39 @@ const UpdateRequest = () => {
             }
         } catch (error) {
             console.log(error);
-            // للتجربة المحلية في حال لم تقم بإنشاء API التحديث بعد:
             setSelectedRequest(formData);
             setIsEditing(false);
             toast.success("تم تحديث الطلب محلياً (تأكد من ربط الـ API)");
         }
     };
+
+    // تصفية البيانات (Filtering) بناءً على البحث، الحالة، والمركبة
+    const filteredRequests = useMemo(() => {
+        return requestsData.filter(item => {
+            const matchesSearch = 
+                (item.guestName && item.guestName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item._id && item._id.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (item.airport && item.airport.toLowerCase().includes(searchTerm.toLowerCase()));
+
+            const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+            
+            const matchesVehicle = vehicleFilter === 'all' || item.vehicle === vehicleFilter;
+
+            return matchesSearch && matchesStatus && matchesVehicle;
+        });
+    }, [requestsData, searchTerm, statusFilter, vehicleFilter]);
+
+    // حساب البيانات الخاصة بالصفحة الحالية (Pagination)
+    const totalPages = Math.ceil(filteredRequests.length / itemsPerPage) || 1;
+    const currentTableData = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return filteredRequests.slice(start, start + itemsPerPage);
+    }, [filteredRequests, currentPage]);
+
+    // إعادة الصفحة إلى 1 عند تغيير الفلاتر أو البحث
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter, vehicleFilter]);
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -85,20 +116,62 @@ const UpdateRequest = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#fbfaf6] flex justify-center items-center" dir="rtl">
+            <div className="min-h-screen mx-auto bg-[#fbfaf6] flex justify-center items-center" dir="rtl">
                 <p className="text-[#1b2a32] font-bold text-lg">جاري تحميل البيانات...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen w-full bg-[#fbfaf6] p-4 md:p-8" dir="rtl">
-            <div className="max-w-[1300px] mx-auto">
-                <div className="flex justify-between items-center mb-6">
+        <div className="min-h-screen w-full bg-[#fbfaf6] p-4 md:p-8 flex flex-col gap-6" dir="rtl">
+            <div className="max-w-[1300px] mx-auto w-full flex flex-col gap-6">
+                
+                {/* العنوان والعدد */}
+                <div className="flex justify-between items-center">
                     <h2 className="text-3xl font-extrabold text-[#1b2a32]">قائمة الطلبات</h2>
                     <span className="text-xs font-semibold text-gray-500 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200">
-                        العدد الكلي: {requestsData.length}
+                        النتائج المتاحة: {filteredRequests.length} (من أصل {requestsData.length})
                     </span>
+                </div>
+
+                {/* شريط البحث والفلاتر */}
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200/60 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div className="relative w-full md:w-[400px]">
+                        <Search className="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2" />
+                        <input 
+                            type="text" 
+                            placeholder="ابحث باسم الضيف أو المطار..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pr-12 pl-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1b2a32] text-sm"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <select 
+                            value={statusFilter} 
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial"
+                        >
+                            <option value="all">جميع الحالات</option>
+                            <option value="بانتظار الموافقة">بانتظار الموافقة</option>
+                            <option value="تمت الموافقة">تمت الموافقة</option>
+                            <option value="مكتمل">مكتمل</option>
+                            <option value="مرفوض">مرفوض</option>
+                            <option value="ملغي">ملغي</option>
+                        </select>
+
+                        <select 
+                            value={vehicleFilter}
+                            onChange={(e) => setVehicleFilter(e.target.value)}
+                            className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial"
+                        >
+                            <option value="all">جميع المركبات</option>
+                            <option value="لم يتم التحديد بعد">لم يتم التحديد بعد</option>
+                            <option value="سيارة عادية">سيارة عادية</option>
+                            <option value="فان">فان</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* جدول عرض الطلبات */}
@@ -116,8 +189,8 @@ const UpdateRequest = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 text-sm">
-                                {requestsData.length > 0 ? (
-                                    requestsData.map((req) => (
+                                {currentTableData.length > 0 ? (
+                                    currentTableData.map((req) => (
                                         <tr 
                                             key={req._id} 
                                             onClick={() => handleRowClick(req)}
@@ -138,7 +211,7 @@ const UpdateRequest = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan="6" className="p-8 text-center text-gray-400 font-semibold">
-                                            لا توجد طلبات متاحة
+                                            لا توجد طلبات مطابقة للبحث أو الفلترة المحددة
                                         </td>
                                     </tr>
                                 )}
@@ -146,6 +219,29 @@ const UpdateRequest = () => {
                         </table>
                     </div>
                 </div>
+
+                {/* أزرار التنقل بين الصفحات (Pagination Controls) */}
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-gray-200/60 shadow-sm">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="flex items-center gap-1 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                        >
+                            <ChevronRight className="w-4 h-4" /> السابق
+                        </button>
+                        <span className="text-sm font-medium text-gray-600">
+                            صفحة <span className="font-bold text-[#1b2a32]">{currentPage}</span> من <span className="font-bold text-[#1b2a32]">{totalPages}</span>
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="flex items-center gap-1 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                        >
+                            التالي <ChevronLeft className="w-4 h-4" />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Modal تفاصيل وتعديل الطلب */}
@@ -172,9 +268,9 @@ const UpdateRequest = () => {
 
                             <button 
                                 onClick={() => setIsEditing(!isEditing)}
-                                className="flex ml-10 mt-10 items-center gap-2 px-4 py-2 bg-[#1b2a32] text-white rounded-xl text-xs font-bold hover:bg-opacity-90 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-[#1b2a32] text-white rounded-xl text-xs font-bold hover:bg-opacity-90 transition-colors"
                             >
-                                <Edit3 className="w-4  h-4" /> {isEditing ? 'إلغاء التعديل' : 'تعديل البيانات'}
+                                <Edit3 className="w-4 h-4" /> {isEditing ? 'إلغاء التعديل' : 'تعديل البيانات'}
                             </button>
                         </div>
 
@@ -192,19 +288,20 @@ const UpdateRequest = () => {
                             <form onSubmit={handleSave} className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm space-y-6">
                                 <h3 className="text-xl font-bold text-[#1b2a32] mb-4">تعديل تفاصيل الطلب</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                               
+                                   
                                     <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">المركبة نوع</label>
-                      <select 
-                        name="vehicle" 
-                        value={formData.vehicle}
-                        onChange={handleChange} 
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
-                      >
-                        <option>سبارة عادية</option>
-                        <option>فان</option>
-                      </select>
-                    </div>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-2">نوع المركبة</label>
+                                        <select 
+                                            name="vehicle" 
+                                            value={formData.vehicle || ''}
+                                            onChange={handleChange} 
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
+                                        >
+                                             <option value="لم يتم التحديد بعد">لم يتم التحديد بعد</option>
+                                            <option value="سيارة عادية">سيارة عادية</option>
+                                            <option value="فان">فان</option>
+                                        </select>
+                                    </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 mb-2">سعر التوصيل</label>
                                         <input 
@@ -226,7 +323,7 @@ const UpdateRequest = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 mb-2">الربح </label>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2">الربح</label>
                                         <input 
                                             type="number" 
                                             name="profit" 
@@ -235,37 +332,36 @@ const UpdateRequest = () => {
                                             className="w-full p-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#1b2a32]" 
                                         />
                                     </div>
-                                
 
                                     <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الطلب</label>
-                      <select 
-                        name="status" 
-                        value={formData.status}
-                        onChange={handleChange} 
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
-                      >
-                        <option>بانتظار الموافقة</option>
-                        <option>تمت الموافقة</option>
-                        <option>مكتمل</option>
-                        <option>مرفوض</option>
-                        <option>ملغي</option>
-                      </select>
-                    </div>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الطلب</label>
+                                        <select 
+                                            name="status" 
+                                            value={formData.status || ''}
+                                            onChange={handleChange} 
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
+                                        >
+                                            <option value="بانتظار الموافقة">بانتظار الموافقة</option>
+                                            <option value="تمت الموافقة">تمت الموافقة</option>
+                                            <option value="مكتمل">مكتمل</option>
+                                            <option value="مرفوض">مرفوض</option>
+                                            <option value="ملغي">ملغي</option>
+                                        </select>
+                                    </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الطلب</label>
-                      <select 
-                        name="paymentStatus" 
-                        value={formData.paymentStatus}
-                        onChange={handleChange} 
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
-                      >
-                        <option>غير مدفوع</option>
-                        <option>تم الدفع</option>
-                      </select>
-                    </div>
-                                 
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الدفع</label>
+                                        <select 
+                                            name="paymentStatus" 
+                                            value={formData.paymentStatus || ''}
+                                            onChange={handleChange} 
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
+                                        >
+                                            <option value="غير مدفوع">غير مدفوع</option>
+                                            <option value="تم الدفع">تم الدفع</option>
+                                        </select>
+                                    </div>
+                                   
                                 </div>
                                 <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">
                                     <button 
@@ -291,7 +387,7 @@ const UpdateRequest = () => {
                                         <div className="flex justify-between items-start mb-6">
                                             <div>
                                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">ملخص الرحلة</p>
-                                                <h3 className="text-2xl font-bold text-[#1b2a32]">استقبال من المطار</h3>
+                                                <h3 className="text-2xl font-bold text-[#1b2a32]">{selectedRequest.transferType || 'استقبال من المطار'}</h3>
                                             </div>
                                             <div className="p-3 bg-amber-100/70 text-amber-800 rounded-2xl">
                                                 <Plane className="w-6 h-6" />
@@ -327,7 +423,7 @@ const UpdateRequest = () => {
                                                 <span className="w-5 h-5 flex items-center justify-center text-gray-400 mt-0.5 font-bold">📍</span>
                                                 <div>
                                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">المطار</span>
-                                                    <span className="block text-[10px] font-bold text-gray-400 uppercase">{selectedRequest.airport}</span>
+                                                    <span className="block text-xs font-bold text-[#1b2a32]">{selectedRequest.airport}</span>
                                                 </div>
                                             </div>
 
@@ -378,5 +474,5 @@ const UpdateRequest = () => {
         </div>
     );
 };
-
+ // Or export default UpdateRequest
 export default UpdateRequest;

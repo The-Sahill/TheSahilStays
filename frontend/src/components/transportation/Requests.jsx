@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Bell, ChevronDown, Search, Plus, ArrowLeft, X, Upload, Send, CheckCircle2, Plane, Calendar, Clock, Users, Car, CreditCard, Star } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Bell, ChevronDown, Search, Plus, ArrowLeft, X, Upload, Send, CheckCircle2, Plane, Calendar, Clock, Users, Car, CreditCard, Star, ChevronRight, ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
  
-
 export default function Requests() {
   const [requestsData, setRequestsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [vehicleFilter, setVehicleFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // عدد العناصر في كل صفحة
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
@@ -16,6 +20,7 @@ export default function Requests() {
   const [formData, setFormData] = useState({
     guestName: '',
     mobileNumber: '',
+    method: 'Reception',
     transferType: 'استقبال من المطار',
     airport: 'مطار الملكة علياء الدولي',
     travelDate: '',
@@ -23,7 +28,7 @@ export default function Requests() {
     flightNumber: '',
     passengers: '',
     bags: '',
-    baggageSize: '',
+    baggageSize: 'صغير',
     baggageNotes: '',
     vehicle: 'لم يتم التحديد بعد',
     partner: '',
@@ -35,7 +40,6 @@ export default function Requests() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
- 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'مكتمل':
@@ -49,49 +53,71 @@ export default function Requests() {
       case 'مرفوض':
         return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">مرفوض</span>;
       default:
-        return null;
+        return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">{status || 'غير محدد'}</span>;
     }
   };
 
-  
-useEffect(() => {
   const getRequests = async () => {
-  try{
-  const {data} = await axios.get(`${apiUrl}/`, { withCredentials: true });
- 
-  if(data.success==true){
-    setRequestsData(data.data)
-    console.log(data.data)
-  }
-  }
-  catch(error){
-  console.log(error)
-  }
-  
-  
-  }
-  getRequests()
-  },[])
-  
+    try {
+      const { data } = await axios.get(`${apiUrl}/`, { withCredentials: true });
+      if (data.success === true) {
+        setRequestsData(data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getRequests();
+  }, []);
 
   const createRequest = async () => {
-try{
-const {data} = await axios.post(`${apiUrl}/createRequest`, formData,{withCredentials:true})
+    try {
+      const { data } = await axios.post(`${apiUrl}/createRequest`, formData, { withCredentials: true });
+      if (data.success === true) {
+        toast.success(data.message);
+        setIsModalOpen(false);
+        getRequests(); // إعادة جلب البيانات لتحديث الجدول
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("حدث خطأ أثناء إنشاء الطلب");
+    }
+  };
 
+  // تصفية البيانات (Filtering) بناءً على البحث، الحالة، والمركبة
+  const filteredRequests = useMemo(() => {
+    return requestsData.filter(item => {
+      const matchesSearch = 
+        (item.guestName && item.guestName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item._id && item._id.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.transferType && item.transferType.toLowerCase().includes(searchTerm.toLowerCase()));
 
-if(data.success == true){
-  toast.success(data.message)
-}
-}
-catch(error){
-console.log(error)
-toast.error("حدث خطأ أثناء إنشاء الطلب")
-}
+      const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+      
+      const matchesVehicle = vehicleFilter === 'all' || 
+        (vehicleFilter === 'car' && item.vehicle && item.vehicle.includes('سيارة')) ||
+        (vehicleFilter === 'van' && item.vehicle && item.vehicle.includes('فان')) ||
+        (item.vehicle === vehicleFilter);
 
-  }
+      return matchesSearch && matchesStatus && matchesVehicle;
+    });
+  }, [requestsData, searchTerm, statusFilter, vehicleFilter]);
+
+  // حساب البيانات الخاصة بالصفحة الحالية (Pagination)
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage) || 1;
+  const currentTableData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredRequests.slice(start, start + itemsPerPage);
+  }, [filteredRequests, currentPage]);
+
+  // إعادة الصفحة إلى 1 عند تغيير الفلاتر أو البحث
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, vehicleFilter]);
 
   return (
-    
     <div className="min-h-screen w-full bg-[#fbfaf6] text-[#1b2a32] font-sans">
       
       {/* الشريط العلوي */}
@@ -103,7 +129,6 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
             </div>
             <div className="font-bold text-lg">صباح الخير، مايا</div>
           </div>
-        
         </nav>
       </header>
 
@@ -139,14 +164,24 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <select className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial">
+            <select 
+              value={statusFilter} 
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial"
+            >
               <option value="all">جميع الحالات</option>
-              <option value="completed">مكتمل</option>
-              <option value="pending">بانتظار الموافقة</option>
-              <option value="cancelled">ملغي</option>
+              <option value="مكتمل">مكتمل</option>
+              <option value="بانتظار الموافقة">بانتظار الموافقة</option>
+              <option value="ملغي">ملغي</option>
+              <option value="تمت الموافقة">تمت الموافقة</option>
+              <option value="مرفوض">مرفوض</option>
             </select>
 
-            <select className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial">
+            <select 
+              value={vehicleFilter}
+              onChange={(e) => setVehicleFilter(e.target.value)}
+              className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none cursor-pointer flex-1 md:flex-initial"
+            >
               <option value="all">جميع المركبات</option>
               <option value="car">سيارة عادية</option>
               <option value="van">فان</option>
@@ -164,44 +199,72 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
           </div>
 
           <div className="divide-y divide-gray-100">
-          {
-  requestsData .map((item, index) => (
-    <div 
-      key={index} 
-      onClick={() => setSelectedRequest(item)}
-      className="grid grid-cols-12 px-6 py-5 items-center hover:bg-gray-50/80 transition-colors cursor-pointer group"
-    >
-      <div className="col-span-4 flex flex-col">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-[#1b2a32]">{item.guestName}</span>
-        </div>
-        <span className="text-xs text-gray-500 mt-0.5">{item.transferType}</span>
-      </div>
+            {currentTableData.length > 0 ? (
+              currentTableData.map((item, index) => (
+                <div 
+                  key={index} 
+                  onClick={() => setSelectedRequest(item)}
+                  className="grid grid-cols-12 px-6 py-5 items-center hover:bg-gray-50/80 transition-colors cursor-pointer group"
+                >
+                  <div className="col-span-4 flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#1b2a32]">{item.guestName}</span>
+                    </div>
+                    <span className="text-xs text-gray-500 mt-0.5">{item.transferType}</span>
+                  </div>
 
-      <div className="col-span-3 flex flex-col">
-      <span className="font-medium text-[#1b2a32] text-sm">
-  {new Date(item.travelDate).toLocaleDateString('ar-JO', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })}
-</span>
-        <span className="text-xs text-gray-400 mt-0.5">{item.transferTime}</span>
-      </div>
+                  <div className="col-span-3 flex flex-col">
+                    <span className="font-medium text-[#1b2a32] text-sm">
+                      {item.travelDate ? new Date(item.travelDate).toLocaleDateString('ar-JO', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) : 'غير محدد'}
+                    </span>
+                    <span className="text-xs text-gray-400 mt-0.5">{item.transferTime}</span>
+                  </div>
 
-      <div className="col-span-3 flex flex-col">
-        <span className="font-medium text-[#1b2a32] text-sm">{item.vehicle}</span>
-        <span className="text-xs text-gray-400 mt-0.5">الركاب: {item.passengers} </span>
-      </div>
+                  <div className="col-span-3 flex flex-col">
+                    <span className="font-medium text-[#1b2a32] text-sm">{item.vehicle}</span>
+                    <span className="text-xs text-gray-400 mt-0.5">الركاب: {item.passengers} </span>
+                  </div>
 
-      <div className="col-span-2 flex items-center justify-between">
-        <div>{getStatusBadge(item.status)}</div>
-        <ArrowLeft className="w-4 h-4 text-gray-300 group-hover:text-[#1b2a32] transition-colors" />
-      </div>
-    </div>
-  ))}
+                  <div className="col-span-2 flex items-center justify-between">
+                    <div>{getStatusBadge(item.status)}</div>
+                    <ArrowLeft className="w-4 h-4 text-gray-300 group-hover:text-[#1b2a32] transition-colors" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="py-12 text-center text-gray-400 text-sm">
+                لا توجد طلبات مطابقة للبحث أو الفلترة
+              </div>
+            )}
           </div>
         </div>
+
+        {/* أزرار التنقل بين الصفحات (Pagination Controls) */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-gray-100 shadow-sm">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" /> السابق
+            </button>
+            <span className="text-sm font-medium text-gray-600">
+              صفحة <span className="font-bold text-[#1b2a32]">{currentPage}</span> من <span className="font-bold text-[#1b2a32]">{totalPages}</span>
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            >
+              التالي <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
       </main>
 
@@ -210,7 +273,6 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center overflow-y-auto p-4 md:p-8">
           <div className="bg-[#fbfaf6] w-full max-w-[1300px] rounded-3xl shadow-2xl p-6 md:p-10 relative max-h-[90vh] overflow-y-auto">
             
-            {/* زر إغلاق النافذة */}
             <button 
               onClick={() => setSelectedRequest(null)}
               className="absolute top-6 left-6 p-2 rounded-full bg-gray-200/60 hover:bg-gray-200 text-[#1b2a32] transition-colors"
@@ -218,7 +280,6 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
               <X className="w-5 h-5" />
             </button>
 
-            {/* زر العودة والترويسة */}
             <button 
               onClick={() => setSelectedRequest(null)}
               className="flex items-center gap-2 text-xs font-semibold text-gray-500 hover:text-[#1b2a32] mb-4"
@@ -231,7 +292,7 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
               {getStatusBadge(selectedRequest.status)}
             </div>
             <p className="text-xs text-gray-400 mb-8">
-           {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
+             {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric'
@@ -240,19 +301,16 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                   minute: '2-digit',
                   hour12: true
                 }) : ''}
-              </p>
+            </p>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              {/* القسم الأيسر: ملخص الرحلة ومسار العمل */}
               <div className="lg:col-span-8 flex flex-col gap-6">
-                
-                {/* بطاقة ملخص الرحلة */}
                 <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm relative">
                   <div className="flex justify-between items-start mb-6">
                     <div>
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">ملخص الرحلة</p>
-                      <h3 className="text-2xl font-bold text-[#1b2a32]">استقبال من المطار</h3>
+                      <h3 className="text-2xl font-bold text-[#1b2a32]">{selectedRequest.transferType}</h3>
                     </div>
                     <div className="p-3 bg-amber-100/70 text-amber-800 rounded-2xl">
                       <Plane className="w-6 h-6" />
@@ -316,15 +374,9 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                     </div>
                   </div>
                 </div>
-
-              
-
               </div>
 
-              {/* القسم الأيمن: الأرقام وتقييم الضيف */}
               <div className="lg:col-span-4 flex flex-col gap-6">
-                
-                {/* بطاقة الأرقام المالية */}
                 <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">الأرقام المالية</p>
                   
@@ -351,12 +403,7 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                       {selectedRequest.paymentStatus}
                     </span>
                   </div>
-
-              
                 </div>
-
-                
-
               </div>
 
             </div>
@@ -370,7 +417,6 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-start overflow-y-auto p-4 md:p-10">
           <div className="bg-[#fbfaf6] w-full max-w-[1200px] rounded-3xl shadow-2xl p-6 md:p-10 relative my-auto">
             
-            {/* زر إغلاق النافذة */}
             <button 
               onClick={() => setIsModalOpen(false)}
               className="absolute top-6 left-6 p-2 rounded-full bg-gray-200/60 hover:bg-gray-200 text-[#1b2a32] transition-colors"
@@ -378,19 +424,16 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
               <X className="w-5 h-5" />
             </button>
 
-            {/* رأس النموذج */}
             <div className="mb-8">
               <p className="text-xs font-bold text-yellow-600 tracking-wider uppercase mb-1">طلب نقل جديد</p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32] mb-2">اجعل الرحلة تبدأ حركة.</h2>
               <p className="text-sm text-gray-600">سجل التفاصيل مرة واحدة. سيتلقى شريكك ملخصاً واضحاً وكاملاً.</p>
             </div>
 
-            <div  className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
-              {/* القسم الأيسر: المدخلات والبيانات */}
               <div className="lg:col-span-12 flex flex-col gap-6">
                 
-                {/* بطاقة: الضيف والرحلة */}
                 <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="w-7 h-7 rounded-full bg-[#f6e0bc] text-yellow-900 font-bold flex items-center justify-center text-xs">01</span>
@@ -431,8 +474,8 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                       >
-                        <option>Reception</option>
-                        <option>Booking</option>
+                        <option value="Reception">Reception</option>
+                        <option value="Booking">Booking</option>
                       </select>
                     </div>
                     <div>
@@ -443,8 +486,8 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                       >
-                        <option>استقبال من المطار</option>
-                        <option>توصيل إلى المطار</option>
+                        <option value="استقبال من المطار">استقبال من المطار</option>
+                        <option value="توصيل إلى المطار">توصيل إلى المطار</option>
                       </select>
                     </div>
                     <div>
@@ -477,12 +520,9 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#1b2a32]" 
                       />
                     </div>
-                   
-                 
                   </div>
                 </div>
 
-                {/* بطاقة: الأمتعة والمركبة */}
                 <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="w-7 h-7 rounded-full bg-[#f6e0bc] text-yellow-900 font-bold flex items-center justify-center text-xs">02</span>
@@ -521,9 +561,9 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                       >
-                        <option>صغير</option>
-                        <option>متوسط</option>
-                        <option>كبير</option>
+                        <option value="صغير">صغير</option>
+                        <option value="متوسط">متوسط</option>
+                        <option value="كبير">كبير</option>
                       </select>
                     </div>
                   </div>
@@ -541,13 +581,10 @@ toast.error("حدث خطأ أثناء إنشاء الطلب")
                     <span className="text-[10px] text-gray-400 mt-1 block">اختياري</span>
                   </div>
 
-                  <button onClick={() => createRequest()} className='mt-3 bg-black text-white px-5 py-3 w-full rounded-md'>ارسال الطلب</button>
+                  <button onClick={createRequest} className='mt-5 bg-black text-white px-5 py-3 w-full rounded-md font-semibold'>ارسال الطلب</button>
                 </div>
 
               </div>
-
-              {/* القسم الأيمن: بطاقة ملخص الإرسال */}
-             
 
             </div>
 
