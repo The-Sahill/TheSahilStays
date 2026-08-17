@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Bell, ChevronDown, Search, Plus, ArrowLeft, X, Upload, Send, CheckCircle2, Plane, Calendar, Clock, Users, Car, CreditCard, Star, ChevronRight, ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
  
@@ -290,6 +291,9 @@ export default function Requests() {
             <div className="flex flex-wrap items-center gap-4 mb-2">
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32]">{selectedRequest.guestName}</h2>
               {getStatusBadge(selectedRequest.status)}
+              <Link to={`/Rate/${selectedRequest._id}`}>
+              <button className='text-black bg-white px-5 py-2 rounded-md'>تقييم</button>
+              </Link>
             </div>
             <p className="text-xs text-gray-400 mb-8">
              {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {

@@ -71,7 +71,7 @@ function App() {
         <Route path="/DeliveryBatches" element={<DeliveryBatches />} />
         <Route path="/Update" element={<UpdateStatus />} />
         <Route path="/TransportationForm" element={<CustomerForm />} />
-        <Route path="/Rate" element={<Rate />} />
+        <Route path="/Rate/:id" element={<Rate />} />
 
 
 

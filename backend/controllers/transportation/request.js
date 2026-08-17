@@ -84,3 +84,28 @@ exports.updatePaymentStatus = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+
+
+// تحديث حالة الدفع للشريك
+exports.addRate = async (req, res) => {
+  try {
+    const formData = req.body;
+    const requestItem = await TransportationRequest.findByIdAndUpdate(
+      req.params.id,
+      formData,
+      { new: true }
+    );
+
+    if (!requestItem) {
+      return res.status(404).json({ success: false, message: 'الطلب غير موجود' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'تم تحديث حالة الدفع بنجاح',
+      data: requestItem
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};

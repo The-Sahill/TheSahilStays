@@ -17,7 +17,7 @@ const Rate = () => {
     // محاكاة جلب بيانات رحلة التوصيل بناءً على المعرف في الرابط
     setTimeout(() => {
       setOrderData({
-        id: id || 'TRP-8842',
+        id: id ,
         carModel: 'مرسيدس فيتو (VIP)',
         tripType: 'استقبال من مطار الملكة علياء',
         date: '2026-08-17',
@@ -96,7 +96,7 @@ const Rate = () => {
                     key={star}
                     onClick={() => setRating(star)}
                     className={`flex-1 py-2.5 rounded-xl font-bold transition-all duration-200 border ${
-                      rating >= star
+                      rating == star
                         ? 'bg-amber-900 border-amber-900 text-white shadow-md shadow-amber-900/10'
                         : 'bg-stone-50 border-stone-200 text-stone-400 hover:bg-stone-100'
                     }`}
