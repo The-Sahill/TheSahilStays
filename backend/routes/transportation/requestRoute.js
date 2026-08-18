@@ -7,5 +7,6 @@ router.get('/', transportationController.getRequests);          // جلب كل �
 router.post('/createRequest', transportationController.createRequest);         // إضافة طلب جديد
 router.get('/:id', transportationController.getRequestById);      // عرض طلب محدد
 router.put('/:id/updateRequest', transportationController.updatePaymentStatus); // تحديث الدفع
+router.put('/:id/addRate', transportationController.addRate); // تحديث الدفع
 
 module.exports = router;

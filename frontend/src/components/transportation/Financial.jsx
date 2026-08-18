@@ -2,14 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Bell, ChevronDown, DollarSign, Building2, Calendar, ArrowRight, Check, BarChart2 } from 'lucide-react';
 import axios from 'axios';
 
-const ledgerData = [
-  { id: 'TR-1039', name: 'دانيال أوكافور', date: '12 أغسطس 2026', partner: 'أطلس للتنقل', amount: '$20.00', status: 'غير مدفوع' },
-  { id: 'TR-1042', name: 'صوفيا لوران', date: '14 أغسطس 2026', partner: 'أطلس للتنقل', amount: '$20.00', status: 'غير مدفوع' },
-  { id: 'TR-1037', name: 'آرثر بينيت', date: '16 أغسطس 2026', partner: 'سكايلاين للتنقل', amount: '$20.00', status: 'غير مدفوع' },
-  { id: 'TR-1041', name: 'ماركوس تشين', date: '14 أغسطس 2026', partner: 'سكايلاين للتنقل', amount: '$30.00', status: 'غير مدفوع' },
-  { id: 'TR-1038', name: 'هانا سوزوكي', date: '15 أغسطس 2026', partner: 'نورثستار رايدز', amount: '$30.00', status: 'غير مدفوع' },
-  { id: 'TR-1040', name: 'إيلينا روسي', date: '13 أغسطس 2026', partner: 'نورثستار رايدز', amount: '$20.00', status: 'مدفوع' },
-];
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 export default function FinancialDesk() {
   const [filter, setFilter] = useState('all');
@@ -34,7 +28,7 @@ export default function FinancialDesk() {
     const getFinancialData = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/financialData"
+          `${apiUrl}/financialData`
         );
   
         if (data.success) {
@@ -57,7 +51,7 @@ export default function FinancialDesk() {
     const financialDataForTypes = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/financialDataForTypes"
+          `${apiUrl}/financialDataForTypes`
         );
   
         if (data.success) {

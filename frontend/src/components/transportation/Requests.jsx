@@ -292,7 +292,7 @@ export default function Requests() {
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32]">{selectedRequest.guestName}</h2>
               {getStatusBadge(selectedRequest.status)}
               <Link to={`/Rate/${selectedRequest._id}`}>
-              <button className='text-black bg-white px-5 py-2 rounded-md'>تقييم</button>
+              <button className='bg-amber-100/70 text-amber-800 px-5 py-2 rounded-lg'>تقييم</button>
               </Link>
             </div>
             <p className="text-xs text-gray-400 mb-8">
@@ -375,6 +375,8 @@ export default function Requests() {
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">طريقة الحجز</span>
                         <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.method}</span>
                       </div>
+
+                   
                     </div>
                   </div>
                 </div>
