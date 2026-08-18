@@ -1,6 +1,6 @@
 const Transportation = require('../../models/transportation/request')
 
-const dashboardData = async (req, res) => {
+exports.dashboardData = async (req, res) => {
     try {
         const requests = await Transportation.find()
         const requestsCont = requests.length
@@ -92,5 +92,3 @@ const dashboardData = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message })
     }
 }
-
-module.exports = dashboardData;

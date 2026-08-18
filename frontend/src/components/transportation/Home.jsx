@@ -11,7 +11,7 @@ const Home = () => {
     const [page, setPage] = useState("Dashboard")
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <div className='flex h-screen bg-slate-50 text-slate-900 font-sans' dir='rtl'>
+    <div className='flex h-full bg-slate-50 text-slate-900 font-sans' dir='rtl'>
        <Sidebar 
         page={page} 
         setPage={setPage} 
