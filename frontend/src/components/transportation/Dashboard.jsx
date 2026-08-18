@@ -96,7 +96,7 @@ export default function Dashboard() {
                   <Building2 className="w-5 h-5 text-emerald-900" strokeWidth={2.5} />
                 </div>
               </div>
-              <p className="text-sm text-emerald-900 font-medium">${data.financialCost.toFixed(2)} بانتظار التسوية</p>
+            
             </div>
 
             <div className="bg-white p-6 rounded-3xl flex-1 min-w-[240px]">
@@ -159,20 +159,35 @@ export default function Dashboard() {
         {/* العمود الأيمن */}
         <div className="flex flex-col gap-8">
           
-          <section className="bg-[#1b2a32] text-white p-8 rounded-3xl">
-            <div className="flex justify-between items-center mb-10">
-              <h3 className="text-xl font-bold text-white">مدفوعات الشركاء</h3>
-              <DollarSign className="w-6 h-6 text-yellow-400" strokeWidth={2.5} />
-            </div>
-            <p className="text-5xl font-semibold text-white mb-2">${data.financialCost.toFixed(2)}</p>
-            <p className="text-yellow-300 font-medium mb-12">بانتظار التسوية</p>
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
-                <p className='text-white leading-relaxed mb-6'>ابق على قُرب من شركائك. مكتب الدفع المرتب يجعل كل وصول يبدو سهلاً.</p>
-                <a href="#" className="text-yellow-400 font-semibold flex items-center gap-1.5 hover:gap-2 transition-all">
-                    فتح القسم المالي <ArrowRight className="w-4 h-4 rotate-180" />
-                </a>
-            </div>
-          </section>
+        <section className="bg-[#1b2a32] text-white p-8 rounded-3xl">
+  <div className="flex justify-between items-center mb-10">
+    <h3 className="text-xl font-bold text-white">الملخص المالي العام</h3>
+    <DollarSign className="w-6 h-6 text-yellow-400" strokeWidth={2.5} />
+  </div>
+  
+  <p className="text-5xl font-semibold text-white mb-2">
+    ${data.financialProfit.toFixed(2)}
+  </p>
+  
+  <p className="text-yellow-300 font-medium mb-12">إجمالي الأرباح المحققة</p>
+  
+  <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+    <p className="text-white leading-relaxed mb-6">
+      رؤية شاملة للتدفقات المالية والإيرادات، لإدارة أدق وأكثر مرونة لعمليات الفندق.
+    </p>
+    
+    <a 
+      href="#" 
+      onClick={(e) => {
+        e.preventDefault();
+        setPage('Financial'); // الانتقال التلقائي للقسم المالي إذا كنت تستخدم نظام التنقل الخاص بك
+      }}
+      className="text-yellow-400 font-semibold flex items-center gap-1.5 hover:gap-2 transition-all cursor-pointer"
+    >
+       القسم المالي 
+    </a>
+  </div>
+</section>
 
           <section className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-8">
