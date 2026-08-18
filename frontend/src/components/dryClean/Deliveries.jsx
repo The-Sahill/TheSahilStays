@@ -16,22 +16,20 @@ const DeliveryBatches = () => {
 
   // حالة الملاحظة عند الرفض أو الاعتماد
   const [customNote, setCustomNote] = useState('');
-  const [actionType, setActionType] = useState(null); // لتحديد ما إذا كان الإجراء الحالي هو اعتماد أو رفض
+  const [actionType, setActionType] = useState(null);
 
   // حالة لتخزين اسم المستخدم الحالي من السيرفر
   const [currentUsername, setCurrentUsername] = useState('');
 
   // حالات الـ Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // عدد الدفعات في كل صفحة
+  const itemsPerPage = 5;
 
-  // جلب الدفعات ومعرفة اسم المستخدم من الباك إند عند تحميل الصفحة
   useEffect(() => {
     fetchBatches();
     fetchCurrentUsername();
   }, []);
 
-  // دالة لجلب اسم المستخدم الحالي عبر الـ API بأمان
   const fetchCurrentUsername = async () => {
     try {
       const response = await fetch(`${apiUrl}/batches/user`, {
@@ -51,7 +49,6 @@ const DeliveryBatches = () => {
     }
   };
 
-  // التحقق مما إذا كان المستخدم الحالي هو abd أو yehia
   const canModifyStatus = ['abd', 'yehia'].includes(currentUsername.toLowerCase());
 
   const fetchBatches = async () => {
@@ -61,17 +58,15 @@ const DeliveryBatches = () => {
         credentials: 'include',
       });
       const data = await response.json();
-      
+
       const batches = Array.isArray(data) ? data : data.batches || [];
-      
-      // الترتيب الصحيح للأحدث أولاً (من الأجدد إلى الأقدم) اعتماداً على تاريخ الإنشاء أو الـ _id
+
       const sortedBatches = batches.sort((a, b) => {
         if (a.createdAt && b.createdAt) {
           return new Date(b.createdAt) - new Date(a.createdAt);
         }
         return String(b._id).localeCompare(String(a._id));
       });
-
       setBatchesData(sortedBatches);
     } catch (error) {
       console.error('خطأ في جلب دفعات التوصيل:', error);
@@ -80,18 +75,13 @@ const DeliveryBatches = () => {
     }
   };
 
-  // دالة لتحديث حالة الدفعة (Approved أو Rejected) مع إرسال الـ customNote
   const handleUpdateStatus = async (newStatus) => {
     if (!selectedBatch) return;
 
-    // التحقق من كتابة سبب الرفض إذا كانت الحالة Rejected
     if (newStatus === 'Rejected' && !customNote.trim()) {
       alert('الرجاء كتابة سبب الرفض في حقل الملاحظات.');
       return;
     }
-
-    // تحديد قيمة الملاحظة بناءً على الحالة المطلوبة
-    const finalNote = newStatus === 'Approved' ? 'لا يوجد مشاكل' : customNote;
 
     try {
       setUpdatingStatus(true);
@@ -109,7 +99,6 @@ const DeliveryBatches = () => {
 
       if (!response.ok) throw new Error('فشل تحديث حالة الدفعة');
 
-      // تحديث الحالة محلياً في القائمة وفي الدفعة المحددة
       const updatedBatches = batchesData.map(b => 
         b._id === selectedBatch._id ? { ...b, status: newStatus, customNote: customNote } : b
       );
@@ -117,8 +106,7 @@ const DeliveryBatches = () => {
       setSelectedBatch(prev => ({ ...prev, status: newStatus, customNote: customNote }));
 
       alert(`تم تحديث حالة الدفعة إلى (${newStatus}) بنجاح!`);
-      
-      // إعادة تعيين حقل الملاحظات ونوع الإجراء
+
       setCustomNote('');
       setActionType(null);
     } catch (error) {
@@ -129,7 +117,6 @@ const DeliveryBatches = () => {
     }
   };
 
-  // تصفية الدفعات حسب رقم الـ ID أو حالة الدفعة
   const filteredBatches = batchesData.filter((batch) => {
     const idStr = batch._id ? String(batch._id) : '';
     const statusStr = batch.status ? String(batch.status) : '';
@@ -140,18 +127,15 @@ const DeliveryBatches = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // حساب بيانات الـ Pagination
   const totalPages = Math.ceil(filteredBatches.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentBatches = filteredBatches.slice(indexOfFirstItem, indexOfLastItem);
 
-  // إعادة الصفحة الأولى عند البحث أو تغيير الفلتر
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, statusFilter]);
 
-  // فتح نافذة التفاصيل وتعبئة الملاحظة السابقة إن وجدت
   const handleViewBatch = (batch) => {
     setSelectedBatch(batch);
     setCustomNote(batch.customNote || '');
@@ -169,7 +153,7 @@ const DeliveryBatches = () => {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans relative w-full" dir="rtl">
-      
+
       {/* رأس الصفحة */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">دفعات التوصيل</h1>
@@ -242,7 +226,9 @@ const DeliveryBatches = () => {
                   </td>
                   <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalRequests}</td>
                   <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalItems}</td>
-                  <td className="py-4 px-6 font-semibold text-slate-900">{batch.totalCost}</td>
+                  <td className="py-4 px-6 font-semibold text-slate-900">
+  {Number(batch.totalCost || 0).toFixed(2)}
+</td>
                   <td className="py-4 px-6 text-left">
                     <button
                       onClick={() => handleViewBatch(batch)}
@@ -303,8 +289,8 @@ const DeliveryBatches = () => {
       {/* نافذة تفاصيل الدفعة الشاملة (Modal) */}
       {isModalOpen && selectedBatch && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
-            
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+
             {/* رأس النافذة */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
               <div className="flex items-center gap-2">
@@ -321,7 +307,7 @@ const DeliveryBatches = () => {
 
             {/* محتوى التفاصيل (قابل للتمرير) */}
             <div className="p-6 space-y-6 overflow-y-auto">
-              
+
               {/* معلومات عامة */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <div>
@@ -350,18 +336,17 @@ const DeliveryBatches = () => {
               {selectedBatch.customNote && (
                 <div className="bg-slate-100 p-3 rounded-xl text-xs space-y-1">
                   <span className="font-semibold text-slate-500 block">الملاحظة المسجلة:</span>
-                  <p className="text-slate-800 font-medium">{selectedBatch.customNote}</p>
+                  <p className="text-800 font-medium">{selectedBatch.customNote}</p>
                 </div>
               )}
 
-              {/* أزرار تغيير الحالة (تظهر فقط إذا كان المستخدم abd أو yehia) */}
+              {/* أزرار تغيير الحالة */}
               {canModifyStatus ? (
                 <div className="bg-amber-50/60 border border-amber-200/60 p-4 rounded-xl space-y-3">
                   <span className="block text-xs font-semibold text-amber-800">
                     لوحة تحكم الصلاحيات (مرحباً {currentUsername}): يمكنك اعتماد أو رفض هذه الدفعة
                   </span>
 
-                  {/* اختيار نوع الإجراء أو كتابة الملاحظة في حالة الرفض */}
                   {actionType === 'Rejected' && (
                     <div className="space-y-1.5 animate-in fade-in duration-150">
                       <label className="block text-xs font-semibold text-rose-700">
@@ -386,12 +371,12 @@ const DeliveryBatches = () => {
                       <CheckCircle2 size={16} />
                       <span>اعتماد الدفعة (Approved)</span>
                     </button>
-                    
+
                     {actionType !== 'Rejected' ? (
                       <button
                         onClick={() => {
                           setActionType('Rejected');
-                          setCustomNote(''); // تفريغ الحقل للكتابة الجديدة
+                          setCustomNote('');
                         }}
                         disabled={updatingStatus}
                         className="flex-1 inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
@@ -417,33 +402,83 @@ const DeliveryBatches = () => {
                 </div>
               )}
 
-              {/* جدول الطلبات المتضمنة في الدفعة */}
+              {/* جدول الطلبات وتفاصيل القطع لكل غرفة */}
               <div>
                 <h4 className="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
                   <Package size={16} className="text-blue-600" />
-                  <span>الطلبات المتضمنة في هذه الدفعة:</span>
+                  <span>تفاصيل الطلبات والعناصر المتضمنة:</span>
                 </h4>
-                <div className="border border-slate-100 rounded-xl overflow-hidden">
-                  <table className="w-full text-right text-xs">
-                    <thead>
-                      <tr className="bg-slate-50 text-slate-400 border-b border-slate-100">
-                        <th className="py-3 px-4 font-semibold">رقم الغرفة</th>
-                        <th className="py-3 px-4 font-semibold">الموظف</th>
-                        <th className="py-3 px-4 font-semibold">نوع الطلب</th>
-                        <th className="py-3 px-4 font-semibold text-left">التكلفة</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      {selectedBatch.requests && selectedBatch.requests.map((req, index) => (
-                        <tr key={req._id || index} className="hover:bg-slate-50/50">
-                          <td className="py-3 px-4 font-medium text-slate-900">{req.number || '---'}</td>
-                          <td className="py-3 px-4">{req.employee || '---'}</td>
-                          <td className="py-3 px-4 text-slate-600">{req.type || 'غسيل'}</td>
-                          <td className="py-3 px-4 font-semibold text-slate-900 text-left">{req.total || 0}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+
+                <div className="space-y-4">
+                  {selectedBatch.requests && selectedBatch.requests.map((req, index) => {
+                    // تجميع كافة عناصر الغسيل الموجودة في كائن الطلب وتحتوي على count
+                    const itemsList = Object.entries(req).filter(([key, val]) => 
+                      val && typeof val === 'object' && 'count' in val && val.count > 0
+                    );
+
+                    return (
+                      <div key={req._id || index} className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                        {/* معلومات رأس الطلب */}
+                        <div className="flex flex-wrap items-center justify-between border-b border-slate-200/60 pb-2.5 text-xs gap-2">
+                          <div>
+                            <span className="text-slate-400 ml-1">رقم الغرفة:</span>
+                            <span className="font-bold text-slate-900 text-sm">{req.number || '---'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 ml-1">الموظف:</span>
+                            <span className="font-semibold text-slate-700">{req.employee || '---'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 ml-1">نوع الطلب:</span>
+                            <span className="font-semibold text-blue-600">{req.type || 'Full'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 ml-1">إجمالي الطلب:</span>
+                            <span className="font-bold text-emerald-600">
+  {Number(req.total || 0).toFixed(2)}
+</span>
+                          </div>
+                        </div>
+
+                        {/* قائمة القطع التفصيلية (كمية + سعر الوحدة + المجموع الفرعي) */}
+                        <div>
+                          <span className="text-[11px] font-semibold text-slate-500 block mb-2">القطع المطلوبة:</span>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            {itemsList.map(([key, itemObj]) => {
+                              const itemNamesAr = {
+                                towels: 'مناشف عادية (Towels)',
+                                bathTowels: 'مناشف حمام (Bath Towels)',
+                                blankets: 'حرامات (Blankets)',
+                                pillows: 'وسائد (Pillows)',
+                                floorMats: 'دواسات أرضية (Floor Mats)',
+                                robeCovers: 'أغطية روب (Robe Covers)'
+                              };
+                              const displayName = itemNamesAr[key] || key;
+                              
+                              // حساب المجموع الفرعي لكل عنصر (العدد × السعر)
+                              const count = Number(itemObj.count) || 0;
+                              const price = Number(itemObj.price) || 0;
+                              const subtotal = count * price;
+
+                              return (
+                                <div key={key} className="bg-white border border-slate-200/80 p-2.5 rounded-lg text-xs flex flex-col justify-between gap-1.5 shadow-2xs">
+                                  <span className="text-slate-700 font-bold truncate" title={displayName}>{displayName}</span>
+                                  <div className="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-1.5">
+                                    <span>العدد: <strong className="text-slate-800">{count}</strong></span>
+                                    <span>السعر: <strong className="text-blue-600">{price}</strong></span>
+                                  </div>
+                                  <div className="flex items-center justify-between text-[11px] bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                                    <span className="text-slate-400">المجموع:</span>
+                                    <strong className="text-emerald-700 font-bold">{subtotal}</strong>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -459,7 +494,9 @@ const DeliveryBatches = () => {
                 </div>
                 <div>
                   <span className="block text-slate-400 mb-1">التكلفة الكلية:</span>
-                  <span className="font-bold text-blue-600 text-sm">{selectedBatch.totalCost}</span>
+                  <span className="font-bold text-blue-600 text-sm">
+  {Number(selectedBatch.totalCost || 0).toFixed(2)}
+</span>
                 </div>
               </div>
 

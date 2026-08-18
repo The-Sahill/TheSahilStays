@@ -254,7 +254,9 @@ console.log(error)
                       </span>
                     </td>
                     <td className="py-4 px-6 text-slate-600">{totalItems} قطعة</td>
-                    <td className="py-4 px-6 font-semibold text-slate-900">{req.total || 0}</td>
+                    <td className="py-4 px-6 font-semibold text-slate-900">
+  {Number(req.total || 0).toFixed(2)}
+</td>
                     <td className="py-4 px-6">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${
                         req.approved === "تم الموافقة" ? 'bg-emerald-50 text-emerald-600' :
@@ -397,7 +399,9 @@ console.log(error)
 
               <div className="flex justify-between items-center py-2 px-2 bg-slate-50 rounded-lg">
                 <span className="text-sm font-semibold text-slate-600">التكلفة الإجمالية:</span>
-                <span className="text-base font-bold text-emerald-600">{selectedRequest.total || 0}</span>
+                <span className="text-base font-bold text-emerald-600">
+  {Number(selectedRequest.total || 0).toFixed(2)}
+</span>
               </div>
 
 

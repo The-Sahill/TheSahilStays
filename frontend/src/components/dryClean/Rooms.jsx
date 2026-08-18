@@ -104,29 +104,33 @@ const RoomsStatus = () => {
   };
 
   // عند تغيير نوع الغسيل (Full أو Manual)
-  const handleWashTypeChange = (type) => {
-    setWashType(type);
-    
-    if (type === 'Manual') {
-      // تصفير القيم عند اختيار الغسيل اليدوي لتسهيل إدخالها من جديد
-      const resetItems = {};
-      Object.keys(currentModalItems).forEach(key => {
-        resetItems[key] = { count: 0, price: 0 };
-      });
-      setCurrentModalItems(resetItems);
-    } else if (type === 'Full' && selectedRoom) {
-      // استعادة القيم الأصلية الخاصة بالغرفة عند اختيار الغسيل الكامل
-      setCurrentModalItems({
-        towels: { count: selectedRoom.towels?.count ?? 0, price: selectedRoom.towels?.price ?? 0 },
-        bathTowels: { count: selectedRoom.bathTowels?.count ?? 0, price: selectedRoom.bathTowels?.price ?? 0 },
-        blankets: { count: selectedRoom.blankets?.count ?? 0, price: selectedRoom.blankets?.price ?? 0 },
-        pillows: { count: selectedRoom.pillows?.count ?? 0, price: selectedRoom.pillows?.price ?? 0 },
-        floorMats: { count: selectedRoom.floorMats?.count ?? 0, price: selectedRoom.floorMats?.price ?? 0 },
-        bedSheets: { count: selectedRoom.bedSheets?.count ?? 0, price: selectedRoom.bedSheets?.price ?? 0 },
-        robeCovers: { count: selectedRoom.robeCovers?.count ?? 0, price: selectedRoom.robeCovers?.price ?? 0 },
-      });
-    }
-  };
+ // عند تغيير نوع الغسيل (Full أو Manual)
+ const handleWashTypeChange = (type) => {
+  setWashType(type);
+  
+  if (type === 'Manual' && selectedRoom) {
+    // إبقاء الأسعار الأصلية وتصفير الأعداد فقط في وضع الغسيل اليدوي
+    const manualItems = {};
+    Object.keys(currentModalItems).forEach(key => {
+      manualItems[key] = { 
+        count: 0, 
+        price: selectedRoom[key]?.price ?? 0 
+      };
+    });
+    setCurrentModalItems(manualItems);
+  } else if (type === 'Full' && selectedRoom) {
+    // استعادة القيم والأعداد الأصلية الخاصة بالغرفة عند اختيار الغسيل الكامل
+    setCurrentModalItems({
+      towels: { count: selectedRoom.towels?.count ?? 0, price: selectedRoom.towels?.price ?? 0 },
+      bathTowels: { count: selectedRoom.bathTowels?.count ?? 0, price: selectedRoom.bathTowels?.price ?? 0 },
+      blankets: { count: selectedRoom.blankets?.count ?? 0, price: selectedRoom.blankets?.price ?? 0 },
+      pillows: { count: selectedRoom.pillows?.count ?? 0, price: selectedRoom.pillows?.price ?? 0 },
+      floorMats: { count: selectedRoom.floorMats?.count ?? 0, price: selectedRoom.floorMats?.price ?? 0 },
+      bedSheets: { count: selectedRoom.bedSheets?.count ?? 0, price: selectedRoom.bedSheets?.price ?? 0 },
+      robeCovers: { count: selectedRoom.robeCovers?.count ?? 0, price: selectedRoom.robeCovers?.price ?? 0 },
+    });
+  }
+};
 
   // تعديل الـ count أو الـ price يدوياً (مفعل فقط في وضع الـ Manual)
   const handleItemChange = (itemKey, field, value) => {
