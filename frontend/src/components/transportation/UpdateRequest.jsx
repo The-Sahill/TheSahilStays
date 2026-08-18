@@ -11,6 +11,7 @@ const UpdateRequest = () => {
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
+     const [permission, setPermission] = useState(false);
 
     // حالات البحث والفلترة والصفحات
     const [searchTerm, setSearchTerm] = useState('');
@@ -68,6 +69,28 @@ const UpdateRequest = () => {
             toast.success("تم تحديث الطلب محلياً (تأكد من ربط الـ API)");
         }
     };
+
+    
+  useEffect(() => {
+    const getUser = async () => {
+try{
+const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
+if(data.name == "abd" || data.name == "yehia" ){
+ setPermission(false)
+}else{
+  setPermission(true)
+}
+
+}
+catch(error){
+console.log(error)
+}
+
+    }
+
+    getUser()
+
+  }, []);
 
     // تصفية البيانات (Filtering) بناءً على البحث، الحالة، والمركبة
     const filteredRequests = useMemo(() => {
@@ -303,9 +326,10 @@ const UpdateRequest = () => {
                                             <option value="فان">فان</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div >
                                         <label className="block text-xs font-bold text-gray-500 mb-2">سعر التوصيل</label>
                                         <input 
+                                        disabled={permission}
                                             type="number" 
                                             name="guestPrice" 
                                             value={formData.guestPrice || ''} 
@@ -316,6 +340,7 @@ const UpdateRequest = () => {
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 mb-2">تكلفة التوصيل</label>
                                         <input 
+                                          disabled={permission}
                                             type="number" 
                                             name="partnerCost" 
                                             value={formData.partnerCost || ''} 
@@ -326,6 +351,7 @@ const UpdateRequest = () => {
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 mb-2">الربح</label>
                                         <input 
+                                          disabled={permission}
                                             type="number" 
                                             name="profit" 
                                             value={formData.profit || ''} 
@@ -337,6 +363,7 @@ const UpdateRequest = () => {
                                     <div>
                                         <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الطلب</label>
                                         <select 
+                                        
                                             name="status" 
                                             value={formData.status || ''}
                                             onChange={handleChange} 
@@ -353,6 +380,7 @@ const UpdateRequest = () => {
                                     <div>
                                         <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الدفع</label>
                                         <select 
+                                          disabled={permission}
                                             name="paymentStatus" 
                                             value={formData.paymentStatus || ''}
                                             onChange={handleChange} 

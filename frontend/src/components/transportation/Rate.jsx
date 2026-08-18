@@ -90,14 +90,6 @@ const Rate = () => {
         {orderData ? (
           <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 space-y-2.5 text-sm">
             <p className="flex justify-between">
-              <span className="text-stone-500">رقم الرحلة:</span>
-              <span className="font-semibold text-amber-900">{orderData._id || orderData.id}</span>
-            </p>
-            <p className="flex justify-between">
-              <span className="text-stone-500">نوع الخدمة:</span>
-              <span className="font-medium text-stone-700">{orderData.transferType || orderData.tripType}</span>
-            </p>
-            <p className="flex justify-between">
               <span className="text-stone-500">الاسم:</span>
               <span className="font-medium text-stone-700">{orderData.guestName || orderData.name}</span>
             </p>
@@ -105,6 +97,12 @@ const Rate = () => {
               <span className="text-stone-500">رقم الموبايل:</span>
               <span className="font-medium text-stone-700">{orderData.mobileNumber}</span>
             </p>
+        
+            <p className="flex justify-between">
+              <span className="text-stone-500">نوع الخدمة:</span>
+              <span className="font-medium text-stone-700">{orderData.transferType || orderData.tripType}</span>
+            </p>
+        
           </div>
         ) : (
           <div className="text-center text-stone-500 mb-6 text-sm">لم يتم العثور على بيانات لهذه الرحلة.</div>

@@ -164,7 +164,7 @@ const CustomerForm = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-600 mb-2">وقت النقل</label>
+                                    <label className="block text-xs font-semibold text-gray-600 mb-2">وقت اقلاع الطائرة</label>
                                     <input 
                                         type="time" 
                                         name="transferTime" 
