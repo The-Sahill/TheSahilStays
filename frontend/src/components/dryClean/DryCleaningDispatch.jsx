@@ -12,7 +12,7 @@ const DryCleaningDispatch = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // عدد الطلبات في كل صفحة
 
-  // 1. جلب الطلبات التي تمت الموافقة عليها فقط (approved === 'تم الموافقة')
+  // 1. جلب الطلبات التي تمت الموافقة عليها فقط (approved === 'تم الموافقة') وليست مرسلة (status !== true)
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -25,8 +25,12 @@ const DryCleaningDispatch = () => {
       
       const allRequests = Array.isArray(data) ? data : data.requests || [];
       
-      // التصفية بناءً على حقل approved (يظهر فقط إذا كان 'تم الموافقة')
-      const pendingDispatch = allRequests.filter(item => item.approved === 'تم الموافقة');
+      // التصفية بناءً على:
+      // 1. approved === 'تم الموافقة'
+      // 2. status لا يساوي true (أي لم يخرجوا مسبقاً للدراي كلين)
+      const pendingDispatch = allRequests.filter(item => 
+        item.approved === 'تم الموافقة' && item.status !== true
+      );
       
       // ترتيب تنازلي (الأحدث أولاً)
       const sortedList = pendingDispatch.reverse();
@@ -87,7 +91,7 @@ const DryCleaningDispatch = () => {
     try {
       setDispatching(true);
       
-      // استخراج الـ IDs الخاصة بالطلبات المراد إرسالها (التي تمت الموافقة عليها فقط)
+      // استخراج الـ IDs الخاصة بالطلبات المراد إرسالها
       const requestIds = filteredList.map(r => r._id);
 
       const response = await fetch(`${apiUrl}/dispatch`, {
@@ -104,7 +108,7 @@ const DryCleaningDispatch = () => {
 
       alert('تم إرسال الدفعة بنجاح إلى المغسلة!');
       
-      // إعادة جلب الطلبات
+      // إعادة جلب الطلبات لتحديث الواجهة وإخفاء ما تم إرساله
       fetchRequests(); 
       setCurrentPage(1);
 
