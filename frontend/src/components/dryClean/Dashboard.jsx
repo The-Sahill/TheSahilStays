@@ -46,8 +46,7 @@ export default function CleanMasterDashboard() {
     processedItems: 0,
     rejectedCount: 0
   });
-  
-  // بيانات تجريبية للرسوم البيانية تتغير بناءً على الفلتر الزمني (Daily, Weekly, Monthly)
+
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,13 +59,13 @@ export default function CleanMasterDashboard() {
     updateChartDataByRange(timeRange);
   }, [timeRange]);
 
+  // دالة لجلب الإحصائيات العامة
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
       
-      // إضافة تحكم في الوقت لكي لا يبقى الطلب معلقاً للأبد إذا تأخر السيرفر
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثوانٍ كحد أقصى
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(`${apiUrl}/dashboard-stats`, {
         method: 'GET',
@@ -92,40 +91,36 @@ export default function CleanMasterDashboard() {
       });
     } catch (error) {
       console.error('خطأ في جلب بيانات لوحة التحكم:', error);
-      // حتى لو حدث خطأ أو انقطع الاتصال، يجب إيقاف شاشة التحميل لكي تظهر الصفحة (حتى لو كانت فارغة أو بصفر)
     } finally {
       setLoading(false);
     }
   };
 
-  // دالة لتوليد بيانات وهمية أو حقيقية للرسوم البيانية حسب الفلتر
-  const updateChartDataByRange = (range) => {
-    if (range === 'Daily') {
-      setChartData([
-        { name: 'السبت', requests: 12, cost: 150 },
-        { name: 'الأحد', requests: 19, cost: 230 },
-        { name: 'الإثنين', requests: 15, cost: 180 },
-        { name: 'الثلاثاء', requests: 22, cost: 310 },
-        { name: 'الأربعاء', requests: 30, cost: 420 },
-        { name: 'الخميس', requests: 25, cost: 350 },
-        { name: 'الجمعة', requests: 10, cost: 120 },
-      ]);
-    } else if (range === 'Weekly') {
-      setChartData([
-        { name: 'الأسبوع 1', requests: 95, cost: 1250 },
-        { name: 'الأسبوع 2', requests: 110, cost: 1480 },
-        { name: 'الأسبوع 3', requests: 85, cost: 1100 },
-        { name: 'الأسبوع 4', requests: 130, cost: 1750 },
-      ]);
-    } else {
-      setChartData([
-        { name: 'يناير', requests: 400, cost: 5200 },
-        { name: 'فبراير', requests: 450, cost: 6100 },
-        { name: 'مارس', requests: 380, cost: 4900 },
-        { name: 'أبريل', requests: 520, cost: 7000 },
-        { name: 'مايو', requests: 600, cost: 8200 },
-        { name: 'يونيو', requests: 550, cost: 7500 },
-      ]);
+  // دالة لجلب بيانات الرسم البياني الحقيقية من الباك إند بناءً على الفلتر الزمني
+  const updateChartDataByRange = async (range) => {
+    try {
+      const response = await fetch(`${apiUrl}/getChartData?range=${range}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('فشل في جلب بيانات الرسم البياني');
+      }
+
+      const data = await response.json();
+      
+      // التأكد تماماً أن البيانات الواردة هي مصفوفة، وإلا نجعلها مصفوفة فارغة
+      if (Array.isArray(data)) {
+        setChartData(data);
+      } else {
+        console.error("البيانات المستلمة ليست مصفوفة:", data);
+        setChartData([]);
+      }
+
+    } catch (error) {
+      console.error('خطأ في جلب بيانات الرسم البياني:', error);
+      setChartData([]); // تفريغ البيانات في حال حدوث خطأ لمنع انهيار الصفحة
     }
   };
 

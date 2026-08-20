@@ -242,7 +242,11 @@ console.log(error)
                 return (
                   <tr key={req._id || req.number} className="hover:bg-slate-50/80 transition-colors">
                     <td className="py-4 px-6 font-bold text-slate-900">{req.number}</td>
-                    <td className="py-4 px-6 text-slate-600 font-medium">{req.type || 'غسيل'}</td>
+                    <td className="py-4 px-6 text-slate-600 font-medium">
+                   
+                      {req.type == "Full" ? "خروج" : "طلب"}
+
+                    </td>
                     <td className="py-4 px-6 text-slate-800">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
                         {req.employee || 'غير متوفر'}

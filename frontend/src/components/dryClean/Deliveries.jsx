@@ -430,7 +430,10 @@ const DeliveryBatches = () => {
                           </div>
                           <div>
                             <span className="text-slate-400 ml-1">نوع الطلب:</span>
-                            <span className="font-semibold text-blue-600">{req.type || 'Full'}</span>
+                            <span className="font-semibold text-blue-600">
+                              {req.type == "Full" ? "خروج" : "طلب"}
+
+                            </span>
                           </div>
                           <div>
                             <span className="text-slate-400 ml-1">إجمالي الطلب:</span>

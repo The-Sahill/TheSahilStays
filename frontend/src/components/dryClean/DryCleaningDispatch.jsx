@@ -186,7 +186,11 @@ const DryCleaningDispatch = () => {
                   return (
                     <tr key={item._id || item.number} className="hover:bg-slate-50/80 transition-colors">
                       <td className="py-4 px-6 font-bold text-slate-900">{item.number}</td>
-                      <td className="py-4 px-6 text-slate-600 font-medium">{item.type || 'غسيل'}</td>
+                      <td className="py-4 px-6 text-slate-600 font-medium">
+                        
+                        {item.type == "Full" ? "خروج" : "طلب"}
+
+                      </td>
                       <td className="py-4 px-6">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
                           {item.employee || 'غير متوفر'}

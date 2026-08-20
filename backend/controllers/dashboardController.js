@@ -43,3 +43,42 @@ exports.getDashboardStats = async (req, res) => {
         });
     }
 };
+
+exports.getChartData = async (req, res) => {
+    try {
+        const { range } = req.query; // 'Daily', 'Weekly', 'Monthly'
+
+        // تحديد نطاق البحث (مثلاً آخر 30 يوم)
+        const matchStage = {
+            createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 30)) }
+        };
+
+        const data = await Request.aggregate([
+            { $match: matchStage },
+            {
+                $group: {
+                    // تجميع حسب التاريخ (يوم، أسبوع، أو شهر)
+                    _id: { 
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } 
+                    },
+                    requests: { $sum: 1 },
+                    // نفترض أن كل طلب له cost (قم بتعديل الحقل حسب قاعدة بياناتك)
+                    cost: { $sum: { $toDouble: "$cost" } } 
+                }
+            },
+            { $sort: { _id: 1 } },
+            {
+                $project: {
+                    _id: 0,
+                    name: "$_id",
+                    requests: 1,
+                    cost: 1
+                }
+            }
+        ]);
+
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ message: "خطأ في جلب بيانات الرسم البياني" });
+    }
+};

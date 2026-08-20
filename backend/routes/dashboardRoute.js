@@ -4,5 +4,6 @@ const dashboardController = require('../controllers/dashboardController'); // م
 
 // مسار جلب الإحصائيات
 router.get('/dashboard-stats', dashboardController.getDashboardStats);
+router.get('/getChartData', dashboardController.getChartData);
 
 module.exports = router;
