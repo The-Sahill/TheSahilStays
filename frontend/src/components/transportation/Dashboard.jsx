@@ -15,6 +15,7 @@ export default function Dashboard() {
       .then((data) => {
         if (data.success) {
           setDashboardData(data.data);
+          console.log("data",data.data)
         }
         setLoading(false);
       })
@@ -232,7 +233,6 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mb-1">
                         <div>
                           <span className="font-semibold text-[#1b2a32]">{rev.guestName || 'نزيل'}</span>
-                          <span className="text-xs text-gray-400 mr-2">{rev._id ? `TR-${rev._id.toString().slice(-4)}` : "TR-0000"}</span>
                         </div>
                         <div className="flex items-center gap-0.5">
                           {[...Array(5)].map((_, i) => (

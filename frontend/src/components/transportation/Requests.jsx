@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
  
 export default function Requests() {
+  const [loading, setLoading] = useState(false);
   const [requestsData, setRequestsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -75,15 +76,18 @@ export default function Requests() {
 
   const createRequest = async () => {
     try {
+      setLoading(true)
       const { data } = await axios.post(`${apiUrl}/createRequest`, formData, { withCredentials: true });
       if (data.success === true) {
         toast.success(data.message);
+        setLoading(false)
         setIsModalOpen(false);
         getRequests(); // إعادة جلب البيانات لتحديث الجدول
       }
     } catch (error) {
       console.log(error);
       toast.error("حدث خطأ أثناء إنشاء الطلب");
+      setLoading(false)
     }
   };
 
@@ -193,10 +197,11 @@ export default function Requests() {
         {/* الجدول (Requests Table) */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="grid grid-cols-12 px-6 py-4 bg-gray-50/50 border-b border-gray-100 text-xs font-bold text-gray-400 tracking-wider">
-            <div className="col-span-4">النزيل والطلب</div>
-            <div className="col-span-3">الرحلة والموعد</div>
+            <div className="col-span-3">النزيل والطلب</div>
+            <div className="col-span-2">الرحلة والموعد</div>
             <div className="col-span-3">المركبة</div>
-            <div className="col-span-2">الحالة</div>
+            <div className="col-span-2">حالة الرحلة</div>
+            <div className="col-span-2">حالة الدفع</div>
           </div>
 
           <div className="divide-y divide-gray-100">
@@ -207,20 +212,17 @@ export default function Requests() {
                   onClick={() => setSelectedRequest(item)}
                   className="grid grid-cols-12 px-6 py-5 items-center hover:bg-gray-50/80 transition-colors cursor-pointer group"
                 >
-                  <div className="col-span-4 flex flex-col">
+                  <div className="col-span-3 flex flex-col">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-[#1b2a32]">{item.guestName}</span>
                     </div>
                     <span className="text-xs text-gray-500 mt-0.5">{item.transferType}</span>
                   </div>
 
-                  <div className="col-span-3 flex flex-col">
+                  <div className="col-span-2 flex flex-col">
                     <span className="font-medium text-[#1b2a32] text-sm">
-                      {item.travelDate ? new Date(item.travelDate).toLocaleDateString('ar-JO', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      }) : 'غير محدد'}
+                
+    {item.travelDate ? item.travelDate.split('T')[0] : ''}
                     </span>
                     <span className="text-xs text-gray-400 mt-0.5">{item.transferTime}</span>
                   </div>
@@ -232,8 +234,13 @@ export default function Requests() {
 
                   <div className="col-span-2 flex items-center justify-between">
                     <div>{getStatusBadge(item.status)}</div>
+                    
+                  </div>
+                  <div className="col-span-2 flex items-center justify-between">
+                    <div className={`${item.paymentStatus == "تم الدفع" ? "px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800" : "px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"}`}>{item.paymentStatus}</div>
                     <ArrowLeft className="w-4 h-4 text-gray-300 group-hover:text-[#1b2a32] transition-colors" />
                   </div>
+                  
                 </div>
               ))
             ) : (
@@ -292,11 +299,15 @@ export default function Requests() {
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#1b2a32]">{selectedRequest.guestName}</h2>
               {getStatusBadge(selectedRequest.status)}
               <Link to={`/Rate/${selectedRequest._id}`}>
-              <button className='bg-amber-100/70 text-amber-800 px-5 py-2 rounded-lg'>تقييم</button>
+              <button className='bg-amber-100/70 text-amber-800 px-3 py-1 rounded-full'>تقييم</button>
               </Link>
             </div>
             <p className="text-xs text-gray-400 mb-8">
-             {selectedRequest._id} · {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('ar-EG', {
+
+
+
+              
+             {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString('EG', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric'
@@ -326,7 +337,11 @@ export default function Requests() {
                       <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
                       <div>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">تاريخ السفر</span>
-                        <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.travelDate}</span>
+                        <span className="text-sm font-bold text-[#1b2a32]">
+                       
+    {selectedRequest.travelDate ? selectedRequest.travelDate.split('T')[0] : ''}
+
+                        </span>
                       </div>
                     </div>
 
@@ -587,7 +602,10 @@ export default function Requests() {
                     <span className="text-[10px] text-gray-400 mt-1 block">اختياري</span>
                   </div>
 
-                  <button onClick={createRequest} className='mt-5 bg-black text-white px-5 py-3 w-full rounded-md font-semibold'>ارسال الطلب</button>
+                  <button disabled={loading} onClick={createRequest} className={`${loading ? "cursor-not-allowed" : "cursor-pointer"} mt-5 bg-black text-white px-5 py-3 w-full rounded-md font-semibold`}>
+                  {loading ? "جاري انشاء الطلب...." : "انشاء طلب"}
+                  
+                  </button>
                 </div>
 
               </div>

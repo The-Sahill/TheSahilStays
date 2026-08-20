@@ -266,7 +266,7 @@ console.log(error)
                       </span>
                     </td>
                     <td className="py-4 px-6 text-slate-500 text-xs font-medium">
-                      {formatDate(req.createdAt)}
+                    {new Date(req.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
                     <td className="py-4 px-6 text-left">
                       <button
@@ -359,10 +359,19 @@ console.log(error)
                 </div>
                 <div className="col-span-2 pt-2 border-t border-slate-200/60 flex items-center gap-2">
                   <Calendar size={14} className="text-slate-400" />
-                  <div>
+         
+<div className='flex justify-between w-full'>
+<div>
                     <span className="block text-xs text-slate-400 mb-0.5">تاريخ ووقت الطلب</span>
                     <span className="font-bold text-slate-800 text-xs">{formatDate(selectedRequest.createdAt)}</span>
                   </div>
+
+                  <div>
+                    <span className="block text-xs text-slate-400 mb-0.5">الملاحظات</span>
+                    <span className="font-bold text-slate-800 text-xs">{selectedRequest.customNotes}</span>
+                  </div>
+</div>
+                 
                 </div>
               </div>
 

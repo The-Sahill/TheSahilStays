@@ -69,7 +69,7 @@ exports.dashboardData = async (req, res) => {
         const latestReviews = await Transportation.find({ review: { $exists: true, $ne: null } })
             .sort({ createdAt: -1 }) // أو .sort({ _id: -1 }) إذا لم يكن لديك حقل تاريخ
             .limit(2)
-            .select('rating review createdAt');
+            .select('rating review createdAt guestName');
 
         // إرسال البيانات للواجهة
         return res.status(200).json({

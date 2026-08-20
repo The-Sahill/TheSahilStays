@@ -63,12 +63,22 @@ export default function CleanMasterDashboard() {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
+      
+      // إضافة تحكم في الوقت لكي لا يبقى الطلب معلقاً للأبد إذا تأخر السيرفر
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثوانٍ كحد أقصى
+
       const response = await fetch(`${apiUrl}/dashboard-stats`, {
         method: 'GET',
         credentials: 'include',
+        signal: controller.signal,
       });
 
-      if (!response.ok) throw new Error('فشل في جلب الإحصائيات');
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error('فشل في جلب الإحصائيات من الخادم');
+      }
 
       const data = await response.json();
       setStats({
@@ -82,6 +92,7 @@ export default function CleanMasterDashboard() {
       });
     } catch (error) {
       console.error('خطأ في جلب بيانات لوحة التحكم:', error);
+      // حتى لو حدث خطأ أو انقطع الاتصال، يجب إيقاف شاشة التحميل لكي تظهر الصفحة (حتى لو كانت فارغة أو بصفر)
     } finally {
       setLoading(false);
     }

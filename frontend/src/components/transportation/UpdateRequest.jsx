@@ -208,7 +208,8 @@ console.log(error)
                                     <th className="p-4">تاريخ السفر</th>
                                     <th className="p-4">المطار</th>
                                     <th className="p-4">نوع المركبة</th>
-                                    <th className="p-4">الحالة</th>
+                                    <th className="p-4">حالة الرحلة</th>
+                                    <th className="p-4">حالة الدفع</th>
                                     <th className="p-4 text-center">الإجراء</th>
                                 </tr>
                             </thead>
@@ -221,10 +222,21 @@ console.log(error)
                                             className="hover:bg-gray-50/80 cursor-pointer transition-colors"
                                         >
                                             <td className="p-4 font-bold text-[#1b2a32]">{req.guestName}</td>
-                                            <td className="p-4 text-gray-600">{req.travelDate}</td>
+                                            <td className="p-4 text-gray-600">
+    {req.travelDate ? req.travelDate.split('T')[0] : ''}
+</td>
                                             <td className="p-4 text-gray-600">{req.airport}</td>
                                             <td className="p-4 text-gray-600">{req.vehicle}</td>
                                             <td className="p-4">{getStatusBadge(req.status)}</td>
+                                            <td className="p-4">
+        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+            req.paymentStatus === "تم الدفع" 
+                ? "bg-emerald-100 text-emerald-800" 
+                : "bg-amber-100 text-amber-800"
+        }`}>
+            {req.paymentStatus}
+        </span>
+    </td>
                                             <td className="p-4 text-center">
                                                 <button className="px-3 py-1.5 bg-[#cce0db] text-[#1b2a32] rounded-lg text-xs font-bold hover:bg-[#b8d4ce] transition-colors">
                                                     عرض / تعديل
@@ -292,9 +304,9 @@ console.log(error)
 
                             <button 
                                 onClick={() => setIsEditing(!isEditing)}
-                                className="flex items-center gap-2 px-4 py-2 bg-[#1b2a32] text-white rounded-xl text-xs font-bold hover:bg-opacity-90 transition-colors"
+                                className="flex mt-6 items-center gap-2 px-4 py-2 bg-[#1b2a32] text-white rounded-xl text-xs font-bold hover:bg-opacity-90 transition-colors"
                             >
-                                <Edit3 className="w-4 h-4" /> {isEditing ? 'إلغاء التعديل' : 'تعديل البيانات'}
+                                <Edit3 className="w-4 h-4 " /> {isEditing ? 'إلغاء التعديل' : 'تعديل البيانات'}
                             </button>
                         </div>
 
@@ -428,7 +440,12 @@ console.log(error)
                                                 <Calendar className="w-5 h-5 text-gray-400 mt-0.5" />
                                                 <div>
                                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">تاريخ السفر</span>
-                                                    <span className="text-sm font-bold text-[#1b2a32]">{selectedRequest.travelDate}</span>
+                                                    <span className="text-sm font-bold text-[#1b2a32]">
+                                                  
+
+                                                      
+    {selectedRequest.travelDate ? selectedRequest.travelDate.split('T')[0] : ''}
+                                                        </span>
                                                 </div>
                                             </div>
 
