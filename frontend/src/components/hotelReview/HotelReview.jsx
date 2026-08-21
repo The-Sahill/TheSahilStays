@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, ChevronRight, ChevronLeft, Filter, Search, Award } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function HotelReviewsAdminPage() {
   const [reviews, setReviews] = useState([]);
   const [averageOverall, setAverageOverall] = useState(0);
@@ -17,7 +19,7 @@ export default function HotelReviewsAdminPage() {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/hotel-reviews/getAll', {
+      const response = await fetch(`${apiUrl}/hotel-reviews/getAll`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }

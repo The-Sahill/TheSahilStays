@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, MessageSquarePlus, ChevronRight, ChevronLeft, Filter, Search } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
+
 export default function GuestReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +24,7 @@ export default function GuestReviewsPage() {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/reviews/getAll', {
+      const response = await fetch(`${apiUrl}/reviews/getAll`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -53,7 +56,7 @@ export default function GuestReviewsPage() {
 
     setSubmitting(true);
     try {
-      const response = await fetch('http://localhost:4000/reviews/add', {
+      const response = await fetch(`${apiUrl}/reviews/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

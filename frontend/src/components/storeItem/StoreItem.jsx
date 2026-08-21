@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Plus, Minus, CheckCircle2, AlertCircle, RefreshCw, PackagePlus } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function StoreManagementPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ export default function StoreManagementPage() {
   const fetchStoreItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/store/getAll', {
+      const response = await fetch(`${apiUrl}/store/getAll`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -45,7 +47,7 @@ export default function StoreManagementPage() {
 
     setAdding(true);
     try {
-      const response = await fetch('http://localhost:4000/store/add', {
+      const response = await fetch(`${apiUrl}/store/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -70,7 +72,7 @@ export default function StoreManagementPage() {
     if (newQty < 0) return; // لا يمكن أن تكون أقل من صفر
 
     try {
-      const response = await fetch(`http://localhost:4000/store/updateQuantity/${id}`, {
+      const response = await fetch(`${apiUrl}/store/updateQuantity/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

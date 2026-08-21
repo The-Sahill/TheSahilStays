@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { BellRing, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 const predefinedRequests = [
   "مناشف / بشاكير",
   "فاين حمام",
@@ -77,7 +79,7 @@ export default function GuestRequestPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:4000/create/userRequest/${id}`, {
+      const response = await fetch(`${apiUrl}/create/userRequest/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -111,7 +113,7 @@ export default function GuestRequestPage() {
   };
 
   return (
-    <div className="min-h-screen text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
+    <div className="min-h-screen bg-[#030712] text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
       <div className="max-w-2xl w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur-md">
         
         {/* Header */}

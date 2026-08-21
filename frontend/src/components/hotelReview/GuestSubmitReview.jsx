@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader2, Star, CheckCircle2, AlertCircle, Send, Hotel } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function GuestSubmitReview() {
   const { roomNumber } = useParams(); // استقبال رقم الغرفة من الرابط (Params)
 
@@ -31,7 +33,7 @@ export default function GuestSubmitReview() {
     setSubmitting(true);
     try {
       // إرسال رقم الغرفة في الـ URL params وباقي البيانات في الـ body
-      const response = await fetch(`http://localhost:4000/hotel-reviews/add/${roomNumber}`, {
+      const response = await fetch(`${apiUrl}/hotel-reviews/add/${roomNumber}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

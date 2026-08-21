@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function AdminRequestsPage() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ export default function AdminRequestsPage() {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/getAllUsersRequests', {
+      const response = await fetch(`${apiUrl}/getAllUsersRequests`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -36,7 +38,7 @@ export default function AdminRequestsPage() {
   // دالة لتحديث حالة الطلب
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:4000/updateRequestStatus/userRequest/${id}`, {
+      const response = await fetch(`${apiUrl}/updateRequestStatus/userRequest/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
