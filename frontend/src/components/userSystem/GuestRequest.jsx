@@ -114,6 +114,7 @@ export default function GuestRequestPage() {
 
   return (
     <div className="min-h-screen bg-[#030712] text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
+      
       <div className="max-w-2xl w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur-md">
         
         {/* Header */}

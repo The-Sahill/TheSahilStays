@@ -64,11 +64,11 @@ const systems = [
   },
 
   {
-    id: 'hotelReview',
+    id: 'guestReview',
     title: 'نظام تقييم النزلاء ',
     description: 'ادارة التقييمات       ',
     icon: <Star   className="w-6 h-6 text-yellow-600" />,
-    href: '/hotelReview',
+    href: '/guestReview',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
     borderColor: 'hover:border-amber-500/50',
     badge: 'سريع',
@@ -76,11 +76,11 @@ const systems = [
   },
 
   {
-    id: 'guestReview',
+    id: 'hotelReview',
     title: 'نظام تقييم الاوتيل ',
     description: 'ادارة التقييمات و معرفة اراء النزلاء   ',
     icon: <Star   className="w-6 h-6 text-yellow-600" />,
-    href: '/guestReview',
+    href: '/hotelReview',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
     borderColor: 'hover:border-amber-500/50',
     badge: 'سريع',
@@ -92,7 +92,7 @@ const systems = [
     title: 'نظام  طلبات النزلاء ',
     description: 'ادارة طلبات    النزلاء   ',
     icon: <Logs    className="w-6 h-6 text-emerald-600" />,
-    href: '/createRequest/:id',
+    href: '/AdminUsersRequests',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
     borderColor: 'hover:border-amber-500/50',
     badge: 'سريع',

@@ -81,7 +81,10 @@ export default function HotelReviewsAdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-6 md:p-10" dir="rtl">
+    <div className="min-h-screen bg-gray-950 text-gray-100 relative p-6 md:p-10" dir="rtl">
+        {/* خلفية جمالية (Glow Effects) */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="max-w-6xl mx-auto">
         
         {/* Header & Overall Stats Banner */}
