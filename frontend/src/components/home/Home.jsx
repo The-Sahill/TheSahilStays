@@ -10,12 +10,15 @@ import {
   Sparkles, 
   ShieldCheck, 
   Layers,
+  Warehouse ,
+  Star ,
+  Logs 
 } from 'lucide-react';
 
 const systems = [
   {
     id: 'maintenance',
-    title: 'ادارة المخزن',
+    title: 'نظام الاصلاحات',
     description: 'متابعة كميات المخزون و ادارة الطلبات و المشتريات و متابعة الموردين.',
     icon: <Wrench className="w-6 h-6 text-blue-600" />,
     href: '/maintenance',
@@ -43,6 +46,53 @@ const systems = [
     description: 'ادارة الرحلات من و الى المطار و تتبع الطلبات وادارة الامور المالية',
     icon: <Road className="w-6 h-6 text-amber-600" />,
     href: '/Dashboard/transportation',
+    gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
+    borderColor: 'hover:border-amber-500/50',
+    badge: 'سريع',
+    badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+  },
+  {
+    id: 'store',
+    title: 'نظام المخزن ',
+    description: 'ادارة المخزن و تتبع كميات العناصر ',
+    icon: <Warehouse  className="w-6 h-6 text-red-600" />,
+    href: '/StoreManagement',
+    gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
+    borderColor: 'hover:border-amber-500/50',
+    badge: 'سريع',
+    badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+  },
+
+  {
+    id: 'hotelReview',
+    title: 'نظام تقييم النزلاء ',
+    description: 'ادارة التقييمات       ',
+    icon: <Star   className="w-6 h-6 text-yellow-600" />,
+    href: '/hotelReview',
+    gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
+    borderColor: 'hover:border-amber-500/50',
+    badge: 'سريع',
+    badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+  },
+
+  {
+    id: 'guestReview',
+    title: 'نظام تقييم الاوتيل ',
+    description: 'ادارة التقييمات و معرفة اراء النزلاء   ',
+    icon: <Star   className="w-6 h-6 text-yellow-600" />,
+    href: '/guestReview',
+    gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
+    borderColor: 'hover:border-amber-500/50',
+    badge: 'سريع',
+    badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+  },
+
+  {
+    id: 'Orders',
+    title: 'نظام  طلبات النزلاء ',
+    description: 'ادارة طلبات    النزلاء   ',
+    icon: <Logs    className="w-6 h-6 text-emerald-600" />,
+    href: '/createRequest/:id',
     gradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
     borderColor: 'hover:border-amber-500/50',
     badge: 'سريع',

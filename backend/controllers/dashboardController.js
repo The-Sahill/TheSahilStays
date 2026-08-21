@@ -43,12 +43,11 @@ exports.getDashboardStats = async (req, res) => {
         });
     }
 };
-
 exports.getChartData = async (req, res) => {
     try {
-        const { range } = req.query; // 'Daily', 'Weekly', 'Monthly'
+        const { range } = req.query; 
 
-        // تحديد نطاق البحث (مثلاً آخر 30 يوم)
+        // تحديد نطاق البحث (يمكنك إضافة منطق الـ range هنا مستقبلاً)
         const matchStage = {
             createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 30)) }
         };
@@ -57,13 +56,12 @@ exports.getChartData = async (req, res) => {
             { $match: matchStage },
             {
                 $group: {
-                    // تجميع حسب التاريخ (يوم، أسبوع، أو شهر)
                     _id: { 
                         $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } 
                     },
                     requests: { $sum: 1 },
-                    // نفترض أن كل طلب له cost (قم بتعديل الحقل حسب قاعدة بياناتك)
-                    cost: { $sum: { $toDouble: "$cost" } } 
+                    // هنا التعديل: استخدام حقل totalCost
+                    cost: { $sum: { $toDouble: "$totalCost" } } 
                 }
             },
             { $sort: { _id: 1 } },
@@ -72,13 +70,14 @@ exports.getChartData = async (req, res) => {
                     _id: 0,
                     name: "$_id",
                     requests: 1,
-                    cost: 1
+                    cost: 1 // هذا الاسم يطابق الـ dataKey في الـ BarChart
                 }
             }
         ]);
 
         res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ message: "خطأ في جلب بيانات الرسم البياني" });
+        console.error("Error in getChartData:", error);
+        res.status(500).json([]); // إرسال مصفوفة فارغة في حالة الخطأ لتجنب تعطل الفرونت إند
     }
 };

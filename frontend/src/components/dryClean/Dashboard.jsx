@@ -113,6 +113,7 @@ export default function CleanMasterDashboard() {
       // التأكد تماماً أن البيانات الواردة هي مصفوفة، وإلا نجعلها مصفوفة فارغة
       if (Array.isArray(data)) {
         setChartData(data);
+        console.log("setChartData",chartData)
       } else {
         console.error("البيانات المستلمة ليست مصفوفة:", data);
         setChartData([]);
@@ -212,7 +213,7 @@ export default function CleanMasterDashboard() {
         </div>
 
         {/* قسم الرسم البياني التفاعلي (Activity Trends & Charts) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
           
           {/* الرسم البياني الأول: اتجاهات الطلبات (Area Chart) */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
@@ -254,7 +255,7 @@ export default function CleanMasterDashboard() {
           </div>
 
           {/* الرسم البياني الثاني: التكاليف المالية (Bar Chart) */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          {/* <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
                 <h3 className="text-base font-bold text-slate-900">التكاليف المالية</h3>
@@ -273,7 +274,7 @@ export default function CleanMasterDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </div> */}
 
         </div>
 

@@ -13,6 +13,10 @@ const dashboardRoute = require('./routes/dashboardRoute') // مسار ملف ا�
 const transportation = require('./routes/transportation/requestRoute.js') // مسار ملف الـ Routes
 const financialtransportation = require('./routes/transportation/financialRoute.js') // مسار ملف الـ Routes
 const dashTransportation = require('./routes/transportation/dashboardRoute.js') // مسار ملف الـ Routes
+const GuestRequest = require('./routes/userSystem/guestRequestRoute.js') 
+const storeItem = require('./routes/storeItem/storeItemRoute.js') 
+const guestReview = require('./routes/guestReview/guestReviewRoute.js') 
+const hotelReview = require('./routes/hotelReview/hotelReviewRoute.js') 
 
 
 app.use(cors({
@@ -25,13 +29,17 @@ app.use(cookieParser())
 app.use('/',authRoute)
 
 // ربط المسارات مع بادئة /api
-app.use('/', roomRoutes);
 app.use('/',requestRoute)
+app.use('/',GuestRequest)
+app.use('/', roomRoutes);
 app.use('/',batchRoute)
 app.use('/',dashboardRoute) // ربط مسار لوحة التحكم
 app.use('/',financialtransportation)
 app.use('/',dashTransportation)
 app.use('/',transportation)
+app.use('/',storeItem)
+app.use('/',guestReview)
+app.use('/',hotelReview)
 
 
 mongoose.connect(process.env.MongoDB_URL).then(() => {

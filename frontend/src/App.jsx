@@ -11,6 +11,14 @@ import UpdateStatus from './components/transportation/UpdateStatus';
 import { Loader2 } from 'lucide-react';
 import CustomerForm from './components/transportation/CustomerForm';
 import Rate from './components/transportation/Rate';
+import GuestRequest from './components/userSystem/GuestRequest';
+import AdminUsersRequests from './components/userSystem/UsersRequests'
+import StoreManagementPage from './components/storeItem/StoreItem';
+import GuestReviewsPage from './components/guestReview/GuestReview';
+import HotelReviewsAdminPage from './components/hotelReview/HotelReview';
+import GuestSubmitReview from './components/hotelReview/GuestSubmitReview';
+
+
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 // مكون لحماية المسارات يتأكد من تسجيل الدخول
@@ -72,6 +80,8 @@ function App() {
         <Route path="/Update" element={<UpdateStatus />} />
         <Route path="/TransportationForm" element={<CustomerForm />} />
         <Route path="/Rate/:id" element={<Rate />} />
+        <Route path="/createRequest/:id" element={<GuestRequest />} />
+        <Route path="GuestSubmitReview/:roomNumber" element={<GuestSubmitReview />} />
 
 
 
@@ -116,6 +126,42 @@ function App() {
           } 
         />
 
+<Route 
+          path="/AdminUsersRequests" 
+          element={
+            <ProtectedRoute>
+              <AdminUsersRequests />
+            </ProtectedRoute>
+          } 
+        />
+
+
+<Route 
+          path="/StoreManagement" 
+          element={
+            <ProtectedRoute>
+              <StoreManagementPage />
+            </ProtectedRoute>
+          } 
+        />
+
+<Route 
+          path="/hotelReview" 
+          element={
+            <ProtectedRoute>
+              <GuestReviewsPage />
+            </ProtectedRoute>
+          } 
+        />
+
+<Route 
+          path="/guestReview" 
+          element={
+            <ProtectedRoute>
+              <HotelReviewsAdminPage />
+            </ProtectedRoute>
+          } 
+        />
 
 
       </Routes>
