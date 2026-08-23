@@ -123,3 +123,30 @@ exports.updateBatchStatus = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+exports.updatePaymentStatus = async (req, res) => {
+    try { 
+        const { status } = req.body;
+        const { id } = req.params;
+
+        // التصحيح: استخدام الأقواس المعقوفة {} للبارامترات، وربط populate في النهاية
+        const updatedBatch = await Batch.findByIdAndUpdate(
+            id,
+            { $set: { paymentStatus: status } }, 
+            { new: true }
+        ).populate('requests'); // ربط الدالة هنا بشكل صحيح
+
+        if (!updatedBatch) {
+            return res.status(404).json({ success: false, message: 'الدفعة غير موجودة' });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'تم تحديث حالة الدفعة بنجاح',
+            batch: updatedBatch
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

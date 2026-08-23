@@ -17,10 +17,20 @@ exports.getDashboardStats = async (req, res) => {
         
         let totalCost = 0;
         let processedItems = 0;
+
         
         batches.forEach(batch => {
             totalCost += Number(batch.totalCost) || 0;
             processedItems += Number(batch.totalItems) || 0;
+        });
+
+        let invoice = 0;
+
+        batches.forEach(batch => {
+            // التحقق من أن الحالة Approved وأن حالة الدفع false
+            if (batch.status === 'Approved' && batch.paymentStatus === false) {
+                invoice += Number(batch.totalCost) || 0;
+            }
         });
 
 
@@ -32,7 +42,8 @@ exports.getDashboardStats = async (req, res) => {
             received: receivedCount,
             totalCost: totalCost,
             processedItems: processedItems,
-            rejectedCount: rejectedCount
+            rejectedCount: rejectedCount,
+            invoice
         });
 
     } catch (error) {
@@ -43,6 +54,10 @@ exports.getDashboardStats = async (req, res) => {
         });
     }
 };
+
+
+
+
 exports.getChartData = async (req, res) => {
     try {
         const { range } = req.query; 

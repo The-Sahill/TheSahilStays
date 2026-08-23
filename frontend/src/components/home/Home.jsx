@@ -16,18 +16,18 @@ import {
 } from 'lucide-react';
 
 const systems = [
-  {
-    id: 'maintenance',
-    title: 'نظام الاصلاحات',
-    description: 'متابعة كميات المخزون و ادارة الطلبات و المشتريات و متابعة الموردين.',
-    icon: <Wrench className="w-6 h-6 text-blue-600" />,
-    href: '/maintenance',
-    gradient: 'from-blue-500/10 via-blue-500/5 to-transparent',
-    borderColor: 'hover:border-blue-500/50',
-    badge: 'نشط',
-    badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-    stats: '12 طلب جديد'
-  },
+  // {
+  //   id: 'maintenance',
+  //   title: 'نظام الاصلاحات',
+  //   description: 'متابعة كميات المخزون و ادارة الطلبات و المشتريات و متابعة الموردين.',
+  //   icon: <Wrench className="w-6 h-6 text-blue-600" />,
+  //   href: '/maintenance',
+  //   gradient: 'from-blue-500/10 via-blue-500/5 to-transparent',
+  //   borderColor: 'hover:border-blue-500/50',
+  //   badge: 'نشط',
+  //   badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
+  //   stats: '12 طلب جديد'
+  // },
   {
     id: 'dry-clean',
     title: 'نظام الدراي كلين ',

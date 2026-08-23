@@ -44,7 +44,9 @@ export default function CleanMasterDashboard() {
     received: 0,
     totalCost: 0,
     processedItems: 0,
-    rejectedCount: 0
+    rejectedCount: 0,
+    invoice:0
+
   });
 
   const [chartData, setChartData] = useState([]);
@@ -87,7 +89,8 @@ export default function CleanMasterDashboard() {
         received: data.received || 0,
         totalCost: data.totalCost || 0,
         processedItems: data.processedItems || 0,
-        rejectedCount: data.rejectedCount || 0
+        rejectedCount: data.rejectedCount || 0,
+        invoice:data.invoice || 0
       });
     } catch (error) {
       console.error('خطأ في جلب بيانات لوحة التحكم:', error);
@@ -191,6 +194,17 @@ export default function CleanMasterDashboard() {
             </div>
             <span className="text-3xl font-bold text-slate-900 mt-4">
               {stats.totalCost.toLocaleString()} دينار
+            </span>
+          </div>
+
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-sm font-medium text-slate-500">الفواتير  مستحقة الدفع</span>
+              <DollarSign className="w-5 h-5 text-slate-400" />
+            </div>
+            <span className="text-3xl font-bold text-slate-900 mt-4">
+              {stats.invoice.toLocaleString()} دينار
             </span>
           </div>
 

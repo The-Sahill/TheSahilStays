@@ -28,7 +28,12 @@ const batchSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'Dispatched' // حالة الدفعة (تم الإرسال للمغسلة)
+    },
+    paymentStatus:{
+        type:Boolean,
+        default:false,
     }
+
 }, {
     timestamps: true // لتسجيل وقت تاريخ إنشاء الدفعة تلقائياً
 });

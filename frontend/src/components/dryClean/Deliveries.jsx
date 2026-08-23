@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, X, Truck, Package, Loader2, ChevronRight, ChevronLeft, CheckCircle2, XCircle } from 'lucide-react';
+import axios from  'axios'
+import {toast} from 'react-toastify'
+
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 const DeliveryBatches = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const [paymentStatus,setPaymentStatus] = useState('')
 
   const [batchesData, setBatchesData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +72,7 @@ const DeliveryBatches = () => {
         }
         return String(b._id).localeCompare(String(a._id));
       });
+      console.log(sortedBatches)
       setBatchesData(sortedBatches);
     } catch (error) {
       console.error('خطأ في جلب دفعات التوصيل:', error);
@@ -74,6 +80,30 @@ const DeliveryBatches = () => {
       setLoading(false);
     }
   };
+
+  const updatePaymentStatus = async (status) => {
+    try{
+      const {data} = await axios.put(`${apiUrl}/updatePaymentStatus/${selectedBatch._id}`,{
+        status
+      })
+
+      if(!data.error){
+        toast.success("تم تعديل حالة الدفعة")
+        setPaymentStatus(status)
+        
+        setBatchesData(prevBatches => 
+          prevBatches.map(batch => 
+            batch._id === selectedBatch._id ? data.batch : batch
+          )
+        );
+      }
+
+    }
+    catch(error){
+      console.log(error.message)
+      toast.error("حدث خطأ في تحديث الحالة")
+    }
+  }
 
   const handleUpdateStatus = async (newStatus) => {
     if (!selectedBatch) return;
@@ -199,8 +229,8 @@ const DeliveryBatches = () => {
           <table className="w-full text-right border-collapse">
             <thead>
               <tr className="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase bg-slate-50/50">
-                <th className="py-4 px-6">رقم الدفعة (ID)</th>
                 <th className="py-4 px-6">تاريخ الإنشاء</th>
+                <th className="py-4 px-6">حالة الاستلام</th>
                 <th className="py-4 px-6">حالة الدفعة</th>
                 <th className="py-4 px-6">عدد الطلبات</th>
                 <th className="py-4 px-6">إجمالي القطع</th>
@@ -211,7 +241,6 @@ const DeliveryBatches = () => {
             <tbody className="divide-y divide-slate-100 text-sm">
               {currentBatches.map((batch) => (
                 <tr key={batch._id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-4 px-6 font-bold text-blue-600 text-xs font-mono">{batch._id}</td>
                   <td className="py-4 px-6 text-slate-600">
                     {batch.createdAt ? new Date(batch.createdAt).toLocaleDateString() : 'غير متوفر'}
                   </td>
@@ -224,6 +253,11 @@ const DeliveryBatches = () => {
                       {batch.status || 'Dispatched'}
                     </span>
                   </td>
+                  <td>
+                    <h1 className={`inline-flex mx-auto items-center px-2.5 py-1 rounded-md text-xs font-semibold border ${batch.paymentStatus ? "bg-green-500 inline rounded-full text-white " : " bg-red-500 inline rounded-full text-white"}`}>{batch.paymentStatus ? "تم الدفع" : "لم يتم الدفع"}</h1>
+                  </td>
+
+
                   <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalRequests}</td>
                   <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalItems}</td>
                   <td className="py-4 px-6 font-semibold text-slate-900">
@@ -340,12 +374,15 @@ const DeliveryBatches = () => {
                 </div>
               )}
 
-              {/* أزرار تغيير الحالة */}
-              {canModifyStatus ? (
-                <div className="bg-amber-50/60 border border-amber-200/60 p-4 rounded-xl space-y-3">
-                  <span className="block text-xs font-semibold text-amber-800">
+
+
+
+
+<span className="block text-xs font-semibold text-amber-800">
                     لوحة تحكم الصلاحيات (مرحباً {currentUsername}): يمكنك اعتماد أو رفض هذه الدفعة
                   </span>
+
+               
 
                   {actionType === 'Rejected' && (
                     <div className="space-y-1.5 animate-in fade-in duration-150">
@@ -395,12 +432,42 @@ const DeliveryBatches = () => {
                       </button>
                     )}
                   </div>
+
+
+              {/* أزرار تغيير الحالة */}
+              {canModifyStatus ? (
+                <div className="bg-amber-50/60 border border-amber-200/60 p-4 rounded-xl space-y-3">
+                   <span className="block text-xs font-semibold text-amber-800">
+                    لوحة تحكم الصلاحيات (مرحباً {currentUsername}): يمكنك تحويل حالة الدفع
+                  </span>
+
+
+
+                  <div className="flex items-center gap-3">
+                  <select 
+  value={paymentStatus} 
+  onChange={(e) => updatePaymentStatus(e.target.value)}
+  className='px-4 border border-1'
+>
+  <option className='p-4' value="">لم يتم التحديد</option>
+  <option value="false">غير مدفوع (False)</option>
+  <option value="true">مدفوع (True)</option>
+  {/* أو بحسب القيم اللي تستخدمها */}
+</select>
+                    </div>
+             
+
+
+
                 </div>
               ) : (
                 <div className="bg-slate-100 p-3 rounded-xl text-center text-xs text-slate-500">
                   ملاحظة: الصلاحيات المتاحة لتغيير الحالة مقتصرة على المستخدمين (Abd أو Yehia) فقط.
                 </div>
               )}
+
+
+        
 
               {/* جدول الطلبات وتفاصيل القطع لكل غرفة */}
               <div>

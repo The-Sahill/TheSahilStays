@@ -99,7 +99,7 @@ export default function GuestRequestPage() {
       // إغلاق النافذة التلقائي بعد 4 ثوانٍ للنجاح
       setTimeout(() => {
         setPopup({ show: false, message: '', type: '' });
-      }, 4000);
+      },  );
 
     } catch (err) {
       setPopup({ 
