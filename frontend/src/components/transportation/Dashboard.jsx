@@ -128,8 +128,6 @@ export default function Dashboard() {
                 { label: "بانتظار الموافقة", val: data.statusCounts.pending, col: "bg-[#e5b667]", comp: true },
                 { label: "تمت الموافقة", val: data.statusCounts.approved, col: "bg-[#1b2a32]", comp: true },
                 { label: "مكتمل", val: data.statusCounts.completed, col: "bg-[#1b2a32]", comp: true },
-                { label: "مرفوض", val: data.statusCounts.rejected, col: "bg-red-500", comp: false },
-                { label: "ملغي", val: data.statusCounts.cancelled, col: "bg-gray-300", comp: false }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-4 text-sm">
                   <div className="w-36 text-[#1b2a32] font-medium">{item.label}</div>
@@ -150,8 +148,8 @@ export default function Dashboard() {
                 <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">بانتظار الموافقة</p>
               </div>
               <div>
-                <p className="text-4xl font-semibold text-[#1b2a32] mb-1.5">{data.statusCounts.cancelled}</p>
-                <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">ملغي</p>
+                <p className="text-4xl font-semibold text-[#1b2a32] mb-1.5">{data.statusCounts.approved}</p>
+                <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">تمت الموافقة</p>
               </div>
             </div>
           </section>

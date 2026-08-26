@@ -86,25 +86,30 @@ export default function GuestRequestPage() {
         body: JSON.stringify(formData)
       });
 
-      if (!response.ok) throw new Error('فشل إرسال الطلب، حاول مرة أخرى');
+      if (!response.ok) {
+        throw new Error('حدثت مشكلة أثناء إرسال الطلب، الرجاء المحاولة مرة أخرى.');
+      }
 
+      // إظهار رسالة النجاح
       setPopup({ 
         show: true, 
         message: 'تم إرسال طلبك بنجاح! فريق الخدمة في طريقه إليك.', 
         type: 'success' 
       });
 
+      // إعادة إعادة تعيين النموذج
       setFormData({ guestName: '', roomNumber: id || '', selectedRequests: [], customNote: '' });
       
-      // إغلاق النافذة التلقائي بعد 4 ثوانٍ للنجاح
+      // إغلاق النافذة التلقائي بعد 4 ثوانٍ
       setTimeout(() => {
         setPopup({ show: false, message: '', type: '' });
-      },  );
+      }, 8000);
 
     } catch (err) {
+      // إظهار رسالة الخطأ عند وجود مشكلة شبكة أو من السيرفر
       setPopup({ 
         show: true, 
-        message: err.message, 
+        message: err.message || 'تعذر الإرسال، حدث خطأ في الاتصال بالسيرفر.', 
         type: 'error' 
       });
     } finally {
@@ -134,7 +139,16 @@ export default function GuestRequestPage() {
               غرفة: {id}
             </div>
           )}
+
+          
         </div>
+
+        <div className='mb-10'>
+              <span className="block text-xs text-gray-400">للاتصال المباشر بالاستقبال</span>
+              <a href="tel:+962 7 9510 5012" className="text-sm font-bold text-cyan-300 hover:underline">
+              0795105012
+              </a>
+            </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Guest Name */}
@@ -228,7 +242,7 @@ export default function GuestRequestPage() {
             </div>
             
             <h3 className="text-xl font-bold mb-2 text-gray-100">
-              {popup.type === 'success' ? 'تمت العملية بنجاح' : 'تنبيه هام'}
+              {popup.type === 'success' ? 'تمت العملية بنجاح' : 'تنبيه / خطأ'}
             </h3>
             
             <p className="text-gray-300 text-sm mb-6 leading-relaxed">

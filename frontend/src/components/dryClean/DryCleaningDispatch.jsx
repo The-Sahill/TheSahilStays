@@ -10,9 +10,8 @@ const DryCleaningDispatch = () => {
 
   // حالات الـ Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // عدد الطلبات في كل صفحة
+  const itemsPerPage = 5;
 
-  // 1. جلب الطلبات التي تمت الموافقة عليها فقط (approved === 'تم الموافقة') وليست مرسلة (status !== true)
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -25,16 +24,11 @@ const DryCleaningDispatch = () => {
       
       const allRequests = Array.isArray(data) ? data : data.requests || [];
       
-      // التصفية بناءً على:
-      // 1. approved === 'تم الموافقة'
-      // 2. status لا يساوي true (أي لم يخرجوا مسبقاً للدراي كلين)
       const pendingDispatch = allRequests.filter(item => 
         item.approved === 'تم الموافقة' && item.status !== true
       );
       
-      // ترتيب تنازلي (الأحدث أولاً)
       const sortedList = pendingDispatch.reverse();
-
       setDispatchList(sortedList);
     } catch (error) {
       console.error('خطأ في جلب بيانات الطلبات:', error);
@@ -43,11 +37,21 @@ const DryCleaningDispatch = () => {
     }
   };
 
-  // دالة مساعدة لحساب إجمالي عدد القطع لكل طلب
+  // أسماء الحقول ومسمياتها بالعربي
+  const itemLabels = {
+    towels: 'مناشف',
+    bathTowels: 'بشاكير',
+    blankets: 'بطانيات',
+    pillows: 'وسائد',
+    floorMats: 'دعاسات',
+    bedSheets: 'مفارش تخت',
+    robeCovers: 'أغطية روب'
+  };
+
+  // دالة لحساب إجمالي عدد القطع لطلب واحد
   const calculateTotalItems = (item) => {
-    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers'];
     let sum = 0;
-    keys.forEach(key => {
+    Object.keys(itemLabels).forEach(key => {
       if (item[key] && typeof item[key].count === 'number') {
         sum += item[key].count;
       }
@@ -55,7 +59,6 @@ const DryCleaningDispatch = () => {
     return sum;
   };
 
-  // تصفية الطلبات حسب رقم الغرفة أو اسم الموظف
   const filteredList = dispatchList.filter((item) => {
     const roomStr = item.number ? String(item.number) : '';
     const employeeStr = item.employee ? String(item.employee) : '';
@@ -65,23 +68,28 @@ const DryCleaningDispatch = () => {
     );
   });
 
-  // حساب بيانات الـ Pagination
+  // حساب مجموع كل صنف على مستوى كل الطلبات (مثلاً إجمالي البشاكير لكل الغرف مع بعض)
+  const totalItemsByCategory = Object.keys(itemLabels).reduce((acc, key) => {
+    acc[key] = filteredList.reduce((sum, item) => {
+      const count = (item[key] && typeof item[key].count === 'number') ? item[key].count : 0;
+      return sum + count;
+    }, 0);
+    return acc;
+  }, {});
+
   const totalPages = Math.ceil(filteredList.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentRequests = filteredList.slice(indexOfFirstItem, indexOfLastItem);
 
-  // إعادة الصفحة الأولى عند البحث
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  // حساب إجماليات ملخص الطابور
   const totalRequests = filteredList.length;
   const totalItems = filteredList.reduce((sum, item) => sum + calculateTotalItems(item), 0);
   const totalCost = filteredList.reduce((sum, item) => sum + (item.total || 0), 0);
 
-  // 2. إرسال الدفعة للمغسلة
   const handleDispatchBatch = async () => {
     if (filteredList.length === 0) {
       alert('لا توجد طلبات موافق عليها للإرسال حالياً!');
@@ -90,8 +98,6 @@ const DryCleaningDispatch = () => {
 
     try {
       setDispatching(true);
-      
-      // استخراج الـ IDs الخاصة بالطلبات المراد إرسالها
       const requestIds = filteredList.map(r => r._id);
 
       const response = await fetch(`${apiUrl}/dispatch`, {
@@ -107,11 +113,8 @@ const DryCleaningDispatch = () => {
       }
 
       alert('تم إرسال الدفعة بنجاح إلى المغسلة!');
-      
-      // إعادة جلب الطلبات لتحديث الواجهة وإخفاء ما تم إرساله
       fetchRequests(); 
       setCurrentPage(1);
-
     } catch (error) {
       console.error('خطأ أثناء إرسال الدفعة:', error);
       alert('حدث خطأ أثناء إرسال الدفعة.');
@@ -164,10 +167,10 @@ const DryCleaningDispatch = () => {
         </div>
       </div>
 
-      {/* المحتوى الرئيسي: الجدول وبطاقة الملخص */}
+      {/* المحتوى الرئيسي */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         
-        {/* جدول الطلبات مع الـ Pagination */}
+        {/* جدول الطلبات */}
         <div className="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
           <div className="overflow-x-auto">
             <table className="w-full text-right border-collapse">
@@ -187,9 +190,7 @@ const DryCleaningDispatch = () => {
                     <tr key={item._id || item.number} className="hover:bg-slate-50/80 transition-colors">
                       <td className="py-4 px-6 font-bold text-slate-900">{item.number}</td>
                       <td className="py-4 px-6 text-slate-600 font-medium">
-                        
                         {item.type == "Full" ? "خروج" : "طلب"}
-
                       </td>
                       <td className="py-4 px-6">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
@@ -213,7 +214,7 @@ const DryCleaningDispatch = () => {
             </table>
           </div>
 
-          {/* شريط الـ Pagination */}
+          {/* Pagination */}
           {filteredList.length > 0 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50/30">
               <span className="text-xs text-slate-500">
@@ -225,20 +226,16 @@ const DryCleaningDispatch = () => {
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                   className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                  title="الصفحة السابقة"
                 >
                   <ChevronRight size={16} />
                 </button>
-
                 <span className="text-xs font-medium text-slate-700 px-2">
                   صفحة {currentPage} من {totalPages || 1}
                 </span>
-
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages || totalPages === 0}
                   className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                  title="الصفحة التالية"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -247,26 +244,37 @@ const DryCleaningDispatch = () => {
           )}
         </div>
 
-        {/* بطاقة ملخص الطابور (Queue Summary) */}
+        {/* ملخص الطابور (إجمالي كل صنف لكل الغرف) */}
         <div className="lg:col-span-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
           <h3 className="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">
-            ملخص الطابور (Queue Summary)
+            ملخص الطابور (إجمالي الأصناف)
           </h3>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-500">الطلبات</span>
-              <span className="font-bold text-slate-900 text-base">{totalRequests}</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">عدد الطلبات</span>
+              <span className="font-bold text-slate-900">{totalRequests}</span>
             </div>
 
+            {/* عرض مجموع كل صنف بشكل منفصل */}
+            {Object.keys(itemLabels).map((key) => {
+              const categoryTotal = totalItemsByCategory[key] || 0;
+              return (
+                <div key={key} className="flex items-center justify-between text-sm pt-2 border-t border-slate-50">
+                  <span className="text-slate-600">{itemLabels[key]}</span>
+                  <span className="font-semibold text-slate-900">{categoryTotal}</span>
+                </div>
+              );
+            })}
+
             <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              <span className="text-sm text-slate-500">إجمالي القطع</span>
+              <span className="text-sm font-semibold text-slate-700">إجمالي القطع</span>
               <span className="font-bold text-slate-900 text-base">{totalItems}</span>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
               <span className="text-sm font-semibold text-slate-700">التكلفة الإجمالية</span>
-              <span className="font-bold text-blue-600 text-xl">
+              <span className="font-bold text-blue-600 text-lg">
                 {Number(totalCost || 0).toFixed(2)}
               </span>
             </div>
@@ -274,7 +282,6 @@ const DryCleaningDispatch = () => {
         </div>
 
       </div>
-
     </div>
   );
 };

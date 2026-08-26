@@ -8,5 +8,6 @@ router.post('/createRequest', transportationController.createRequest);         /
 router.get('/:id', transportationController.getRequestById);      // عرض طلب محدد
 router.put('/:id/updateRequest', transportationController.updatePaymentStatus); // تحديث الدفع
 router.put('/:id/addRate', transportationController.addRate); // تحديث الدفع
+router.delete('/:id/deleteRequest', transportationController.deleteRequest); // تحديث الدفع
 
 module.exports = router;

@@ -144,7 +144,24 @@ console.log(error)
             </div>
         );
     }
-    
+
+    const deleteRequest = async (id) => {
+        try {
+            const { data } = await axios.delete(`${apiUrl}/${id}/deleteRequest`);
+            
+            if (data.error === false) {
+                toast.success(data.message);
+                
+                // تحديث الـ State فوراً وإزالة الطلب المحذوف
+                setRequestsData((prevData) => 
+                    prevData.filter((request) => request._id !== id) // استبدل _id بـ id حسب اسم الحقل عندك في الـ Database
+                );
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || "حدث خطأ ما");
+        }
+    }
 
     return (
         <div className="min-h-screen w-full bg-[#fbfaf6] p-4 md:p-8 flex flex-col gap-6" dir="rtl">
@@ -241,6 +258,7 @@ console.log(error)
                                                 <button className="px-3 py-1.5 bg-[#cce0db] text-[#1b2a32] rounded-lg text-xs font-bold hover:bg-[#b8d4ce] transition-colors">
                                                     عرض / تعديل
                                                 </button>
+                                               
                                             </td>
                                         </tr>
                                     ))
@@ -302,12 +320,21 @@ console.log(error)
                                 <ArrowLeft className="w-4 h-4" /> العودة للجدول
                             </button>
 
+                            <div className='flex items-center'>
                             <button 
                                 onClick={() => setIsEditing(!isEditing)}
                                 className="flex mt-6 items-center gap-2 px-4 py-2 bg-[#1b2a32] text-white rounded-xl text-xs font-bold hover:bg-opacity-90 transition-colors"
                             >
                                 <Edit3 className="w-4 h-4 " /> {isEditing ? 'إلغاء التعديل' : 'تعديل البيانات'}
+                               
                             </button>
+
+                            <button onClick={() => deleteRequest(selectedRequest._id)} className="inline-block h-7 mt-6  px-3 mr-2 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition-colors">
+                                                     حذف الطلب
+                                                </button>
+                            </div>
+
+                       
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4 mb-2">
@@ -384,8 +411,6 @@ console.log(error)
                                             <option value="بانتظار الموافقة">بانتظار الموافقة</option>
                                             <option value="تمت الموافقة">تمت الموافقة</option>
                                             <option value="مكتمل">مكتمل</option>
-                                            <option value="مرفوض">مرفوض</option>
-                                            <option value="ملغي">ملغي</option>
                                         </select>
                                     </div>
 
