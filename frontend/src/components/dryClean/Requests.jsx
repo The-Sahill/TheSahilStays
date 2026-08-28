@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, X, Shirt, Loader2, ChevronRight, ChevronLeft, Calendar } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 import axios from 'axios';
+import {toast} from 'react-toastify'
 
 const DryCleaningRequests = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -177,6 +178,20 @@ console.log(error)
   }
 
 
+  const deleteRequest = async (id) => {
+    try{
+const {data} = await axios.delete(`${apiUrl}/deleteRequest/${id}`)
+if(data.error==false){
+  toast.success(data.message)
+  setRequestsData(prev => prev.filter(req => req._id !== id))
+}
+    }catch(error){
+console.log(error)
+toast.error(error)
+    }
+  }
+
+
   return (
     <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans relative w-full" dir="rtl">
       
@@ -272,7 +287,7 @@ console.log(error)
                     <td className="py-4 px-6 text-slate-500 text-xs font-medium">
                     {new Date(req.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
-                    <td className="py-4 px-6 text-left">
+                    <td className="py-4 flex items-center px-6 text-left">
                       <button
                         onClick={() => handleOpenDetails(req)}
                         className="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl transition-colors cursor-pointer"
@@ -280,6 +295,8 @@ console.log(error)
                       >
                         <Eye size={18} />
                       </button>
+
+                      <button onClick={()=> deleteRequest(req._id)} className='mr-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full'>حذف الطلب</button>
                     </td>
                   </tr>
                 );

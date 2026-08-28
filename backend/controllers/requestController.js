@@ -92,3 +92,16 @@ exports.updateRequestStatus = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
     };
+
+
+    exports.deleteRequest = async (req,res) => {
+        try{
+const {id} = req.params
+const deleteReq = await Request.findByIdAndDelete(id)
+res.status(200).json({error:false,message :"تم الحذف الطلب بنجاح"})
+        }catch(error){
+            console.log(error)
+            res.status(500).json({error:true,message :"حدث خطا اثناء حذف الطلب"})
+        }
+
+    }
