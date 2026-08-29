@@ -17,6 +17,7 @@ const GuestRequest = require('./routes/userSystem/guestRequestRoute.js')
 const storeItem = require('./routes/storeItem/storeItemRoute.js') 
 const guestReview = require('./routes/guestReview/guestReviewRoute.js') 
 const hotelReview = require('./routes/hotelReview/hotelReviewRoute.js') 
+const whatsapp = require('./routes/whatsapp/whatsappRoute.js') 
 
 
 app.use(cors({
@@ -40,6 +41,7 @@ app.use('/',transportation)
 app.use('/',storeItem)
 app.use('/',guestReview)
 app.use('/',hotelReview)
+app.use('/',whatsapp)
 
 
 mongoose.connect(process.env.MongoDB_URL).then(() => {

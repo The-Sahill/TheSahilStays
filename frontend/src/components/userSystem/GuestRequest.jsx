@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { BellRing, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
+import axios from 'axios'
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -117,6 +118,17 @@ export default function GuestRequestPage() {
     }
   };
 
+  const whtasapp = async () => {
+    try {
+const {data} = await axios.post(`${apiUrl}/whatsapp`)
+
+
+
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#030712] text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
       
@@ -148,6 +160,8 @@ export default function GuestRequestPage() {
               <a href="tel:+962 7 9510 5012" className="text-sm font-bold text-cyan-300 hover:underline">
               0795105012
               </a>
+
+              <button onClick={()=> whtasapp()}>sda</button>
             </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

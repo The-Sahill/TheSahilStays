@@ -180,6 +180,9 @@ console.log(error)
 
   const deleteRequest = async (id) => {
     try{
+      const confirmDelete = window.confirm("هل أنت متأكد من رغبتك في حذف هذا الطلب؟");
+    
+    if (!confirmDelete) return;
 const {data} = await axios.delete(`${apiUrl}/deleteRequest/${id}`)
 if(data.error==false){
   toast.success(data.message)

@@ -3,36 +3,34 @@ const Request = require('../models/request');
 
 exports.getDashboardStats = async (req, res) => {
     try {
-        // استخدام قيم Boolean للبحث (يمكنك عكس القيم حسب منطق قاعدة البيانات لديك)
+        // استخدام قيم Boolean للبحث في الطلبات
         const pendingCount = await Request.countDocuments({ status: false });
         const approvedCount = await Request.countDocuments({ status: true });
         
-        // إذا كانت الحالات الأخرى (مثل الإرسال أو الاستلام) لها حقول منفصلة أو تعتمد على قيم أخرى
+        // الحالات الخاصة بالدفعة (Batch)
         const sentToLaundryCount = await Batch.countDocuments({ status: 'Dispatched' });
         const receivedCount = await Batch.countDocuments({ status: 'Approved' });
         const rejectedCount = await Batch.countDocuments({ status: 'Rejected' });
 
-        // حساب التكلفة وإجمالي القطع من الدفعات
+        // جلب جميع الدفعات مرة واحدة لحساب التكلفة، القطع، والفواتير غير المدفوعة
         const batches = await Batch.find({});
         
         let totalCost = 0;
         let processedItems = 0;
-
-        
-        batches.forEach(batch => {
-            totalCost += Number(batch.totalCost) || 0;
-            processedItems += Number(batch.totalItems) || 0;
-        });
-
         let invoice = 0;
 
         batches.forEach(batch => {
+            const cost = Number(batch.totalCost) || 0;
+            const items = Number(batch.totalItems) || 0;
+
+            totalCost += cost;
+            processedItems += items;
+
             // التحقق من أن الحالة Approved وأن حالة الدفع false
             if (batch.status === 'Approved' && batch.paymentStatus === false) {
-                invoice += Number(batch.totalCost) || 0;
+                invoice += cost;
             }
         });
-
 
         return res.status(200).json({
             error: false,
@@ -55,42 +53,68 @@ exports.getDashboardStats = async (req, res) => {
     }
 };
 
-
-
-
 exports.getChartData = async (req, res) => {
     try {
         const { range } = req.query; 
 
-        // تحديد نطاق البحث (يمكنك إضافة منطق الـ range هنا مستقبلاً)
+        // تحديد نطاق البحث (آخر 30 يوماً افتراضياً)
         const matchStage = {
             createdAt: { $gte: new Date(new Date().setDate(new Date().getDate() - 30)) }
         };
 
-        const data = await Request.aggregate([
+        // 1. تجميع بيانات الطلبات (Requests) للحصول على عدد الطلبات لكل يوم
+        const requestsData = await Request.aggregate([
             { $match: matchStage },
             {
                 $group: {
-                    _id: { 
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } 
-                    },
-                    requests: { $sum: 1 },
-                    // هنا التعديل: استخدام حقل totalCost
-                    cost: { $sum: { $toDouble: "$totalCost" } } 
-                }
-            },
-            { $sort: { _id: 1 } },
-            {
-                $project: {
-                    _id: 0,
-                    name: "$_id",
-                    requests: 1,
-                    cost: 1 // هذا الاسم يطابق الـ dataKey في الـ BarChart
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    requests: { $sum: 1 }
                 }
             }
         ]);
 
-        res.status(200).json(data);
+        // 2. تجميع بيانات الدفعات (Batches) للحصول على التكلفة لكل يوم
+     // 2. تجميع بيانات الدفعات (Batches) للحصول على التكلفة لكل يوم
+     const batchesData = await Batch.aggregate([
+        { $match: matchStage },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                cost: { $sum: { $toDouble: "$totalCost" } }
+            }
+        },
+        {
+            $project: {
+                cost: { $round: ["$cost", 2] }
+            }
+        }
+    ]);
+
+        // 3. دمج النتائج بناءً على التاريخ (Date) لضمان توافق البيانات في الرسم البياني
+        const mergedMap = {};
+
+        // إضافة بيانات الـ Requests
+        requestsData.forEach(item => {
+            const dateStr = item._id;
+            if (!mergedMap[dateStr]) {
+                mergedMap[dateStr] = { name: dateStr, requests: 0, cost: 0 };
+            }
+            mergedMap[dateStr].requests = item.requests;
+        });
+
+        // إضافة بيانات الـ Batches (التكلفة)
+        batchesData.forEach(item => {
+            const dateStr = item._id;
+            if (!mergedMap[dateStr]) {
+                mergedMap[dateStr] = { name: dateStr, requests: 0, cost: 0 };
+            }
+            mergedMap[dateStr].cost = item.cost;
+        });
+
+        // تحويل الكائن إلى مصفوفة وترتيبها تصاعدياً حسب التاريخ
+        const finalData = Object.values(mergedMap).sort((a, b) => new Date(a.name) - new Date(b.name));
+
+        res.status(200).json(finalData);
     } catch (error) {
         console.error("Error in getChartData:", error);
         res.status(500).json([]); // إرسال مصفوفة فارغة في حالة الخطأ لتجنب تعطل الفرونت إند

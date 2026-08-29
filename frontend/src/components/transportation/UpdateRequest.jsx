@@ -147,6 +147,9 @@ console.log(error)
 
     const deleteRequest = async (id) => {
         try {
+            const confirmDelete = window.confirm("هل أنت متأكد من رغبتك في حذف هذا الطلب؟");
+    
+    if (!confirmDelete) return;
             const { data } = await axios.delete(`${apiUrl}/${id}/deleteRequest`);
             
             if (data.error === false) {
@@ -156,6 +159,7 @@ console.log(error)
                 setRequestsData((prevData) => 
                     prevData.filter((request) => request._id !== id) // استبدل _id بـ id حسب اسم الحقل عندك في الـ Database
                 );
+
             }
         } catch (error) {
             console.log(error);
