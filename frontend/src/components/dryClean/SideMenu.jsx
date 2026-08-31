@@ -133,8 +133,8 @@ const SideMenu = ({ setPage, page }) => {
                 { id: 'dashboard', label: 'الاحصائيات', icon: <LayoutDashboard size={18} /> },
                 { id: 'rooms', label: 'الغرف', icon: <DoorClosed size={18} /> },
                 { id: 'requests', label: 'الطلبات', icon: <FileText size={18} /> },
-                { id: 'dry-cleaning', label: 'ارسال الدفعة', icon: <Shirt size={18} /> },
-                { id: 'batches', label: 'الدفعات', icon: <Layers size={18} /> },
+                { id: 'dry-cleaning', label: 'تسليم للدراي كلين', icon: <Shirt size={18} /> },
+                { id: 'batches', label: 'استلام دراي كلين', icon: <Layers size={18} /> },
                 // { id: 'audit-log', label: 'Audit Log', icon: <FileSpreadsheet size={18} /> },
               ].map((item) => (
                 <button

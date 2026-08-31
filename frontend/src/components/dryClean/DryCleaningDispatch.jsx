@@ -147,7 +147,7 @@ const DryCleaningDispatch = () => {
           className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm shadow-blue-600/25 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Truck size={18} />
-          <span>{dispatching ? 'جاري الإرسال...' : 'إرسال الدفعة (Dispatch Batch)'}</span>
+          <span>{dispatching ? ' جاري ارسال الدراي كلين...' : 'تسليم للدراي كلين (Dispatch Batch)'}</span>
         </button>
       </div>
 

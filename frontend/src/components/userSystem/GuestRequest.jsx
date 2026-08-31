@@ -118,16 +118,6 @@ export default function GuestRequestPage() {
     }
   };
 
-  const whtasapp = async () => {
-    try {
-const {data} = await axios.post(`${apiUrl}/whatsapp`)
-
-
-
-    }catch(error){
-      console.log(error)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#030712] text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
@@ -161,7 +151,7 @@ const {data} = await axios.post(`${apiUrl}/whatsapp`)
               0795105012
               </a>
 
-              <button onClick={()=> whtasapp()}>sda</button>
+            
             </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

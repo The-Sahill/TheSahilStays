@@ -18,8 +18,8 @@ const Home = () => {
        {page === "الاحصائيات" && <Dashboard />}
        {page === "الغرف" && <Rooms />}
        {page === "الطلبات" && <Requests />}
-       {page === "ارسال الدفعة" && <DryCleaningDispatch />}
-       {page === "الدفعات" && <DeliveryBatches />}
+       {page === 'تسليم للدراي كلين' && <DryCleaningDispatch />}
+       {page === "استلام دراي كلين" && <DeliveryBatches />}
        {page === "Audit Log" && <AuditLog />}
        {page === "Item Types" && <ItemTypesAndPricing />}
        {page === "تكوين الغرفة" && <RoomConfig />}

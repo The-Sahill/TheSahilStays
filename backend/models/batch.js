@@ -27,7 +27,7 @@ const batchSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: 'Dispatched' // حالة الدفعة (تم الإرسال للمغسلة)
+        default: 'مرسلة' // حالة الدفعة (تم الإرسال للمغسلة)
     },
     paymentStatus:{
         type:Boolean,

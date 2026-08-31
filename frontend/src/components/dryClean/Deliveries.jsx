@@ -54,7 +54,7 @@ const DeliveryBatches = () => {
     }
   };
 
-  const canModifyStatus = ['abd', 'yehia'].includes(currentUsername.toLowerCase());
+  const canModifyStatus = ['abd', 'yahya'].includes(currentUsername.toLowerCase());
 
   const fetchBatches = async () => {
     try {
@@ -217,7 +217,7 @@ const DeliveryBatches = () => {
 
       {/* رأس الصفحة */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">دفعات التوصيل</h1>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">استلام دراي كلين </h1>
         <p className="text-sm text-slate-500 mt-0.5">تتبع الدفعات المرسلة والمستلمة إلى المغسلة (الأحدث أولاً).</p>
       </div>
 
@@ -478,7 +478,7 @@ const DeliveryBatches = () => {
                 </div>
               ) : (
                 <div className="bg-slate-100 p-3 rounded-xl text-center text-xs text-slate-500">
-                  ملاحظة: الصلاحيات المتاحة لتغيير الحالة مقتصرة على المستخدمين (Abd أو Yehia) فقط.
+                  ملاحظة: الصلاحيات المتاحة لتغيير الحالة مقتصرة على المستخدمين (Abd أو yahya) فقط.
                 </div>
               )}
 

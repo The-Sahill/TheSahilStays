@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const GuestRequest = require('../../models/userSytem/GuestRequest');
+require('dotenv').config();
+const client = require('twilio')(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
 
 // 1. استقبال طلب جديد من النزيل
 exports.createRequest = async (req, res) => {
@@ -20,6 +22,14 @@ exports.createRequest = async (req, res) => {
       selectedRequests,
       customNote
     });
+
+ 
+
+const message = await client.messages.create({
+  body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
+  from: 'whatsapp:+14155238886',
+  to: 'whatsapp:+962793552557'
+});
 
     console.log("تم الحفظ في قاعدة البيانات بنجاح:", newRequest);
     res.status(201).json({ message: 'تم حفظ الطلب بنجاح', data: newRequest });
@@ -69,3 +79,14 @@ exports.updateRequestStatus = async (req, res) => {
     res.status(500).json({ error: 'خطأ في الخادم الداخلي' });
   }
 };
+
+
+
+
+
+
+ //   const message = await client.messages.create({
+  //     body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
+  //     from: 'whatsapp:+14155238886',
+  //     to: 'whatsapp:+962795105012'
+  // });
