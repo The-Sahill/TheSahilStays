@@ -4,14 +4,43 @@ const HotelReview = require('../../models/hotelReview/hotelReview'); // عدل �
 exports.addHotelReview = async (req, res) => {
   try {
     const { roomNumber } = req.params; // جلب رقم الغرفة من الـ Params
-    const { guestName, cleanlinessRating, serviceRating, overallRating, comment } = req.body;
+    const { 
+      guestName, 
+      receptionRating, 
+      cleanlinessRating, 
+      staffRating, 
+      locationRating, 
+      servicesRating, 
+      overallRating, 
+      comment 
+    } = req.body;
 
-    if (!guestName || !roomNumber || !cleanlinessRating || !serviceRating || !overallRating) {
-      return res.status(400).json({ error: 'جميع حقول التقييمات الأساسية (النظافة، الخدمة، التقييم العام، الاسم) مطلوبة' });
+    // التحقق من وجود جميع الحقول الأساسية المطلوبة
+    if (
+      !guestName || 
+      !roomNumber || 
+      !receptionRating || 
+      !cleanlinessRating || 
+      !staffRating || 
+      !locationRating || 
+      !servicesRating || 
+      !overallRating
+    ) {
+      return res.status(400).json({ 
+        error: 'جميع حقول التقييمات الأساسية (الاسم، الاستقبال، النظافة، طاقم العمل، الموقع، الخدمات، والتقييم العام) مطلوبة' 
+      });
     }
 
-    // التحقق من أن القيم بين 1 و 5
-    const ratings = [cleanlinessRating, serviceRating, overallRating];
+    // التحقق من أن القيم بين 1 و 5 لجميع التقييمات
+    const ratings = [
+      receptionRating, 
+      cleanlinessRating, 
+      staffRating, 
+      locationRating, 
+      servicesRating, 
+      overallRating
+    ];
+    
     if (ratings.some(r => r < 1 || r > 5)) {
       return res.status(400).json({ error: 'جميع التقييمات يجب أن تكون بين 1 و 5 نجوم' });
     }
@@ -19,8 +48,11 @@ exports.addHotelReview = async (req, res) => {
     const newReview = await HotelReview.create({
       guestName,
       roomNumber, // استخدام رقم الغرفة القادم من الـ Params
+      receptionRating,
       cleanlinessRating,
-      serviceRating,
+      staffRating,
+      locationRating,
+      servicesRating,
       overallRating,
       comment: comment || ''
     });
@@ -43,6 +75,8 @@ exports.getAllHotelReviews = async (req, res) => {
     
     const totalReviews = reviews.length;
     let averageOverall = 0;
+    
+    // يمكنك أيضاً حساب متوسطات لكل قسم إذا أردت لاحقاً
     if (totalReviews > 0) {
       const sum = reviews.reduce((acc, curr) => acc + curr.overallRating, 0);
       averageOverall = (sum / totalReviews).toFixed(1);

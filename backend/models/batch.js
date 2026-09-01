@@ -32,6 +32,11 @@ const batchSchema = new mongoose.Schema({
     paymentStatus:{
         type:Boolean,
         default:false,
+    },
+
+    extraNote: {
+        type: String,
+        default: 'لا يوجد ملاحظات إضافية'
     }
 
 }, {

@@ -9,8 +9,11 @@ export default function GuestSubmitReview() {
 
   const [formData, setFormData] = useState({
     guestName: '',
+    receptionRating: 5,
     cleanlinessRating: 5,
-    serviceRating: 5,
+    staffRating: 5,
+    locationRating: 5,
+    servicesRating: 5,
     overallRating: 5,
     comment: ''
   });
@@ -51,8 +54,11 @@ export default function GuestSubmitReview() {
       // تفريغ الفورم بعد النجاح
       setFormData({
         guestName: '',
+        receptionRating: 5,
         cleanlinessRating: 5,
-        serviceRating: 5,
+        staffRating: 5,
+        locationRating: 5,
+        servicesRating: 5,
         overallRating: 5,
         comment: ''
       });
@@ -66,7 +72,7 @@ export default function GuestSubmitReview() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center p-6" dir="rtl">
-      <div className="max-w-xl w-full">
+      <div className="max-w-2xl w-full">
         
         {/* Header Banner */}
         <div className="text-center mb-8">
@@ -95,10 +101,28 @@ export default function GuestSubmitReview() {
               />
             </div>
 
-            {/* Ratings (Cleanliness, Service, Overall) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            {/* Ratings Grid (Reception, Cleanliness, Staff, Location, Services, Overall) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              
+              {/* الاستقبال */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-medium">نظافة الغرفة</label>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">الاستقبال</label>
+                <select
+                  value={formData.receptionRating}
+                  onChange={(e) => setFormData({ ...formData, receptionRating: Number(e.target.value) })}
+                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-3 text-xs text-gray-200 focus:outline-none focus:border-cyan-500 cursor-pointer"
+                >
+                  <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                  <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                  <option value="3">⭐⭐⭐ (3/5)</option>
+                  <option value="2">⭐⭐ (2/5)</option>
+                  <option value="1">⭐ (1/5)</option>
+                </select>
+              </div>
+
+              {/* النظافة */}
+              <div>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">النظافة</label>
                 <select
                   value={formData.cleanlinessRating}
                   onChange={(e) => setFormData({ ...formData, cleanlinessRating: Number(e.target.value) })}
@@ -112,11 +136,12 @@ export default function GuestSubmitReview() {
                 </select>
               </div>
 
+              {/* طاقم العمل */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-medium">جودة الخدمة</label>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">طاقم العمل</label>
                 <select
-                  value={formData.serviceRating}
-                  onChange={(e) => setFormData({ ...formData, serviceRating: Number(e.target.value) })}
+                  value={formData.staffRating}
+                  onChange={(e) => setFormData({ ...formData, staffRating: Number(e.target.value) })}
                   className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-3 text-xs text-gray-200 focus:outline-none focus:border-cyan-500 cursor-pointer"
                 >
                   <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
@@ -127,6 +152,39 @@ export default function GuestSubmitReview() {
                 </select>
               </div>
 
+              {/* الموقع */}
+              <div>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">الموقع</label>
+                <select
+                  value={formData.locationRating}
+                  onChange={(e) => setFormData({ ...formData, locationRating: Number(e.target.value) })}
+                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-3 text-xs text-gray-200 focus:outline-none focus:border-cyan-500 cursor-pointer"
+                >
+                  <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                  <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                  <option value="3">⭐⭐⭐ (3/5)</option>
+                  <option value="2">⭐⭐ (2/5)</option>
+                  <option value="1">⭐ (1/5)</option>
+                </select>
+              </div>
+
+              {/* الخدمات */}
+              <div>
+                <label className="block text-xs text-gray-400 mb-1.5 font-medium">الخدمات</label>
+                <select
+                  value={formData.servicesRating}
+                  onChange={(e) => setFormData({ ...formData, servicesRating: Number(e.target.value) })}
+                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-3 text-xs text-gray-200 focus:outline-none focus:border-cyan-500 cursor-pointer"
+                >
+                  <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                  <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                  <option value="3">⭐⭐⭐ (3/5)</option>
+                  <option value="2">⭐⭐ (2/5)</option>
+                  <option value="1">⭐ (1/5)</option>
+                </select>
+              </div>
+
+              {/* التقييم العام */}
               <div>
                 <label className="block text-xs text-gray-400 mb-1.5 font-medium">التقييم العام</label>
                 <select
@@ -141,6 +199,7 @@ export default function GuestSubmitReview() {
                   <option value="1">⭐ (1/5)</option>
                 </select>
               </div>
+
             </div>
 
             {/* Comment Section */}
@@ -164,7 +223,7 @@ export default function GuestSubmitReview() {
                 <Loader2 className="animate-spin" size={20} />
               ) : (
                 <>
-                  <Send size= {18} />
+                  <Send size={18} />
                   <span>إرسال التقييم</span>
                 </>
               )}

@@ -9,6 +9,8 @@ const DeliveryBatches = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  const [extraNote, setExtraNote] = useState('');
+
   const [paymentStatus, setPaymentStatus] = useState('');
 
   const [batchesData, setBatchesData] = useState([]);
@@ -212,6 +214,33 @@ const DeliveryBatches = () => {
     );
   }
 
+
+  const addExtraNote = async (id) => {
+try{
+  if (!extraNote.trim()) {
+    alert('الرجاء كتابة الملاحظة قبل الإرسال.');
+    return;
+  }
+
+const {data} = await axios.post(`${apiUrl}/batches/${id}/extra-note`, { extraNote }, { withCredentials: true });
+
+if(data.error==false){
+toast.success("تم إرسال الملاحظة بنجاح!");
+}
+
+
+
+  
+}catch(error){
+  console.log(error);
+  toast.error("حدث خطأ أثناء إرسال الملاحظة. يرجى المحاولة مرة أخرى.");
+  
+}
+
+
+
+  }
+
   return (
     <div className="p-8 bg-slate-50 min-h-screen mt-16 md:mt-0 font-sans relative w-full" dir="rtl">
 
@@ -266,6 +295,7 @@ const DeliveryBatches = () => {
                 <th className="py-4 px-6">عدد الطلبات</th>
                 <th className="py-4 px-6">إجمالي القطع</th>
                 <th className="py-4 px-6">التكلفة الإجمالية</th>
+                <th className="py-4 px-6">  الملاحظات</th>
                 <th className="py-4 px-6 text-left">الإجراءات</th>
               </tr>
             </thead>
@@ -292,6 +322,9 @@ const DeliveryBatches = () => {
                   <td className="py-4 px-6 text-slate-600 font-medium">{batch.totalItems}</td>
                   <td className="py-4 px-6 font-semibold text-slate-900">
                     {Number(batch.totalCost || 0).toFixed(2)}
+                  </td>
+                  <td className="py-4 px-6 font-semibold text-slate-900">
+                    {Number(batch.extraNote || 0).toFixed(2)}
                   </td>
                   <td className="py-4 px-6 text-left">
                     <button
@@ -403,6 +436,17 @@ const DeliveryBatches = () => {
                   <p className="text-800 font-medium">{selectedBatch.customNote}</p>
                 </div>
               )}
+
+
+<div>
+<label className='text-xs font-semibold text-amber-800' htmlFor="">ملاحظات اضافية</label>
+<textarea onChange={(e) => setExtraNote(e.target.value)} type="text" className='border rounded-lg w-full mt-2 h-12' />
+<button onClick={() => addExtraNote(selectedBatch._id)} className='mt-3 flex-1 inline-flex items-center justify-center gap-2 bg-amber-700 hover:bg-amber-800 text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+               '>ارسال الملاحظة</button>
+
+</div>
+
+
 
               <span className="block text-xs font-semibold text-amber-800">
                 لوحة تحكم الصلاحيات (مرحباً {currentUsername}): يمكنك اعتماد أو رفض هذه الدفعة

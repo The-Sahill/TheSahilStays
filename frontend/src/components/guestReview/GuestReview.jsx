@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, MessageSquarePlus, ChevronRight, ChevronLeft, Filter, Search } from 'lucide-react';
+import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, MessageSquarePlus, ChevronRight, ChevronLeft, Filter, Search, Award } from 'lucide-react';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
-
 
 export default function GuestReviewsPage() {
   const [reviews, setReviews] = useState([]);
@@ -10,21 +9,31 @@ export default function GuestReviewsPage() {
   const [error, setError] = useState('');
   const [popup, setPopup] = useState({ show: false, message: '', type: '' });
 
-  // نموذج إضافة تقييم جديد
-  const [formData, setFormData] = useState({ guestName: '', roomNumber: '', rating: 5, comment: '' });
+  // نموذج إضافة تقييم جديد مع الأقسام الستة
+  const [formData, setFormData] = useState({
+    guestName: '',
+    roomNumber: '',
+    receptionRating: 5,
+    cleanlinessRating: 5,
+    staffRating: 5,
+    locationRating: 5,
+    servicesRating: 5,
+    overallRating: 5,
+    comment: ''
+  });
   const [submitting, setSubmitting] = useState(false);
 
   // حالات الفلتر، البحث، والـ Pagination
-  const [searchName, setSearchName] = useState(''); // فلتر البحث حسب الاسم
-  const [selectedRatingFilter, setSelectedRatingFilter] = useState('all'); // فلتر النجوم
+  const [searchName, setSearchName] = useState('');
+  const [selectedRatingFilter, setSelectedRatingFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // عدد العناصر في كل صفحة
+  const itemsPerPage = 6;
 
   // دالة لجلب التقييمات من الباك إند
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/reviews/getAll`, {
+      const response = await fetch(`${apiUrl}/hotel-reviews/getAll`, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -49,14 +58,14 @@ export default function GuestReviewsPage() {
   // دالة لإضافة تقييم جديد
   const handleAddReview = async (e) => {
     e.preventDefault();
-    if (!formData.guestName || !formData.roomNumber || !formData.rating) {
-      setPopup({ show: true, message: 'الرجاء إدخال اسم النزيل، رقم الغرفة، والتقييم', type: 'error' });
+    if (!formData.guestName || !formData.roomNumber) {
+      setPopup({ show: true, message: 'الرجاء إدخال اسم النزيل ورقم الغرفة على الأقل', type: 'error' });
       return;
     }
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${apiUrl}/reviews/add`, {
+      const response = await fetch(`${apiUrl}/hotel-reviews/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -66,7 +75,17 @@ export default function GuestReviewsPage() {
       if (!response.ok) throw new Error('فشل إرسال التقييم');
 
       setPopup({ show: true, message: 'تم إرسال تقييمك بنجاح، شكراً لك!', type: 'success' });
-      setFormData({ guestName: '', roomNumber: '', rating: 5, comment: '' });
+      setFormData({
+        guestName: '',
+        roomNumber: '',
+        receptionRating: 5,
+        cleanlinessRating: 5,
+        staffRating: 5,
+        locationRating: 5,
+        servicesRating: 5,
+        overallRating: 5,
+        comment: ''
+      });
       fetchReviews(); 
       setTimeout(() => setPopup({ show: false, message: '', type: '' }), 3000);
 
@@ -77,24 +96,19 @@ export default function GuestReviewsPage() {
     }
   };
 
-  // تطبيق الفلاتر (البحث بالاسم + تصفية النجوم)
+  // تطبيق الفلاتر (البحث بالاسم + تصفية التقييم العام)
   const filteredReviews = reviews.filter((rev) => {
-    // فلتر الاسم
     const matchesName = rev.guestName.toLowerCase().includes(searchName.toLowerCase());
-    
-    // فلتر التقييم (النجوم)
-    const matchesRating = selectedRatingFilter === 'all' || rev.rating === Number(selectedRatingFilter);
-
+    const matchesRating = selectedRatingFilter === 'all' || rev.overallRating === Number(selectedRatingFilter);
     return matchesName && matchesRating;
   });
 
-  // حساب البيانات الخاصة بالصفحة الحالية (Pagination Logic)
+  // حساب الـ Pagination
   const totalPages = Math.ceil(filteredReviews.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentReviews = filteredReviews.slice(indexOfFirstItem, indexOfLastItem);
 
-  // إعادة الصفحة إلى الأولى عند أي تغيير في البحث أو الفلتر
   const handleSearchChange = (e) => {
     setSearchName(e.target.value);
     setCurrentPage(1);
@@ -112,7 +126,7 @@ export default function GuestReviewsPage() {
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            size={16}
+            size={14}
             className={star <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-600'}
           />
         ))}
@@ -121,13 +135,12 @@ export default function GuestReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 p-6 md:p-10" dir="rtl">
-        {/* خلفية جمالية (Glow Effects) */}
-
+    <div className="min-h-screen bg-gray-950 text-gray-100 relative p-6 md:p-10" dir="rtl">
+      {/* خلفية جمالية (Glow Effects) */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         
         {/* Header */}
         <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
@@ -144,58 +157,10 @@ export default function GuestReviewsPage() {
           </button>
         </div>
 
-        {/* Form to Add Review */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8 shadow-xl">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-cyan-400">
-            <MessageSquarePlus size={20} />
-            <span>إضافة تقييم جديد</span>
-          </h2>
-          <form onSubmit={handleAddReview} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
-              type="text"
-              placeholder="اسم النزيل"
-              value={formData.guestName}
-              onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
-              className="bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500"
-            />
-            <input
-              type="text"
-              placeholder="رقم الغرفة"
-              value={formData.roomNumber}
-              onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
-              className="bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500"
-            />
-            <select
-              value={formData.rating}
-              onChange={(e) => setFormData({ ...formData, rating: Number(e.target.value) })}
-              className="bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500 cursor-pointer"
-            >
-              <option value="5">⭐⭐⭐⭐⭐ (5 نجوم)</option>
-              <option value="4">⭐⭐⭐⭐ (4 نجوم)</option>
-              <option value="3">⭐⭐⭐ (3 نجوم)</option>
-              <option value="2">⭐⭐ (نجمتان)</option>
-              <option value="1">⭐ (نجمة واحدة)</option>
-            </select>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-3 rounded-xl transition-all cursor-pointer flex justify-center items-center gap-2 disabled:opacity-50"
-            >
-              {submitting ? <Loader2 className="animate-spin" size={18} /> : <span>إرسال التقييم</span>}
-            </button>
-            <textarea
-              placeholder="التعليق أو الملاحظات (اختياري)..."
-              value={formData.comment}
-              onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-              className="bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500 md:col-span-2 lg:col-span-4 h-20 resize-none"
-            />
-          </form>
-        </div>
+       
 
         {/* Filters Section (Search by Name & Rating Filter) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          
-          {/* Search by Name */}
           <div className="relative">
             <Search size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -207,11 +172,10 @@ export default function GuestReviewsPage() {
             />
           </div>
 
-          {/* Filter by Rating */}
           <div className="flex items-center justify-between bg-gray-900 border border-gray-800 px-4 py-2 rounded-xl">
             <div className="flex items-center gap-2 text-sm text-gray-300">
               <Filter size={18} className="text-cyan-400" />
-              <span>فلترة بالنجوم:</span>
+              <span>فلترة بالتقييم العام:</span>
             </div>
             <select
               value={selectedRatingFilter}
@@ -226,7 +190,6 @@ export default function GuestReviewsPage() {
               <option value="1">نجمة واحدة</option>
             </select>
           </div>
-
         </div>
 
         {/* Error State */}
@@ -253,27 +216,47 @@ export default function GuestReviewsPage() {
                 <table className="w-full text-right border-collapse">
                   <thead>
                     <tr className="bg-gray-950 border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wider">
-                      <th className="py-4 px-6 font-semibold">رقم الغرفة</th>
-                      <th className="py-4 px-6 font-semibold">اسم النزيل</th>
-                      <th className="py-4 px-6 font-semibold">التقييم</th>
-                      <th className="py-4 px-6 font-semibold">التعليق</th>
+                      <th className="py-4 px-4 font-semibold">الغرفة</th>
+                      <th className="py-4 px-4 font-semibold">اسم النزيل</th>
+                      <th className="py-4 px-4 font-semibold">الاستقبال</th>
+                      <th className="py-4 px-4 font-semibold">النظافة</th>
+                      <th className="py-4 px-4 font-semibold">طاقم العمل</th>
+                      <th className="py-4 px-4 font-semibold">الموقع</th>
+                      <th className="py-4 px-4 font-semibold">الخدمات</th>
+                      <th className="py-4 px-4 font-semibold">العام</th>
+                      <th className="py-4 px-4 font-semibold">التعليق</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-800 text-sm">
                     {currentReviews.map((rev) => (
                       <tr key={rev._id} className="hover:bg-gray-850 transition-colors">
-                        <td className="py-4 px-6 whitespace-nowrap">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-xl text-xs font-semibold">
-                            غرفة {rev.roomNumber}
+                            {rev.roomNumber}
                           </span>
                         </td>
-                        <td className="py-4 px-6 font-medium text-gray-100 whitespace-nowrap">
+                        <td className="py-4 px-4 font-medium text-gray-100 whitespace-nowrap">
                           {rev.guestName}
                         </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          {renderStars(rev.rating)}
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.receptionRating)}
                         </td>
-                        <td className="py-4 px-6 text-gray-300 max-w-md">
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.cleanlinessRating)}
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.staffRating)}
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.locationRating)}
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.servicesRating)}
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          {renderStars(rev.overallRating)}
+                        </td>
+                        <td className="py-4 px-4 text-gray-300 max-w-xs">
                           {rev.comment ? rev.comment : <span className="text-gray-600">بدون تعليق</span>}
                         </td>
                       </tr>

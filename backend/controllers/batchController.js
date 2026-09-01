@@ -150,3 +150,33 @@ exports.updatePaymentStatus = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+exports.addExtraNote = async (req, res) => {
+    try{
+const { id } = req.params;
+const { extraNote } = req.body;
+
+const updatedBatch = await Batch.findByIdAndUpdate(
+    id,
+    { $set: { extraNote: extraNote } },
+    { new: true }
+).populate('requests');
+
+if (!updatedBatch) {
+    return res.status(404).json({ success: false, message: 'الدفعة غير موجودة' });
+}
+
+res.status(200).json({
+    
+    error: false,
+    message: 'تم إضافة ملاحظة إضافية بنجاح',
+    batch: updatedBatch
+});
+
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({ error: true, error: error.message });
+        
+    }
+}
