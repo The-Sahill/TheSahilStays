@@ -65,7 +65,7 @@ const systems = [
 
   {
     id: 'guestReview',
-    title: 'نظام تقييم النزلاء ',
+    title: 'نظام تقييم الاوتيل ',
     description: 'ادارة التقييمات       ',
     icon: <Star   className="w-6 h-6 text-yellow-600" />,
     href: '/guestReview',
@@ -77,7 +77,7 @@ const systems = [
 
   {
     id: 'hotelReview',
-    title: 'نظام تقييم الاوتيل ',
+    title: 'نظام تقييم النزلاء ',
     description: 'ادارة التقييمات و معرفة اراء النزلاء   ',
     icon: <Star   className="w-6 h-6 text-yellow-600" />,
     href: '/hotelReview',

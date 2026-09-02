@@ -149,7 +149,8 @@ function App() {
           path="/hotelReview" 
           element={
             <ProtectedRoute>
-              <GuestReviewsPage />
+              <HotelReviewsAdminPage />
+            
             </ProtectedRoute>
           } 
         />
@@ -158,7 +159,7 @@ function App() {
           path="/guestReview" 
           element={
             <ProtectedRoute>
-              <HotelReviewsAdminPage />
+              <GuestReviewsPage />
             </ProtectedRoute>
           } 
         />
