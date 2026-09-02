@@ -3,7 +3,6 @@ const HotelReview = require('../../models/hotelReview/hotelReview'); // عدل �
 // إضافة تقييم جديد للفندق من قِبل النزيل (رقم الغرفة يأتي من الـ Params)
 exports.addHotelReview = async (req, res) => {
   try {
-    const { roomNumber } = req.params; // جلب رقم الغرفة من الـ Params
     const { 
       guestName, 
       receptionRating, 
@@ -12,7 +11,8 @@ exports.addHotelReview = async (req, res) => {
       locationRating, 
       servicesRating, 
       overallRating, 
-      comment 
+      comment ,
+      roomNumber,
     } = req.body;
 
     // التحقق من وجود جميع الحقول الأساسية المطلوبة

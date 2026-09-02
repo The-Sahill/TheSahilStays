@@ -21,7 +21,7 @@ const whatsapp = require('./routes/whatsapp/whatsappRoute.js')
 
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL ,
     credentials:true,
 }
 ))

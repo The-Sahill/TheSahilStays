@@ -127,7 +127,7 @@ const Home = () => {
               <span>منصة الإدارة الموحدة</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-              لوحة التحكم المركزية
+              لوحة التحكم المركزية kfsdsafsdfsad
             </h1>
             <p className="mt-2 text-slate-400 text-base sm:text-lg">
               اختر النظام الفرعي الذي تود إدارته والانتقال إليه مباشرة.
