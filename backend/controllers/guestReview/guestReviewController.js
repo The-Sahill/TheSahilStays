@@ -3,7 +3,9 @@ const GuestReview = require('../../models/guestReview/guestReview'); // عدل �
 // إضافة تقييم جديد من النزيل
 exports.addReview = async (req, res) => {
   try {
+    console.log('Received review data:', req.body);
     const { guestName, roomNumber, rating, comment } = req.body;
+
 
     if (!guestName || !roomNumber || !rating) {
       return res.status(400).json({ error: 'اسم النزيل، رقم الغرفة، وعدد النجوم مطلوبة' });
