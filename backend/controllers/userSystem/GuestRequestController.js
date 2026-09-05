@@ -25,11 +25,11 @@ exports.createRequest = async (req, res) => {
 
  
 
-const message = await client.messages.create({
-  body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
-  from: 'whatsapp:+14155238886',
-  to: 'whatsapp:+962793552557'
-});
+// const message = await client.messages.create({
+//   body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
+//   from: 'whatsapp:+14155238886',
+//   to: 'whatsapp:+962792407533'
+// });
 
     console.log("تم الحفظ في قاعدة البيانات بنجاح:", newRequest);
     res.status(201).json({ message: 'تم حفظ الطلب بنجاح', data: newRequest });

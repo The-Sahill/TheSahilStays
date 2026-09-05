@@ -324,7 +324,7 @@ toast.success("تم إرسال الملاحظة بنجاح!");
                     {Number(batch.totalCost || 0).toFixed(2)}
                   </td>
                   <td className="py-4 px-6 font-semibold text-slate-900">
-                    {Number(batch.extraNote || 0).toFixed(2)}
+                   {batch.extraNote }
                   </td>
                   <td className="py-4 px-6 text-left">
                     <button
