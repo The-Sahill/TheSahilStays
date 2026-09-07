@@ -143,7 +143,8 @@ export default function HotelReviewsPage() {
     try{
       const {data} = await axios.delete(`${apiUrl}/deleteReview/${id}`, { withCredentials: true });
 
-      if(data.error){ 
+      if(data.error==false){ 
+        setReviews((prev) => prev.filter((rev) => rev._id !== id));
       toast.success(data.message)
       }
       

@@ -54,11 +54,9 @@ exports.deleteReview = async (req, res) => {
 try{
 const id = req.params.id;
 const deleteReview = await GuestReview.findByIdAndDelete(id);
-if(!deleteReview) {
-  return res.status(404).json({ message: "التقييم غير موجود" });
-}else{
+
   return res.status(200).json({ message: "تم حذف التقييم بنجاح",error:false });
-}
+
 
 }
 catch(error){
