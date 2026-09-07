@@ -142,7 +142,7 @@ export default function HotelReviewsPage() {
 
     try{
       const {data} = await axios.delete(`${apiUrl}/deleteReview/${id}`, { withCredentials: true });
-      
+
       const confirmDelete = window.confirm("هل أنت متأكد من رغبتك في حذف هذا الطلب؟");
       if (!confirmDelete) return;
 
@@ -174,13 +174,7 @@ export default function HotelReviewsPage() {
           
           <div className="flex items-center gap-4">
             {/* Average Badge */}
-            <div className="bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-xl flex items-center gap-2">
-              <Award className="text-amber-400" size={20} />
-              <div>
-                <span className="text-xs text-gray-400 block">متوسط تقييم الفندق</span>
-                <span className="text-sm font-bold text-amber-400">{averageOverall} / 5</span>
-              </div>
-            </div>
+           
 
             <button
               onClick={fetchReviews}
