@@ -353,7 +353,7 @@ export default function HotelReviewsPage() {
                         </td>
 
                         <td>
-                          <button onClick={() => deleteReview(rev._id)} className='bg-red-500 py-2 px-5 rounded-full hover:bg-red-600'>حذف التقييم</button>
+                          <button onClick={() => deleteReview(rev._id)} className='bg-red-500 py-1 px-5 rounded-full hover:bg-red-600'>حذف التقييم</button>
                         </td>
                       </tr>
                     ))}
