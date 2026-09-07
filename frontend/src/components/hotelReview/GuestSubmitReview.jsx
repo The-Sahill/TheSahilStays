@@ -5,10 +5,11 @@ import { Loader2, Star, CheckCircle2, AlertCircle, Send, Hotel } from 'lucide-re
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function GuestSubmitReview() {
-  const { roomNumber } = useParams(); // استقبال رقم الغرفة من الرابط (Params)
+ // استقبال رقم الغرفة من الرابط (Params)
 
   const [formData, setFormData] = useState({
     guestName: '',
+    roomNumber:'',
     receptionRating: 5,
     cleanlinessRating: 5,
     staffRating: 5,
@@ -28,15 +29,12 @@ export default function GuestSubmitReview() {
       setPopup({ show: true, message: 'الرجاء إدخال اسمك الكريم', type: 'error' });
       return;
     }
-    if (!roomNumber) {
-      setPopup({ show: true, message: 'رقم الغرفة غير موجود في الرابط', type: 'error' });
-      return;
-    }
+ 
 
     setSubmitting(true);
     try {
       // إرسال رقم الغرفة في الـ URL params وباقي البيانات في الـ body
-      const response = await fetch(`${apiUrl}/hotel-reviews/add/${roomNumber}`, {
+      const response = await fetch(`${apiUrl}/hotel-reviews/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -54,6 +52,7 @@ export default function GuestSubmitReview() {
       // تفريغ الفورم بعد النجاح
       setFormData({
         guestName: '',
+        roomNumber: '',
         receptionRating: 5,
         cleanlinessRating: 5,
         staffRating: 5,
@@ -80,17 +79,15 @@ export default function GuestSubmitReview() {
             <Hotel size={32} />
           </div>
           <h1 className="text-2xl font-bold tracking-wide">قيم تجربتك معنا</h1>
-          <p className="text-sm text-gray-400 mt-1">
-            {roomNumber ? `رقم الغرفة: ${roomNumber}` : ''} - رأيك يهمنا للارتقاء بجودة الخدمات
-          </p>
+      
         </div>
 
         {/* Review Form Card */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
           <form onSubmit={handleSubmitReview} className="space-y-5">
-            
-            {/* Guest Name Only (Room Number comes from URL) */}
-            <div>
+            <div className='flex w-full gap-4 '>
+   {/* Guest Name Only (Room Number comes from URL) */}
+   <div className='w-full'>
               <label className="block text-xs text-gray-400 mb-1.5 font-medium">اسم النزيل الكريم</label>
               <input
                 type="text"
@@ -100,6 +97,20 @@ export default function GuestSubmitReview() {
                 className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500 transition-colors"
               />
             </div>
+
+            <div className='w-full'>
+              <label className="block text-xs text-gray-400 mb-1.5 font-medium">رقم الغرفة</label>
+              <input
+                type="text"
+                placeholder="مثال: 206"
+                value={formData.roomNumber}
+                onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+            </div>
+            </div>
+         
+
 
             {/* Ratings Grid (Reception, Cleanliness, Staff, Location, Services, Overall) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">

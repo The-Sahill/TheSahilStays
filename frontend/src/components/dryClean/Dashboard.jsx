@@ -137,6 +137,7 @@ export default function CleanMasterDashboard() {
   }
 
   return (
+    
     <div className="flex h-screen bg-slate-50 text-slate-900 font-sans w-full mt-16 md:mt-0" dir="rtl">
       
       <main className="flex-1 overflow-y-auto p-8">

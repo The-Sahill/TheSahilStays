@@ -81,7 +81,7 @@ function App() {
         <Route path="/TransportationForm" element={<CustomerForm />} />
         <Route path="/Rate/:id" element={<Rate />} />
         <Route path="/createRequest/:id" element={<GuestRequest />} />
-        <Route path="GuestSubmitReview/:roomNumber" element={<GuestSubmitReview />} />
+        <Route path="GuestSubmitReview" element={<GuestSubmitReview />} />
 
 
 
