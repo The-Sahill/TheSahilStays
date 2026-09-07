@@ -8,4 +8,6 @@ router.post('/reviews/add', reviewController.addReview);
 // مسار لجلب جميع التقييمات
 router.get('/reviews/getAll', reviewController.getAllReviews);
 
+router.delete('/deleteReview/:id', reviewController.deleteReview);
+
 module.exports = router;

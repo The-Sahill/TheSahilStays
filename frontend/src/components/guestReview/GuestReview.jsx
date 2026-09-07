@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, ChevronRight, ChevronLeft, Filter, Search, Award, Send } from 'lucide-react';
+import axios from 'axios';
+import {toast} from 'react-toastify';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -135,6 +137,21 @@ export default function HotelReviewsPage() {
       </div>
     );
   };
+
+  const deleteReview = async (id) => {
+
+    try{
+      const {data} = await axios.delete(`${apiUrl}/deleteReview/${id}`, { withCredentials: true });
+
+      if(data.error){ 
+      toast.success(data.message)
+      }
+      
+    }catch(error){
+      toast.error("حدث خطأ أثناء حذف التقييم")
+    }
+
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 relative p-6 md:p-10" dir="rtl">
@@ -313,6 +330,7 @@ export default function HotelReviewsPage() {
                       <th className="py-4 px-6 font-semibold">اسم النزيل</th>
                       <th className="py-4 px-6 font-semibold">التقييم</th>
                       <th className="py-4 px-6 font-semibold">التعليق</th>
+                      <th className="py-4 px-6 font-semibold">الاجراءات</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-800 text-sm">
@@ -331,6 +349,10 @@ export default function HotelReviewsPage() {
                         </td>
                         <td className="py-4 px-6 text-gray-300 max-w-xs">
                           {rev.comment ? rev.comment : <span className="text-gray-600">بدون تعليق</span>}
+                        </td>
+
+                        <td>
+                          <button onClick={() => deleteReview(rev._id)} className='bg-red-500 py-2 px-5 rounded-full hover:bg-red-600'>حذف التقييم</button>
                         </td>
                       </tr>
                     ))}

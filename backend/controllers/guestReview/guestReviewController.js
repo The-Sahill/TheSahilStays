@@ -47,3 +47,22 @@ exports.getAllReviews = async (req, res) => {
     res.status(500).json({ error: 'خطأ في الخادم الداخلي' });
   }
 };
+
+
+
+exports.deleteReview = async (req, res) => {
+try{
+const id = req.params.id;
+const deleteReview = await GuestReview.findByIdAndDelete(id);
+if(!deleteReview) {
+  return res.status(404).json({ message: "التقييم غير موجود" });
+}else{
+  return res.status(200).json({ message: "تم حذف التقييم بنجاح",error:false });
+}
+
+}
+catch(error){
+  cosole.log(error)
+  return res.status(500).json({ message: "حدث خطأ أثناء حذف التقييم" ,error:true});
+}
+}
