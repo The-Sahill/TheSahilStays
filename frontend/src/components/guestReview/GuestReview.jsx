@@ -142,6 +142,9 @@ export default function HotelReviewsPage() {
 
     try{
       const {data} = await axios.delete(`${apiUrl}/deleteReview/${id}`, { withCredentials: true });
+      
+      const confirmDelete = window.confirm("هل أنت متأكد من رغبتك في حذف هذا الطلب؟");
+      if (!confirmDelete) return;
 
       if(data.error==false){ 
         setReviews((prev) => prev.filter((rev) => rev._id !== id));
