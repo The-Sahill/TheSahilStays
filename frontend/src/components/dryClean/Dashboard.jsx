@@ -188,7 +188,7 @@ export default function CleanMasterDashboard() {
         {/* شبكة البطاقات السفلية */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
           
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          {/* <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-start">
               <span className="text-sm font-medium text-slate-500">التكلفة الإجمالية</span>
               <DollarSign className="w-5 h-5 text-slate-400" />
@@ -196,7 +196,7 @@ export default function CleanMasterDashboard() {
             <span className="text-3xl font-bold text-slate-900 mt-4">
               {stats.totalCost.toLocaleString()} دينار
             </span>
-          </div>
+          </div> */}
 
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
@@ -209,13 +209,13 @@ export default function CleanMasterDashboard() {
             </span>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          {/* <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-start">
               <span className="text-sm font-medium text-slate-500">العناصر التي تمت معالجتها</span>
               <Layers className="w-5 h-5 text-slate-400" />
             </div>
             <span className="text-3xl font-bold text-slate-900 mt-4">{stats.processedItems}</span>
-          </div>
+          </div> */}
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-start">

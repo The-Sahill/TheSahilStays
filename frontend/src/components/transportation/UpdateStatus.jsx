@@ -109,7 +109,7 @@ const UpdateRequest = () => {
                                 <tr className="bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
                                     <th className="p-4">اسم الضيف</th>
                                     <th className="p-4">تاريخ السفر</th>
-                                    <th className="p-4">المطار</th>
+                                    <th className="p-4">الموقع / الوجهة</th>
                                     <th className="p-4">نوع المركبة</th>
                                     <th className="p-4">الحالة</th>
                                     <th className="p-4 text-center">الإجراء</th>
@@ -289,7 +289,7 @@ const UpdateRequest = () => {
                                             <div className="flex items-start gap-3">
                                                 <span className="w-5 h-5 flex items-center justify-center text-gray-400 mt-0.5 font-bold">📍</span>
                                                 <div>
-                                                    <span className="block text-[10px] font-bold text-gray-400 uppercase">المطار</span>
+                                                    <span className="block text-[10px] font-bold text-gray-400 uppercase">الموقع / الوجهة</span>
                                                     <span className="block text-[10px] font-bold text-gray-400 uppercase">{selectedRequest.airport}</span>
                                                 </div>
                                             </div>

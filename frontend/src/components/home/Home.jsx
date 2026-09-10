@@ -65,7 +65,7 @@ const systems = [
 
   {
     id: 'guestReview',
-    title: 'تقييم المقيمين',
+    title: 'قائمة المحظورين',
     description:  'ادارة التقييمات و ابداء راينا بالنزلاء     ',
     icon: <Star   className="w-6 h-6 text-yellow-600" />,
     href: '/guestReview',

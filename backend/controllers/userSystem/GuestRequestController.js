@@ -4,18 +4,33 @@ const GuestRequest = require('../../models/userSytem/GuestRequest');
 require('dotenv').config();
 const client = require('twilio')(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
 
-// 1. استقبال طلب جديد من النزيل
 exports.createRequest = async (req, res) => {
   try {
+    console.log("sdasdadsadsasdasdasdasdasda");
+    console.log("client", client);
     console.log("تم استلام البيانات في الباك إند:", req.body);
     console.log("الـ ID المستلم في الرابط:", req.params.id);
 
-    const { guestName, roomNumber, selectedRequests, customNote } = req.body;
+    const {
+      guestName,
+      roomNumber,
+      selectedRequests,
+      customNote
+    } = req.body;
 
-    if (!guestName || !roomNumber || !selectedRequests || selectedRequests.length === 0) {
-      return res.status(400).json({ error: 'جميع الحقول الأساسية مطلوبة' });
+    // Validate request
+    if (
+      !guestName ||
+      !roomNumber ||
+      !selectedRequests ||
+      selectedRequests.length === 0
+    ) {
+      return res.status(400).json({
+        error: "جميع الحقول الأساسية مطلوبة"
+      });
     }
 
+    // 1. Save request in database
     const newRequest = await GuestRequest.create({
       guestName,
       roomNumber,
@@ -23,22 +38,44 @@ exports.createRequest = async (req, res) => {
       customNote
     });
 
- 
-
-// const message = await client.messages.create({
-//   body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
-//   from: 'whatsapp:+14155238886',
-//   to: 'whatsapp:+962792407533'
-// });
-
     console.log("تم الحفظ في قاعدة البيانات بنجاح:", newRequest);
-    res.status(201).json({ message: 'تم حفظ الطلب بنجاح', data: newRequest });
+
+    // تجهيز الطلبات كنص مرتب
+    const requestsText = Array.isArray(selectedRequests) 
+      ? selectedRequests.join(', ') 
+      : selectedRequests;
+
+    console.log("الطلبات المحضرة للإرسال:", requestsText);
+
+    // 2. Send WhatsApp message using ContentSid with Custom Variables
+    const message = await client.messages.create({
+      from: 'whatsapp:+17372212163',
+      to: 'whatsapp:+962790333650',
+      contentSid: process.env.CONTENTSID,
+      contentVariables: JSON.stringify({
+        "1": guestName,
+        "2": roomNumber,
+        "3": requestsText,
+        "4": customNote || "لا يوجد"
+      })
+    });
+
+    console.log("تم إرسال الرسالة بنجاح، SID:", message.sid);
+
+    // 3. Return success
+    return res.status(201).json({
+      message: "تم حفظ الطلب بنجاح",
+      data: newRequest
+    });
+
   } catch (err) {
-    console.error("خطأ أثناء الحفظ في قاعدة البيانات:", err);
-    res.status(500).json({ error: 'خطأ في الخادم الداخلي' });
+    console.error("خطأ أثناء إنشاء الطلب:", err);
+
+    return res.status(500).json({
+      error: "خطأ في الخادم الداخلي"
+    });
   }
 };
-
 // 2. عرض جميع الطلبات
 exports.getAllRequests = async (req, res) => {
   try {
@@ -84,9 +121,3 @@ exports.updateRequestStatus = async (req, res) => {
 
 
 
-
- //   const message = await client.messages.create({
-  //     body: `طلب جديد تم إجراؤه!\n\nاسم العميل: ${guestName}\n رقم الغرفة : ${roomNumber}\n  الطلب: ${selectedRequests}\n الملاحظات:  ${customNote} \n  `,
-  //     from: 'whatsapp:+14155238886',
-  //     to: 'whatsapp:+962795105012'
-  // });

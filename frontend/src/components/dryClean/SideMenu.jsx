@@ -13,12 +13,14 @@ import {
   User
 } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
+import axios  from 'axios';
 
 
 const SideMenu = ({ setPage, page }) => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('requests');
   const [isOpen, setIsOpen] = useState(false); // حالة إظهار وإخفاء القائمة في الموبايل
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [permission, setPermission] = useState(false);
   
   // حالات خاصة باسم المستخدم الحالي
   const [userName, setUserName] = useState('');
@@ -77,6 +79,30 @@ const SideMenu = ({ setPage, page }) => {
     }
   };
 
+
+  
+  useEffect(() => {
+    const getUser = async () => {
+try{
+const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
+if(data.name == "abd" || data.name == "yahya" ){
+ setPermission(true)
+}else{
+  setPermission(false)
+}
+
+}
+catch(error){
+console.log(error)
+}
+
+    }
+
+    getUser()
+
+  }, []);
+
+
   return (
     <>
       {/* زر القائمة للشاشات الصغيرة (Mobile Menu Button) */}
@@ -129,28 +155,52 @@ const SideMenu = ({ setPage, page }) => {
           <div className="px-4 py-2">
             <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase px-3 mb-2">العمليات</p>
             <nav className="space-y-1">
-              {[
-                { id: 'dashboard', label: 'الاحصائيات', icon: <LayoutDashboard size={18} /> },
-                { id: 'rooms', label: 'الغرف', icon: <DoorClosed size={18} /> },
-                { id: 'requests', label: 'الطلبات', icon: <FileText size={18} /> },
-                { id: 'dry-cleaning', label: 'تسليم للدراي كلين', icon: <Shirt size={18} /> },
-                { id: 'batches', label: 'استلام دراي كلين', icon: <Layers size={18} /> },
-                // { id: 'audit-log', label: 'Audit Log', icon: <FileSpreadsheet size={18} /> },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleTabClick(item.id, item.label)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    activeTab === item.id 
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                      : 'hover:bg-slate-800/60 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              ))}
-            </nav>
+  {[
+    ...(permission
+      ? [
+          {
+            id: "dashboard",
+            label: "الاحصائيات",
+            icon: <LayoutDashboard size={18} />,
+          },
+        ]
+      : []),
+
+    {
+      id: "rooms",
+      label: "الغرف",
+      icon: <DoorClosed size={18} />,
+    },
+    {
+      id: "requests",
+      label: "الطلبات",
+      icon: <FileText size={18} />,
+    },
+    {
+      id: "dry-cleaning",
+      label: "تسليم للدراي كلين",
+      icon: <Shirt size={18} />,
+    },
+    {
+      id: "batches",
+      label: "استلام دراي كلين",
+      icon: <Layers size={18} />,
+    },
+  ].map((item) => (
+    <button
+      key={item.id}
+      onClick={() => handleTabClick(item.id, item.label)}
+      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+        activeTab === item.id
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+          : "hover:bg-slate-800/60 text-slate-400 hover:text-slate-200"
+      }`}
+    >
+      {item.icon}
+      {item.label}
+    </button>
+  ))}
+</nav>
           </div>
 
           {/* قائمة الإعدادات */}

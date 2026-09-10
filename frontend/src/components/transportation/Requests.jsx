@@ -24,7 +24,7 @@ export default function Requests() {
     mobileNumber: '',
     method: 'Reception',
     transferType: 'استقبال من المطار',
-    airport: 'مطار الملكة علياء الدولي',
+    airport: '',
     travelDate: '',
     transferTime: '',
     flightNumber: '',
@@ -132,7 +132,7 @@ export default function Requests() {
             <div className="flex items-center gap-2 font-medium text-sm">
               <span className='text-gray-400'>مساحة العمل /</span> طلبات النقل
             </div>
-            <div className="font-bold text-lg">صباح الخير، مايا</div>
+          
           </div>
         </nav>
       </header>
@@ -364,7 +364,7 @@ export default function Requests() {
                     <div className="flex items-start gap-3">
                       <span className="w-5 h-5 flex items-center justify-center text-gray-400 mt-0.5 font-bold">📍</span>
                       <div>
-                        <span className="block text-[10px] font-bold text-gray-400 uppercase">المطار</span>
+                        <span className="block text-[10px] font-bold text-gray-400 uppercase">الموقع / الوجهة</span>
                         <span className="block text-[10px] font-bold text-gray-400 uppercase">{selectedRequest.airport}</span>
                       </div>
                     </div>
@@ -507,12 +507,18 @@ export default function Requests() {
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                       >
-                        <option value="استقبال من المطار">استقبال من المطار</option>
-                        <option value="توصيل إلى المطار">توصيل إلى المطار</option>
+                        <option value="استقبال من المطار">
+  استقبال من المطار — فان: 50 د.أ | سيارة: 40 د.أ
+</option>
+
+<option value="توصيل إلى المطار">
+  توصيل إلى المطار — فان: 50 د.أ | سيارة: 40 د.أ
+</option>
+                                        <option value="اخرى">اخرى</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-2">المطار</label>
+                      <label className="block text-xs font-semibold text-gray-600 mb-2">الموقع / الوجهة</label>
                       <input 
                         type="text" 
                         name="airport" 

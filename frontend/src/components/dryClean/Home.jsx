@@ -11,7 +11,7 @@ import RoomConfig from './RoomConfig'
 
 const Home = () => {
 
-    const [page, setPage] = useState("الاحصائيات")
+    const [page, setPage] = useState("الطلبات")
   return (
     <div className='flex h-screen bg-slate-50 text-slate-900 font-sans' dir='rtl'>
         <SideMenu setPage={setPage} page={page} />
@@ -23,7 +23,7 @@ const Home = () => {
        {page === "Audit Log" && <AuditLog />}
        {page === "Item Types" && <ItemTypesAndPricing />}
        {page === "تكوين الغرفة" && <RoomConfig />}
-    </div>
+    </div> 
   )
 }
 

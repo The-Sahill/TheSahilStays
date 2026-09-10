@@ -27,11 +27,11 @@ app.use(cors({
 ))
 
 app.use(cookieParser())
+app.use('/',GuestRequest)
 app.use('/',authRoute)
 
 // ربط المسارات مع بادئة /api
 app.use('/',requestRoute)
-app.use('/',GuestRequest)
 app.use('/', roomRoutes);
 app.use('/',batchRoute)
 app.use('/',dashboardRoute) // ربط مسار لوحة التحكم

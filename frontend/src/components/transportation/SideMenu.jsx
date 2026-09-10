@@ -1,13 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { LayoutDashboard, FileText, DollarSign, Building2, X, Menu,LogOut } from 'lucide-react';
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
+import axios from 'axios';
 
 export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
+
+
+  const [permission, setPermission] = useState(false);
+
   const menuItems = [
-    { id: 'Dashboard', label: 'نظرة عامة', icon: LayoutDashboard },
-    { id: 'Requests', label: 'طلبات النقل', icon: FileText },
-    { id: 'Update Requests', label: 'تعديل الطلبات', icon: DollarSign },
-    { id: 'Financial', label: 'القسم المالي', icon: DollarSign },
+    ...(permission
+      ? [
+          {
+            id: "Dashboard",
+            label: "نظرة عامة",
+            icon: LayoutDashboard,
+          },
+        ]
+      : []),
+  
+    {
+      id: "Requests",
+      label: "طلبات النقل",
+      icon: FileText,
+    },
+  
+    {
+      id: "Update Requests",
+      label: "تعديل الطلبات",
+      icon: DollarSign,
+    },
+  
+    ...(permission
+      ? [
+          {
+            id: "Financial",
+            label: "القسم المالي",
+            icon: DollarSign,
+          },
+        ]
+      : []),
   ];
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -35,6 +67,29 @@ export default function Sidebar({ setPage, page, isOpen, setIsOpen }) {
       setIsLoggingOut(false);
     }
   };
+
+
+  
+  useEffect(() => {
+    const getUser = async () => {
+try{
+const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
+if(data.name == "abd" || data.name == "yahya" ){
+ setPermission(true)
+}else{
+  setPermission(false)
+}
+
+}
+catch(error){
+console.log(error)
+}
+
+    }
+
+    getUser()
+
+  }, []);
 
 
 

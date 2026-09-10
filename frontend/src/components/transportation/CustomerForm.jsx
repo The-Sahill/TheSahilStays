@@ -17,7 +17,7 @@ const CustomerForm = () => {
         mobileNumber: '',
         method: 'Reception',
         transferType: 'استقبال من المطار',
-        airport: 'مطار الملكة علياء الدولي',
+        airport: '',
         travelDate: '',
         transferTime: '',
         flightNumber: '',
@@ -138,12 +138,18 @@ const CustomerForm = () => {
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                                     >
-                                        <option value="استقبال من المطار">استقبال من المطار</option>
-                                        <option value="توصيل إلى المطار">توصيل إلى المطار</option>
+                              <option value="استقبال من المطار">
+  استقبال من المطار — فان: 50 د.أ | سيارة: 40 د.أ
+</option>
+
+<option value="توصيل إلى المطار">
+  توصيل إلى المطار — فان: 50 د.أ | سيارة: 40 د.أ
+</option>
+                                        <option value="اخرى">اخرى</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-600 mb-2">المطار</label>
+                                    <label className="block text-xs font-semibold text-gray-600 mb-2">الموقع / الوجهة</label>
                                     <input 
                                         type="text" 
                                         name="airport" 
@@ -261,7 +267,8 @@ const CustomerForm = () => {
                         </div>
                         <h3 className="text-xl font-extrabold text-[#1b2a32] mb-2">تم تسجيل البيانات بنجاح</h3>
                         <p className="text-sm text-gray-600 leading-relaxed mb-6">
-                            يرجى مراجعة الريسيبشن للدفع من أجل تثبيت الحجز.
+                            يرجى مراجعة الريسيبشن للدفع من أجل تثبيت الحجز. <br></br>
+                            او التواصل على الرقم 00962790333650.
                         </p>
                         <button 
                             onClick={() => setSuccessModal(false)}

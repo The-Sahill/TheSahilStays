@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Lock } from 'lucide-react';
+import { User, Lock ,Loader2 } from 'lucide-react';
 import registerBg from '../../assets/images/Register.jpg'; // استبدل بمسار الصورة الخاصة بك
 import { Link } from 'react-router-dom';
 import axios from 'axios'
@@ -90,14 +90,23 @@ toast.success('تم تسجيل الدخول بنجاح')
 
           {/* زر التسجيل */}
           <div className="pt-4">
-            <button
-            disabled={loading}
-             onClick={()=> login()}
-              className={`${loading? "cursor-not-allowed" : "cursor-pointer"} w-full py-4 bg-white hover:bg-blue-50 text-slate-950 font-bold text-lg rounded-2xl shadow-lg shadow-white/10 transition duration-300 text-center`}
-            >
-              {loading ? "جاري تسجيل الدخول...." : "تسجيل الدخول"}
-            </button>
-          </div>
+  <button
+    disabled={loading}
+    onClick={() => login()}
+    className={`${
+      loading ? "cursor-not-allowed" : "cursor-pointer"
+    } w-full py-4 bg-white hover:bg-blue-50 text-slate-950 font-bold text-lg rounded-2xl shadow-lg shadow-white/10 transition duration-300 flex items-center justify-center gap-2`}
+  >
+    {loading ? (
+      <>
+        <span>جاري تسجيل الدخول</span>
+        <Loader2 className="w-5 h-5 animate-spin" />
+      </>
+    ) : (
+      "تسجيل الدخول"
+    )}
+  </button>
+</div>
 
         </form>
 

@@ -185,7 +185,7 @@ console.log(error)
                         <Search className="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2" />
                         <input 
                             type="text" 
-                            placeholder="ابحث باسم الضيف أو المطار..." 
+                            placeholder="ابحث باسم الضيف أو الموقع / الوجهة..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pr-12 pl-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1b2a32] text-sm"
@@ -227,7 +227,7 @@ console.log(error)
                                 <tr className="bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
                                     <th className="p-4">اسم الضيف</th>
                                     <th className="p-4">تاريخ السفر</th>
-                                    <th className="p-4">المطار</th>
+                                    <th className="p-4">الموقع / الوجهة</th>
                                     <th className="p-4">نوع المركبة</th>
                                     <th className="p-4">حالة الرحلة</th>
                                     <th className="p-4">حالة الدفع</th>
@@ -457,7 +457,7 @@ console.log(error)
                                         <div className="flex justify-between items-start mb-6">
                                             <div>
                                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">ملخص الرحلة</p>
-                                                <h3 className="text-2xl font-bold text-[#1b2a32]">{selectedRequest.transferType || 'استقبال من المطار'}</h3>
+                                                <h3 className="text-2xl font-bold text-[#1b2a32]">{selectedRequest.transferType}</h3>
                                             </div>
                                             <div className="p-3 bg-amber-100/70 text-amber-800 rounded-2xl">
                                                 <Plane className="w-6 h-6" />
@@ -497,7 +497,7 @@ console.log(error)
                                             <div className="flex items-start gap-3">
                                                 <span className="w-5 h-5 flex items-center justify-center text-gray-400 mt-0.5 font-bold">📍</span>
                                                 <div>
-                                                    <span className="block text-[10px] font-bold text-gray-400 uppercase">المطار</span>
+                                                    <span className="block text-[10px] font-bold text-gray-400 uppercase">الموقع / الوجهة</span>
                                                     <span className="block text-xs font-bold text-[#1b2a32]">{selectedRequest.airport}</span>
                                                 </div>
                                             </div>

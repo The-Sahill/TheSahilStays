@@ -4,5 +4,7 @@ const financialController = require('../../controllers/transportation/financialC
 
 Router.get('/financialData', financialController.getFinancialData); // جلب البيانات المالية
 Router.get('/financialDataForTypes', financialController.calcFinancialByVehicle); 
+Router.get('/getFinancialDataCurrentMonth', financialController.getFinancialDataCurrentMonth); 
+
 
 module.exports = Router;
