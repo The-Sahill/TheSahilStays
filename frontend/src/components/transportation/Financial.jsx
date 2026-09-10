@@ -11,6 +11,7 @@ export default function FinancialDesk() {
   const [financialData, setFinancialData] = useState({
     totalCost: 0,
     partnerCost: 0,
+    partnerCostNotCompleted: 0, // القيمة الجديدة للإجمالي العام
     profit: 0,
   });
 
@@ -18,15 +19,18 @@ export default function FinancialDesk() {
   const [financialDataCurrentMonth, setFinancialDataCurrentMonth] = useState({
     totalCost: 0,
     partnerCost: 0,
+    partnerCostNotCompleted: 0, // القيمة الجديدة لشهر الحالي
     profit: 0,
   });
 
   const [financialDataForVehicle, setFinancialDataForVehicle] = useState({
     totalCostCar: 0,
     partnerCostCar: 0,
+    partnerCostCarNotCompleted: 0, // القيمة الجديدة لسيارة عادية
     profitCar: 0,
     totalCostVan: 0,
     partnerCostVan: 0,
+    partnerCostVanNotCompleted: 0, // القيمة الجديدة للفان
     profitVan: 0,
   });
 
@@ -39,6 +43,7 @@ export default function FinancialDesk() {
           setFinancialData({
             totalCost: data.totalCost,
             partnerCost: data.partnerCost,
+            partnerCostNotCompleted: data.partnerCostNotCompleted,
             profit: data.profit,
           });
         }
@@ -58,6 +63,7 @@ export default function FinancialDesk() {
           setFinancialDataCurrentMonth({
             totalCost: data.totalCost,
             partnerCost: data.partnerCost,
+            partnerCostNotCompleted: data.partnerCostNotCompleted,
             profit: data.profit,
           });
         }
@@ -77,9 +83,11 @@ export default function FinancialDesk() {
           setFinancialDataForVehicle({
             totalCostCar: data.totalCostCar,
             partnerCostCar: data.partnerCostCar,
+            partnerCostCarNotCompleted: data.partnerCostCarNotCompleted,
             profitCar: data.profitCar,
             totalCostVan: data.totalCostVan,
             partnerCostVan: data.partnerCostVan,
+            partnerCostVanNotCompleted: data.partnerCostVanNotCompleted,
             profitVan: data.profitVan,
           });
         }
@@ -148,14 +156,21 @@ export default function FinancialDesk() {
             </div>
           </div>
 
-          <div className="bg-[#f6e0bc] p-6 rounded-3xl border border-yellow-200/50 shadow-sm flex justify-between items-start">
-            <div>
-              <p className="text-xs font-bold text-yellow-900 opacity-80 tracking-wider uppercase mb-2">المدفوع للشركاء</p>
-              <p className="text-4xl font-semibold text-yellow-950 mb-2">{currentDisplayData.partnerCost}</p>
-              <p className="text-xs text-yellow-900 opacity-90">تكاليف الشركات المسواة</p>
+          <div className="bg-[#f6e0bc] p-6 rounded-3xl border border-yellow-200/50 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-bold text-yellow-900 opacity-80 tracking-wider uppercase mb-2">المدفوع للشركاء</p>
+                <p className="text-4xl font-semibold text-yellow-950 mb-2">{currentDisplayData.partnerCost}</p>
+                <p className="text-xs text-yellow-900 opacity-90">تكاليف الشركات المسواة</p>
+              </div>
+              <div className="p-2.5 rounded-full bg-[#e5b667] text-yellow-950">
+                <Building2 className="w-5 h-5" />
+              </div>
             </div>
-            <div className="p-2.5 rounded-full bg-[#e5b667] text-yellow-950">
-              <Building2 className="w-5 h-5" />
+            {/* القيمة الجديدة المضافة هنا */}
+            <div className="mt-4 pt-3 border-t border-yellow-900/10 flex justify-between items-center text-xs font-bold text-yellow-950">
+              <span>مستحق للشريك</span>
+              <span className="bg-yellow-900/10 px-2.5 py-1 rounded-lg">{currentDisplayData.partnerCostNotCompleted}</span>
             </div>
           </div>
 
@@ -192,8 +207,9 @@ export default function FinancialDesk() {
                     <div className="bg-[#1b2a32] h-full" style={{ width: '65%' }}></div>
                     <div className="bg-[#e5b667] h-full" style={{ width: '35%' }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between items-center text-xs text-gray-400">
                     <span>إيراد {financialDataForVehicle.totalCostCar} • تكلفة {financialDataForVehicle.partnerCostCar}</span>
+                    <span className="text-yellow-600 font-medium"> مستحق للشريك: {financialDataForVehicle.partnerCostCarNotCompleted}</span>
                   </div>
                 </div>
 
@@ -207,8 +223,9 @@ export default function FinancialDesk() {
                     <div className="bg-[#1b2a32] h-full" style={{ width: '60%' }}></div>
                     <div className="bg-[#e5b667] h-full" style={{ width: '40%' }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>إيراد {financialDataForVehicle.totalCostVan} • تكلفة {financialDataForVehicle.partnerCostVan}.</span>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>إيراد {financialDataForVehicle.totalCostVan} • تكلفة {financialDataForVehicle.partnerCostVan}</span>
+                    <span className="text-yellow-600 font-medium"> مستحق للشريك: {financialDataForVehicle.partnerCostVanNotCompleted}</span>
                   </div>
                 </div>
               </div>
