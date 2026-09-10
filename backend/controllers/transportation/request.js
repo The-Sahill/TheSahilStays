@@ -31,6 +31,17 @@ exports.createRequest = async (req, res) => {
       paymentStatus: 'غير مدفوع'
     });
 
+
+    // const message = await client.messages.create({
+    //   from: 'whatsapp:+17372212163',
+    //   to: 'whatsapp:+962790333650',
+    //   contentSid: process.env.CONTENTSIDTRAN,
+    //   contentVariables: JSON.stringify({
+    //     "1": guestName,
+    //     "2": mobileNumber,
+    //   })
+    // });
+
     res.status(201).json({
       success: true,
       message: 'تم إنشاء طلب النقل بنجاح',
