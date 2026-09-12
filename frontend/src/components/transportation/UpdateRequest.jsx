@@ -122,13 +122,13 @@ console.log(error)
 
     const getStatusBadge = (status) => {
         switch (status) {
-            case 'مكتمل':
+            case 'تم الصرف (تم الدفع)':
                 return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">مكتمل</span>;
-            case 'بانتظار الموافقة':
+            case 'بانتظار الموافقة على النقل':
                 return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">بانتظار الموافقة</span>;
             case 'ملغي':
                 return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">ملغي</span>;
-            case 'تمت الموافقة':
+            case 'تمت الموافقة على النقل':
                 return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">تمت الموافقة</span>;
             case 'مرفوض':
                 return <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">مرفوض</span>;
