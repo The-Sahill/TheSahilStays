@@ -230,7 +230,7 @@ console.log(error)
                                     <th className="p-4">الموقع / الوجهة</th>
                                     <th className="p-4">نوع المركبة</th>
                                     <th className="p-4">حالة الرحلة</th>
-                                    <th className="p-4">حالة الدفع</th>
+                                    <th className="p-4">حالة القبض</th>
                                     <th className="p-4 text-center">الإجراء</th>
                                 </tr>
                             </thead>
@@ -404,7 +404,7 @@ console.log(error)
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الطلب</label>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الصرف</label>
                                         <select 
                                         
                                             name="status" 
@@ -419,7 +419,7 @@ console.log(error)
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة الدفع</label>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-2">حالة القبض</label>
                                         <select 
                                           disabled={permission}
                                             name="paymentStatus" 
