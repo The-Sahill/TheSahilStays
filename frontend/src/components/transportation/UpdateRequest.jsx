@@ -412,9 +412,9 @@ console.log(error)
                                             onChange={handleChange} 
                                             className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:border-[#1b2a32]"
                                         >
-                                            <option value="بانتظار الموافقة">بانتظار الموافقة</option>
-                                            <option value="تمت الموافقة">تمت الموافقة</option>
-                                            <option value="مكتمل">مكتمل</option>
+                                            <option value="بانتظار الموافقة">بانتظار الموافقة على النقل</option>
+                                            <option value="تمت الموافقة">تمت الموافقة على النقل</option>
+                                            <option value="مكتمل">تم الصرف (تم الدفع)</option>
                                         </select>
                                     </div>
 
