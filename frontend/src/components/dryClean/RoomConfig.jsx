@@ -78,11 +78,15 @@ const RoomConfig = () => {
     const getUser = async () => {
 try{
 const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
-if(data.name != "abd" || data.name != "yahya"){
+console.log(data.name)
+if(data.name != "abd" && data.name != "yahya"){
  setPermission(false)
 }else{
   setPermission(true)
 }
+
+
+console.log(permission)
 
 }
 catch(error){
