@@ -41,11 +41,11 @@ const DryCleaningDispatch = () => {
   const itemLabels = {
     towels: 'مناشف',
     bathTowels: 'بشاكير',
-    blankets: 'بطانيات',
-    pillows: 'وسائد',
-    floorMats: 'دعاسات',
-    bedSheets: 'مفارش تخت',
-    robeCovers: 'أغطية روب'
+    blankets: 'حرام',
+    pillows: 'وجوه مخدات',
+    floorMats: 'ارضيات',
+    bedSheets: 'شراشف',
+    robeCovers: 'كفر'
   };
 
   // دالة لحساب إجمالي عدد القطع لطلب واحد
