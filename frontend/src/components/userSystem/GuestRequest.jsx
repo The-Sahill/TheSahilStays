@@ -120,11 +120,12 @@ export default function GuestRequestPage() {
     }
   };
 
-  const BOT_TOKEN_IKRAM = '8756978842:AAHbpmU_RCEVr8U9F5RzXjFmDlEofrFWiRg';
-  const CHAT_ID_IKRAM = '8807518777';
 
-  const BOT_TOKEN_ANWAR = '8693227592:AAFH65b_p9NPjO6-BSO-RP_dPJ-TlLR84-4';
-  const CHAT_ID_ANWAR = '8406585001';
+  const BOT_TOKEN_IKRAM = import.meta.env.VITE_BOT_TOKEN_IKRAM;
+  const CHAT_ID_IKRAM = import.meta.env.VITE_CHAT_ID_IKRAM;
+
+  const BOT_TOKEN_ANWAR = import.meta.env.VITE_BOT_TOKEN_ANWAR;
+  const CHAT_ID_ANWAR = import.meta.env.VITE_CHAT_ID_ANWAR;
 
   const sendTeleMessage = async (data) => {
     const message = `🛒 طلب نزيل جديد!\n\n` +

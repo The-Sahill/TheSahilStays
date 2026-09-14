@@ -63,6 +63,8 @@ const CustomerForm = () => {
                     price: ''
                 });
                 setLoading(false);
+
+                sendTeleMessage(data)
             }
         } catch (error) {
             console.log(error);
@@ -70,6 +72,42 @@ const CustomerForm = () => {
             setLoading(false);
         }
     };
+
+    const BOT_TOKEN_IKRAM = import.meta.env.VITE_BOT_TOKEN_IKRAM;
+  const CHAT_ID_IKRAM = import.meta.env.VITE_CHAT_ID_IKRAM;
+
+  const BOT_TOKEN_ANWAR = import.meta.env.VITE_BOT_TOKEN_ANWAR;
+  const CHAT_ID_ANWAR = import.meta.env.VITE_CHAT_ID_ANWAR;
+
+  const sendTeleMessage = async (data) => {
+    const message = `🛒 طلب نقل جديد!\n\n` +
+                    `👤 اسم النزيل: ${data.guestName}\n` +
+                    `🚪 رقم الموبايل: ${data.mobileNumber}\n` +
+                    `🚪 نوع النقل : ${data.transferType}\n` +
+                    `🚪  تاريخ النقل : ${data.travelDate}\n` +
+                    `🚪   وقت النقل : ${data.transferTime}\n` +
+                    `⏰ الوقت: ${new Date().toLocaleTimeString()}`;
+
+    const notifications = [
+      { token: BOT_TOKEN_IKRAM, chatId: CHAT_ID_IKRAM },
+      { token: BOT_TOKEN_ANWAR, chatId: CHAT_ID_ANWAR }
+    ];
+
+    for (const item of notifications) {
+      try {
+        await fetch(`https://api.telegram.org/bot${item.token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: item.chatId,
+            text: message
+          })
+        });
+      } catch (error) {
+        console.error(`فشل إرسال الإشعار للـ ID: ${item.chatId}`, error);
+      }
+    }
+  };
 
     return (
         <div className="min-h-screen w-full bg-[#fbfaf6] p-4 md:p-10 flex justify-center items-start relative" dir="rtl">
