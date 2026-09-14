@@ -183,7 +183,7 @@ export default function GuestRequestPage() {
         <div className='mb-10'>
               <span className="block text-xs text-gray-400">للاتصال المباشر بالاستقبال</span>
               <a href="tel:+962 7 9510 5012" className="text-sm font-bold text-cyan-300 hover:underline">
-              0795105012
+              0790333650
               </a>
 
             
