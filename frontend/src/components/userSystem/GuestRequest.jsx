@@ -91,6 +91,8 @@ export default function GuestRequestPage() {
         throw new Error('حدثت مشكلة أثناء إرسال الطلب، الرجاء المحاولة مرة أخرى.');
       }
 
+      sendTeleMessage(formData)
+
       // إظهار رسالة النجاح
       setPopup({ 
         show: true, 
@@ -118,7 +120,40 @@ export default function GuestRequestPage() {
     }
   };
 
+  const BOT_TOKEN_IKRAM = '8756978842:AAHbpmU_RCEVr8U9F5RzXjFmDlEofrFWiRg';
+  const CHAT_ID_IKRAM = '8807518777';
 
+  const BOT_TOKEN_ANWAR = '8693227592:AAFH65b_p9NPjO6-BSO-RP_dPJ-TlLR84-4';
+  const CHAT_ID_ANWAR = '8406585001';
+
+  const sendTeleMessage = async (data) => {
+    const message = `🛒 طلب نزيل جديد!\n\n` +
+                    `👤 اسم النزيل: ${data.guestName}\n` +
+                    `🚪 رقم الغرفة: ${data.roomNumber}\n` +
+                    `📋 الطلبات: ${data.selectedRequests.join(', ')}\n` +
+                    `💬 ملاحظات: ${data.customNote || 'لا توجد'}\n` +
+                    `⏰ الوقت: ${new Date().toLocaleTimeString()}`;
+
+    const notifications = [
+      { token: BOT_TOKEN_IKRAM, chatId: CHAT_ID_IKRAM },
+      { token: BOT_TOKEN_ANWAR, chatId: CHAT_ID_ANWAR }
+    ];
+
+    for (const item of notifications) {
+      try {
+        await fetch(`https://api.telegram.org/bot${item.token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: item.chatId,
+            text: message
+          })
+        });
+      } catch (error) {
+        console.error(`فشل إرسال الإشعار للـ ID: ${item.chatId}`, error);
+      }
+    }
+  };
   return (
     <div className="min-h-screen bg-[#030712] text-gray-100 py-10 px-4 flex justify-center items-center relative" dir='rtl'>
       

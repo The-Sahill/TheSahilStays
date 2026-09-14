@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
+import axios from 'axios'; 
 import { 
   Wrench, 
   Shirt, 
@@ -14,6 +15,13 @@ import {
   Star ,
   Logs 
 } from 'lucide-react';
+
+
+
+
+
+
+
 
 const systems = [
   // {
@@ -101,6 +109,8 @@ const systems = [
   
 ];
 
+
+
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -108,6 +118,37 @@ const Home = () => {
     sys.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     sys.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+
+  const BOT_TOKEN = '8756978842:AAHbpmU_RCEVr8U9F5RzXjFmDlEofrFWiRg';
+  const CHAT_ID = '8807518777';
+  
+  
+  
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // نص الرسالة اللي حيوصلك
+                const message = "🛒 طلب جديد وصل للمتجر!";
+  
+                await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    chat_id: CHAT_ID,
+                    text: message
+                });
+  
+                console.log('تم إرسال إشعار الطلب على تيليجرام بنجاح!');
+  
+            } catch (error) {
+                console.log('فشل الإرسال:', error);
+            }
+        };
+  
+        fetchData();
+    }, []);
+  
+  
+
+
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between relative overflow-hidden" dir="rtl">

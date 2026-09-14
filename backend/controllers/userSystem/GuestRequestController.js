@@ -48,19 +48,19 @@ exports.createRequest = async (req, res) => {
     console.log("الطلبات المحضرة للإرسال:", requestsText);
 
     // 2. Send WhatsApp message using ContentSid with Custom Variables
-    const message = await client.messages.create({
-      from: 'whatsapp:+17372212163',
-      to: 'whatsapp:+962790333650',
-      contentSid: process.env.CONTENTSID,
-      contentVariables: JSON.stringify({
-        "1": guestName,
-        "2": roomNumber,
-        "3": requestsText,
-        "4": customNote || "لا يوجد"
-      })
-    });
+    // const message = await client.messages.create({
+    //   from: 'whatsapp:+17372212163',
+    //   to: 'whatsapp:+962790333650',
+    //   contentSid: process.env.CONTENTSID,
+    //   contentVariables: JSON.stringify({
+    //     "1": guestName,
+    //     "2": roomNumber,
+    //     "3": requestsText,
+    //     "4": customNote || "لا يوجد"
+    //   })
+    // });
 
-    console.log("تم إرسال الرسالة بنجاح، SID:", message.sid);
+    // console.log("تم إرسال الرسالة بنجاح، SID:", message.sid);
 
     // 3. Return success
     return res.status(201).json({
