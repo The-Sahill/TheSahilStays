@@ -62,6 +62,10 @@ approved:{
         count: { type: Number},
         price: { type: Number}
     },
+    robe: { // روب 
+        count: { type: Number},
+        price: { type: Number}
+    },
 
     customNotes:{
         type: String

@@ -21,13 +21,14 @@ const RoomConfig = () => {
     {
       name: 'مستلزمات الغرف والأسرة (Room Inventory)',
       items: [
-        { key: 'towels', name: 'مناشف (Towels)' },
-        { key: 'bathTowels', name: 'بشاكير (Bath Towels)' },
-        { key: 'blankets', name: 'حرامات (Blankets)' },
-        { key: 'pillows', name: 'مخدات (Pillows)' },
-        { key: 'floorMats', name: 'أغطية أرضيات (Floor Mats)' },
-        { key: 'bedSheets', name: 'شراشف (Bed Sheets)' },
-        { key: 'robeCovers', name: 'كفر  (Robe Covers)' },
+        { key: 'towels', name: 'مناشف ' },
+        { key: 'bathTowels', name: 'بشاكير ' },
+        { key: 'blankets', name: 'حرام ' },
+        { key: 'pillows', name: 'وجوه مخدات ' },
+        { key: 'floorMats', name: ' أرضيات ' },
+        { key: 'bedSheets', name: 'شراشف ' },
+        { key: 'robeCovers', name: 'كفر  ' },
+        { key: 'robe', name: 'روب' },
       ]
     }
   ];

@@ -27,13 +27,14 @@ const RoomsStatus = () => {
     {
       name: 'ROOM ITEMS & INVENTORY',
       items: [
-        { key: 'towels', name: 'مناشف (Towels)' },
-        { key: 'bathTowels', name: 'بشاكير (Bath Towels)' },
-        { key: 'blankets', name: 'حرامات (Blankets)' },
-        { key: 'pillows', name: 'مخدات (Pillows)' },
-        { key: 'floorMats', name: 'أغطية أرضيات (Floor Mats)' },
-        { key: 'bedSheets', name: 'شراشف (Bed Sheets)' },
-        { key: 'robeCovers', name: 'كفر  (Robe Covers)' },
+        { key: 'towels', name: 'مناشف ' },
+        { key: 'bathTowels', name: 'بشاكير ' },
+        { key: 'blankets', name: 'حرامات ' },
+        { key: 'pillows', name: 'مخدات ' },
+        { key: 'floorMats', name: 'أغطية أرضيات ' },
+        { key: 'bedSheets', name: 'شراشف ' },
+        { key: 'robeCovers', name: 'كفر  ' },
+        { key: 'robe', name: 'روب' },
       ]
     },
   ];
@@ -74,7 +75,7 @@ const RoomsStatus = () => {
   // دالة لحساب إجمالي عدد القطع في الغرفة الواحدة
   const calculateRoomTotalCount = (room) => {
     let total = 0;
-    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers'];
+    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe'];
     keys.forEach(key => {
       if (room[key] && typeof room[key].count === 'number') {
         total += room[key].count;
@@ -97,6 +98,7 @@ const RoomsStatus = () => {
       floorMats: { count: room.floorMats?.count ?? 0, price: room.floorMats?.price ?? 0 },
       bedSheets: { count: room.bedSheets?.count ?? 0, price: room.bedSheets?.price ?? 0 },
       robeCovers: { count: room.robeCovers?.count ?? 0, price: room.robeCovers?.price ?? 0 },
+      robe: { count: room.robe?.count ?? 0, price: room.robe?.price ?? 0 },
     };
 
     setCurrentModalItems(roomItemsState);
@@ -128,6 +130,7 @@ const RoomsStatus = () => {
       floorMats: { count: selectedRoom.floorMats?.count ?? 0, price: selectedRoom.floorMats?.price ?? 0 },
       bedSheets: { count: selectedRoom.bedSheets?.count ?? 0, price: selectedRoom.bedSheets?.price ?? 0 },
       robeCovers: { count: selectedRoom.robeCovers?.count ?? 0, price: selectedRoom.robeCovers?.price ?? 0 },
+      robe: { count: selectedRoom.robe?.count ?? 0, price: selectedRoom.robe?.price ?? 0 },
     });
   }
 };
@@ -198,7 +201,7 @@ const RoomsStatus = () => {
 
   const calculateRoomTotalPrice = (room) => {
     let total = 0;
-    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers'];
+    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe'];
     
     keys.forEach(key => {
       const count = room[key]?.count || 0;

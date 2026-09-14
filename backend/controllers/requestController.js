@@ -15,8 +15,10 @@ exports.createRequest = async (req, res) => {
         const roomNumber = req.params.id;
         const { 
             customNotes, total, towels, bathTowels, blankets, 
-            pillows, floorMats, bedSheets, robeCovers ,type,customer
+            pillows, floorMats, bedSheets, robeCovers ,type,customer,robe
         } = req.body;
+
+        console.log("robe",robe)
 
         const newRequestData = {
             number: roomNumber,
@@ -25,11 +27,12 @@ exports.createRequest = async (req, res) => {
             customNotes: customNotes,   
             customer,
             total: total || 0,
-            towels, bathTowels, blankets, pillows, floorMats, bedSheets, robeCovers
+            towels, bathTowels, blankets, pillows, floorMats, bedSheets, robeCovers,robe
         };
 
         const savedRequest = await Request.create(newRequestData);
-
+console.log('تم إنشاء newRequestData:', newRequestData);
+console.log('تم إنشاء الطلب:', savedRequest);
         res.status(201).json({
             success: true,
             message: 'تم إنشاء الطلب بنجاح',

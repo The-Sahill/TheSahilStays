@@ -177,12 +177,14 @@ const DeliveryBatches = () => {
     if (!requests || !Array.isArray(requests)) return [];
 
     const itemNamesAr = {
-      towels: 'مناشف عادية (Towels)',
-      bathTowels: 'مناشف حمام (Bath Towels)',
-      blankets: 'حرامات (Blankets)',
-      pillows: 'وسائد (Pillows)',
-      floorMats: 'دواسات أرضية (Floor Mats)',
-      robeCovers: 'أغطية روب (Robe Covers)'
+      towels: 'مناشف',
+      bathTowels: 'بشاكير',
+      blankets: 'حرام',
+      bedSheets:'شراشف',
+      pillows: 'وجوه مخدات',
+      floorMats: ' ارضيات',
+      robeCovers: 'كفر',
+      robe: 'روب'
     };
 
     const summaryMap = {};
@@ -408,10 +410,10 @@ toast.success("تم إرسال الملاحظة بنجاح!");
 
               {/* معلومات عامة */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div>
+                {/* <div>
                   <span className="block text-xs text-slate-400 mb-1">معرف الدفعة (ID)</span>
                   <span className="font-bold text-slate-800 text-xs font-mono">{selectedBatch._id}</span>
-                </div>
+                </div> */}
                 <div>
                   <span className="block text-xs text-slate-400 mb-1">تاريخ الإنشاء</span>
                   <span className="font-bold text-slate-800 text-sm">
@@ -593,12 +595,14 @@ toast.success("تم إرسال الملاحظة بنجاح!");
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             {itemsList.map(([key, itemObj]) => {
                               const itemNamesAr = {
-                                towels: 'مناشف عادية (Towels)',
-                                bathTowels: 'مناشف حمام (Bath Towels)',
-                                blankets: 'حرامات (Blankets)',
-                                pillows: 'وسائد (Pillows)',
-                                floorMats: 'دواسات أرضية (Floor Mats)',
-                                robeCovers: 'أغطية روب (Robe Covers)'
+                                towels: 'مناشف',
+                                bathTowels: 'بشاكير',
+                                blankets: 'حرام',
+                                bedSheets:'شراشف',
+                                pillows: 'وجوه مخدات',
+                                floorMats: ' ارضيات',
+                                robeCovers: 'كفر',
+                                robe: 'روب'
                               };
                               const displayName = itemNamesAr[key] || key;
                               
