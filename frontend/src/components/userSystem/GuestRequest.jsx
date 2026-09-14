@@ -5,6 +5,12 @@ import axios from 'axios'
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
+const BOT_TOKEN_IKRAM = import.meta.env.VITE_BOT_TOKEN_IKRAM
+const CHAT_ID_IKRAM = import.meta.env.VITE_CHAT_ID_IKRAM
+
+const BOT_TOKEN_ANWAR = import.meta.env.VITE_BOT_TOKEN_ANWAR
+const CHAT_ID_ANWAR = import.meta.env.VITE_CHAT_ID_ANWAR
+
 const predefinedRequests = [
   "مناشف / بشاكير",
   "فاين حمام",
@@ -121,11 +127,6 @@ export default function GuestRequestPage() {
   };
 
 
-  const BOT_TOKEN_IKRAM = import.meta.env.VITE_BOT_TOKEN_IKRAM;
-  const CHAT_ID_IKRAM = import.meta.env.VITE_CHAT_ID_IKRAM;
-
-  const BOT_TOKEN_ANWAR = import.meta.env.VITE_BOT_TOKEN_ANWAR;
-  const CHAT_ID_ANWAR = import.meta.env.VITE_CHAT_ID_ANWAR;
 
   const sendTeleMessage = async (data) => {
     const message = `🛒 طلب نزيل جديد!\n\n` +
@@ -142,6 +143,7 @@ export default function GuestRequestPage() {
 
     for (const item of notifications) {
       try {
+        console.log(`إرسال الإشعار إلى الـ ID: ${item.chatId} ${item.token}`);
         await fetch(`https://api.telegram.org/bot${item.token}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
