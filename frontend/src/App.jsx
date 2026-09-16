@@ -17,6 +17,7 @@ import StoreManagementPage from './components/storeItem/StoreItem';
 import GuestReviewsPage from './components/guestReview/GuestReview';
 import HotelReviewsAdminPage from './components/hotelReview/HotelReview';
 import GuestSubmitReview from './components/hotelReview/GuestSubmitReview';
+import EditRequest from './components/dryClean/EditRequest';
 
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
@@ -160,6 +161,15 @@ function App() {
           element={
             <ProtectedRoute>
               <GuestReviewsPage />
+            </ProtectedRoute>
+          } 
+        />
+
+<Route 
+          path="/dry-cleaning/edit/:id" 
+          element={
+            <ProtectedRoute>
+              <EditRequest />
             </ProtectedRoute>
           } 
         />

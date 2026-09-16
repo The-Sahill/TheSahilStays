@@ -6,6 +6,8 @@ router.delete('/deleteRequest/:id', requestController.deleteRequest);
 router.post('/createRequest/:id', requestController.createRequest )
 router.get('/requests', requestController.getRequests);
 router.put('/requests/:id', requestController.updateRequestStatus);
+router.get('/getRequest/:id', requestController.getRequest);
+router.put('/updateRequest/:id', requestController.updateRequest);
 
 
 module.exports=router

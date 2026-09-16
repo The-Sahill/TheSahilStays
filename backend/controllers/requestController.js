@@ -108,3 +108,52 @@ res.status(200).json({error:false,message :"تم الحذف الطلب بنجا�
         }
 
     }
+
+
+    exports.getRequest = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const request = await Request.findById(id);
+            
+            if (!request) {
+                return res.status(404).json({ error: true, message: "الطلب غير موجود" });
+            }
+    
+            // إرجاع الـ request بشكل مباشر لتسهيل التعامل معه في الفرونت إند
+            return res.status(200).json(request); 
+    
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: true, message: "حدث خطا اثناء جلب الطلب" });
+        }
+    };
+    
+    exports.updateRequest = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { customNotes, total, towels, bathTowels, blankets, 
+                pillows, floorMats, bedSheets, robeCovers, type, customer, robe } = req.body;
+    
+            // أضفنا { new: true } لضمان إرجاع البيانات المحدثة وليست القديمة
+            const updatedRequest = await Request.findByIdAndUpdate(
+                id,
+                { customNotes, total, towels, bathTowels, blankets, 
+                  pillows, floorMats, bedSheets, robeCovers, type, customer, robe },
+                { new: true, runValidators: true }
+            );
+    
+            if (!updatedRequest) {
+                return res.status(404).json({ error: true, message: "الطلب غير موجود للتعديل" });
+            }
+    
+            return res.status(200).json({ 
+                error: false, 
+                message: "تم تعديل الطلب بنجاح", 
+                updatedRequest 
+            });
+    
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: true, message: "حدث خطا اثناء تعديل الطلب" });
+        }
+    };

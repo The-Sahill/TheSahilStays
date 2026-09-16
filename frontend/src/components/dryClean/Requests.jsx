@@ -3,6 +3,7 @@ import { Search, Filter, Eye, X, Shirt, Loader2, ChevronRight, ChevronLeft, Cale
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 import axios from 'axios';
 import {toast} from 'react-toastify'
+import { Link } from 'react-router-dom';
 
 const DryCleaningRequests = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -243,12 +244,12 @@ toast.error(error)
             <thead>
               <tr className="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase bg-slate-50/50">
                 <th className="py-4 px-6">رقم الغرفة</th>
-                <th className="py-4 px-6">نوع الطلب</th>
                 <th className="py-4 px-6">الموظف المسؤول</th>
                 <th className="py-4 px-6">النزيل</th>
                 <th className="py-4 px-6">القطع</th>
                 <th className="py-4 px-6">الإجمالي</th>
                 <th className="py-4 px-6">الحالة</th>
+                <th className="py-4 px-6">ملاحظات</th>
                 <th className="py-4 px-6">تاريخ الطلب</th>
                 <th className="py-4 px-6 text-left">الإجراءات</th>
               </tr>
@@ -260,11 +261,7 @@ toast.error(error)
                 return (
                   <tr key={req._id || req.number} className="hover:bg-slate-50/80 transition-colors">
                     <td className="py-4 px-6 font-bold text-slate-900">{req.number}</td>
-                    <td className="py-4 px-6 text-slate-600 font-medium">
-                   
-                      {req.type == "Full" ? "خروج" : "طلب"}
-
-                    </td>
+                  
                     <td className="py-4 px-6 text-slate-800">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
                         {req.employee || 'غير متوفر'}
@@ -287,6 +284,7 @@ toast.error(error)
                         {req.approved === "تم الموافقة" ? 'موافق عليه' : req.approved === "تم الرفض" ? 'مرفوض' : 'قيد الانتظار'}
                       </span>
                     </td>
+                    <td className="py-4 px-6 text-slate-600">{req.customNotes}</td>
                     <td className="py-4 px-6 text-slate-500 text-xs font-medium">
                     {new Date(req.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
@@ -298,7 +296,8 @@ toast.error(error)
                       >
                         <Eye size={18} />
                       </button>
-
+                      <Link to={`/dry-cleaning/edit/${req._id}`}>
+<button className='bg-blue-500 text-white px-5 py-1 rounded-full '>تعديل الطلب</button></Link>
                       <button onClick={()=> deleteRequest(req._id)} className='mr-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full'>حذف الطلب</button>
                     </td>
                   </tr>
