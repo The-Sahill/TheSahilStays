@@ -56,7 +56,7 @@ const DeliveryBatches = () => {
     }
   };
 
-  const canModifyStatus = ['abd', 'yahya'].includes(currentUsername.toLowerCase());
+  const canModifyStatus = ['abd', 'yahya','dr omar', 'dr mahmoud','eng qassem'].includes(currentUsername.toLowerCase());
 
   const fetchBatches = async () => {
     try {

@@ -126,7 +126,7 @@ const DryCleaningRequests = () => {
     const getUser = async () => {
 try{
 const {data} = await axios.get(`${apiUrl}/batches/user`, { withCredentials: true });
-if(data.name != "abd" && data.name != "yahya"){
+if(data.name != "abd" && data.name != "yahya" && data.name != "dr omar" && data.name != "dr mahmoud" && data.name != "eng qassem"  ){
  setPermission(false)
 }else{
   setPermission(true)
