@@ -162,7 +162,7 @@ const EditRequest = () => {
           </div>
           
           <button 
-            onClick={() => navigate('/requests')}
+            onClick={() => navigate('/Dashboard/dry-clean')}
             className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X size={20} />
