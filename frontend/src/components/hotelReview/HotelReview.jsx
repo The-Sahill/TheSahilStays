@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, MessageSquarePlus, ChevronRight, ChevronLeft, Filter, Search, Award } from 'lucide-react';
+import { Loader2, Star, CheckCircle2, AlertCircle, RefreshCw, ChevronRight, ChevronLeft, Filter, Search, Clock, Hotel } from 'lucide-react';
 
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
+// دالة لتنسيق الوقت والتاريخ بالشكل العربي
+const formatDateTime = (dateString) => {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+
+  return new Intl.DateTimeFormat('ar-EG', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  }).format(date);
+};
 
 export default function GuestReviewsPage() {
   const [reviews, setReviews] = useState([]);
@@ -9,21 +25,7 @@ export default function GuestReviewsPage() {
   const [error, setError] = useState('');
   const [popup, setPopup] = useState({ show: false, message: '', type: '' });
 
-  // نموذج إضافة تقييم جديد مع الأقسام الستة
-  const [formData, setFormData] = useState({
-    guestName: '',
-    roomNumber: '',
-    receptionRating: 5,
-    cleanlinessRating: 5,
-    staffRating: 5,
-    locationRating: 5,
-    servicesRating: 5,
-    overallRating: 5,
-    comment: ''
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  // حالات الفلتر، البحث، والـ Pagination
+  // حالات الفلتر، البحث، والـ Pagination (6 عناصر بالصفحة)
   const [searchName, setSearchName] = useState('');
   const [selectedRatingFilter, setSelectedRatingFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,55 +57,14 @@ export default function GuestReviewsPage() {
     fetchReviews();
   }, []);
 
-  // دالة لإضافة تقييم جديد
-  const handleAddReview = async (e) => {
-    e.preventDefault();
-    if (!formData.guestName || !formData.roomNumber) {
-      setPopup({ show: true, message: 'الرجاء إدخال اسم النزيل ورقم الغرفة على الأقل', type: 'error' });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const response = await fetch(`${apiUrl}/hotel-reviews/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) throw new Error('فشل إرسال التقييم');
-
-      setPopup({ show: true, message: 'تم إرسال تقييمك بنجاح، شكراً لك!', type: 'success' });
-      setFormData({
-        guestName: '',
-        roomNumber: '',
-        receptionRating: 5,
-        cleanlinessRating: 5,
-        staffRating: 5,
-        locationRating: 5,
-        servicesRating: 5,
-        overallRating: 5,
-        comment: ''
-      });
-      fetchReviews(); 
-      setTimeout(() => setPopup({ show: false, message: '', type: '' }), 3000);
-
-    } catch (err) {
-      setPopup({ show: true, message: err.message, type: 'error' });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   // تطبيق الفلاتر (البحث بالاسم + تصفية التقييم العام)
   const filteredReviews = reviews.filter((rev) => {
-    const matchesName = rev.guestName.toLowerCase().includes(searchName.toLowerCase());
+    const matchesName = rev.guestName?.toLowerCase().includes(searchName.toLowerCase());
     const matchesRating = selectedRatingFilter === 'all' || rev.overallRating === Number(selectedRatingFilter);
     return matchesName && matchesRating;
   });
 
-  // حساب الـ Pagination
+  // حساب الـ Pagination لـ 6 عناصر في كل صفحة
   const totalPages = Math.ceil(filteredReviews.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -122,12 +83,12 @@ export default function GuestReviewsPage() {
   // رسم النجوم بصرياً
   const renderStars = (rating) => {
     return (
-      <div className="flex gap-1">
+      <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            size={14}
-            className={star <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-600'}
+            size={13}
+            className={star <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-700'}
           />
         ))}
       </div>
@@ -135,31 +96,29 @@ export default function GuestReviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 relative p-6 md:p-10" dir="rtl">
+    <div className="min-h-screen bg-gray-950 text-gray-100 relative p-4 sm:p-6 md:p-10" dir="rtl">
       {/* خلفية جمالية (Glow Effects) */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-gray-800 pb-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-wide">تقييمات النزلاء</h1>
-            <p className="text-sm text-gray-400 mt-1">متابعة آراء وتقييمات الضيوف لتحسين جودة الخدمة</p>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-wide">تقييمات النزلاء</h1>
+            <p className="text-xs sm:text-sm text-gray-400 mt-1">متابعة آراء وتقييمات الضيوف ووقت إرسالها لتحسين جودة الخدمة</p>
           </div>
           <button
             onClick={fetchReviews}
-            className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 border border-gray-800 px-4 py-2.5 rounded-xl text-sm font-medium text-cyan-400 cursor-pointer transition-all"
+            className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-cyan-400 cursor-pointer transition-all"
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-            <span>تحديث</span>
+            <span>تحديث القائمة</span>
           </button>
         </div>
 
-       
-
-        {/* Filters Section (Search by Name & Rating Filter) */}
+        {/* Filters Section (Search & Filter) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="relative">
             <Search size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -168,13 +127,13 @@ export default function GuestReviewsPage() {
               placeholder="ابحث باسم النزيل..."
               value={searchName}
               onChange={handleSearchChange}
-              className="w-full bg-gray-900 border border-gray-800 rounded-xl pr-10 pl-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-cyan-500"
+              className="w-full bg-gray-900 border border-gray-800 rounded-xl pr-10 pl-4 py-3 text-xs sm:text-sm text-gray-200 focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
 
-          <div className="flex items-center justify-between bg-gray-900 border border-gray-800 px-4 py-2 rounded-xl">
-            <div className="flex items-center gap-2 text-sm text-gray-300">
-              <Filter size={18} className="text-cyan-400" />
+          <div className="flex items-center justify-between bg-gray-900 border border-gray-800 px-4 py-2.5 rounded-xl">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
+              <Filter size={16} className="text-cyan-400" />
               <span>فلترة بالتقييم العام:</span>
             </div>
             <select
@@ -194,25 +153,26 @@ export default function GuestReviewsPage() {
 
         {/* Error State */}
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-sm flex items-center gap-3">
+          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-xs sm:text-sm flex items-center gap-3">
             <AlertCircle size={20} />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Table View */}
+        {/* Content View */}
         {loading && reviews.length === 0 ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="animate-spin text-cyan-500" size={40} />
           </div>
         ) : filteredReviews.length === 0 ? (
           <div className="text-center py-20 bg-gray-900/50 border border-gray-800/60 rounded-2xl">
-            <p className="text-gray-400 text-lg">لا توجد تقييمات تطابق نتائج البحث أو الفلتر الحالي</p>
+            <p className="text-gray-400 text-sm sm:text-base">لا توجد تقييمات تطابق نتائج البحث أو الفلتر الحالي</p>
           </div>
         ) : (
           <>
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
-              <div className="overflow-x-auto">
+            {/* Desktop Table View (Hidden on mobile) */}
+            <div className="hidden lg:block bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden mb-6">
+              <div className="">
                 <table className="w-full text-right border-collapse">
                   <thead>
                     <tr className="bg-gray-950 border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wider">
@@ -224,39 +184,34 @@ export default function GuestReviewsPage() {
                       <th className="py-4 px-4 font-semibold">الموقع</th>
                       <th className="py-4 px-4 font-semibold">الخدمات</th>
                       <th className="py-4 px-4 font-semibold">العام</th>
+                      <th className="py-4 px-4 font-semibold">الوقت والتاريخ</th>
                       <th className="py-4 px-4 font-semibold">التعليق</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800 text-sm">
+                  <tbody className="divide-y divide-gray-800 text-xs sm:text-sm">
                     {currentReviews.map((rev) => (
-                      <tr key={rev._id} className="hover:bg-gray-850 transition-colors">
+                      <tr key={rev._id || rev.id} className="hover:bg-gray-850 transition-colors">
                         <td className="py-4 px-4 whitespace-nowrap">
-                          <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-3 py-1 rounded-xl text-xs font-semibold">
+                          <span className="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-2.5 py-1 rounded-xl text-xs font-semibold">
                             {rev.roomNumber}
                           </span>
                         </td>
                         <td className="py-4 px-4 font-medium text-gray-100 whitespace-nowrap">
                           {rev.guestName}
                         </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.receptionRating)}
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.receptionRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.cleanlinessRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.staffRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.locationRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.servicesRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap">{renderStars(rev.overallRating)}</td>
+                        <td className="py-4 px-4 whitespace-nowrap text-gray-400 text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <Clock size={13} className="text-cyan-400" />
+                            <span>{formatDateTime(rev.createdAt)}</span>
+                          </div>
                         </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.cleanlinessRating)}
-                        </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.staffRating)}
-                        </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.locationRating)}
-                        </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.servicesRating)}
-                        </td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          {renderStars(rev.overallRating)}
-                        </td>
-                        <td className="py-4 px-4 text-gray-300 max-w-xs">
+                        <td className="py-4 px-4 text-gray-300 max-w-xs truncate">
                           {rev.comment ? rev.comment : <span className="text-gray-600">بدون تعليق</span>}
                         </td>
                       </tr>
@@ -266,17 +221,55 @@ export default function GuestReviewsPage() {
               </div>
             </div>
 
-            {/* Pagination Controls */}
+            {/* Mobile & Tablet Card View (Responsive Grid) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4 mb-6">
+              {currentReviews.map((rev) => (
+                <div key={rev._id || rev.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col gap-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <span className="font-bold text-sm text-gray-100 block">{rev.guestName}</span>
+                      <span className="text-xs text-cyan-400 font-medium">غرفة رقم: {rev.roomNumber}</span>
+                    </div>
+                    <div className="bg-gray-950 border border-gray-800 px-2.5 py-1 rounded-xl flex items-center gap-1 text-xs">
+                      <span className="text-gray-400">العام:</span>
+                      {renderStars(rev.overallRating)}
+                    </div>
+                  </div>
+
+                  {/* تفاصيل التقييمات الفرعية */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-gray-950/60 p-2.5 rounded-xl border border-gray-800/60 text-xs text-gray-300">
+                    <div className="flex justify-between"><span>الاستقبال:</span> {renderStars(rev.receptionRating)}</div>
+                    <div className="flex justify-between"><span>النظافة:</span> {renderStars(rev.cleanlinessRating)}</div>
+                    <div className="flex justify-between"><span>العمل:</span> {renderStars(rev.staffRating)}</div>
+                    <div className="flex justify-between"><span>الموقع:</span> {renderStars(rev.locationRating)}</div>
+                    <div className="flex justify-between"><span>الخدمات:</span> {renderStars(rev.servicesRating)}</div>
+                  </div>
+
+                  {rev.comment && (
+                    <p className="text-xs text-gray-300 bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+                      {rev.comment}
+                    </p>
+                  )}
+
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400 pt-2 border-t border-gray-800/80">
+                    <Clock size={13} className="text-cyan-400" />
+                    <span>{formatDateTime(rev.createdAt)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls (6 عناصر بكل صفحة) */}
             {totalPages > 1 && (
-              <div className="flex justify-between items-center mt-6 px-2">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-3 bg-gray-900 border border-gray-800 px-4 py-3 rounded-2xl">
                 <span className="text-xs text-gray-400">
-                  عرض الصفحة {currentPage} من {totalPages} (إجمالي النتائج: {filteredReviews.length})
+                  عرض الصفحة <span className="text-cyan-400 font-semibold">{currentPage}</span> من <span className="font-semibold">{totalPages}</span> (إجمالي التقييمات: {filteredReviews.length})
                 </span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto justify-between sm:justify-start">
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="flex items-center gap-1 bg-gray-900 hover:bg-gray-800 border border-gray-800 px-3 py-1.5 rounded-xl text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    className="flex items-center justify-center gap-1 bg-gray-950 hover:bg-gray-850 border border-gray-800 px-3.5 py-2 rounded-xl text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                   >
                     <ChevronRight size={14} />
                     <span>السابق</span>
@@ -284,7 +277,7 @@ export default function GuestReviewsPage() {
                   <button
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="flex items-center gap-1 bg-gray-900 hover:bg-gray-800 border border-gray-800 px-3 py-1.5 rounded-xl text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
+                    className="flex items-center justify-center gap-1 bg-gray-950 hover:bg-gray-850 border border-gray-800 px-3.5 py-2 rounded-xl text-xs font-medium text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all"
                   >
                     <span>التالي</span>
                     <ChevronLeft size={14} />
@@ -296,24 +289,6 @@ export default function GuestReviewsPage() {
         )}
 
       </div>
-
-      {/* Popup Notification */}
-      {popup.show && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="max-w-sm w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-6 text-center">
-            <div className="flex justify-center mb-3">
-              <CheckCircle2 size={36} className="text-emerald-400" />
-            </div>
-            <p className="text-gray-200 text-sm mb-4">{popup.message}</p>
-            <button
-              onClick={() => setPopup({ show: false, message: '', type: '' })}
-              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2 rounded-xl text-sm font-semibold cursor-pointer"
-            >
-              حسناً
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

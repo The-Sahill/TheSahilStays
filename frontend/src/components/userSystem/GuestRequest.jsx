@@ -112,7 +112,7 @@ export default function GuestRequestPage() {
       // إغلاق النافذة التلقائي بعد 4 ثوانٍ
       setTimeout(() => {
         setPopup({ show: false, message: '', type: '' });
-      }, 8000);
+      }, 9000);
 
     } catch (err) {
       // إظهار رسالة الخطأ عند وجود مشكلة شبكة أو من السيرفر
