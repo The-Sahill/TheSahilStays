@@ -297,7 +297,7 @@ toast.error(error)
                         <Eye size={18} />
                       </button>
                       <Link to={`/dry-cleaning/edit/${req._id}`}>
-<button className='bg-blue-500 text-white px-5 py-1 rounded-full '>تعديل الطلب</button></Link>
+<button className='bg-blue-500 text-white px-5 py-1 rounded-full mr-3 '>تعديل الطلب</button></Link>
                       <button onClick={()=> deleteRequest(req._id)} className='mr-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full'>حذف الطلب</button>
                     </td>
                   </tr>
