@@ -24,7 +24,7 @@ export default function GuestSubmitReview() {
   const [popup, setPopup] = useState({ show: false, message: '', type: '' });
 
   // رابط جوجل ماب المخصص للتقييم
-  const googleMapUrl = "https://www.google.com/search?hl=en-JO&gl=jo&q=The+Sahill+Stays,+Omar+Shatieh+St.+20,+Amman&ludocid=11769573086745984219&lsig=AB86z5VA2uzfIBq9uOykh-PDwPlS&utm_source=chatgpt.com#lrd=0x151ca12f559f6d35:0xa355ec5d517dfcdb,3";
+  const googleMapUrl = "https://search.google.com/local/writereview?placeid=ChIJNW2fVS-hHBUR2_x9UV3sVaM";
 
   const handleStarClick = (star) => {
     setRatingStep(star);
