@@ -46,7 +46,8 @@ const DryCleaningDispatch = () => {
     floorMats: 'ارضيات',
     bedSheets: 'شراشف',
     robeCovers: 'كفر',
-    robe: 'روب'
+    robe: 'روب',
+    other: 'أخرى'
   };
 
   // دالة لحساب إجمالي عدد القطع لطلب واحد

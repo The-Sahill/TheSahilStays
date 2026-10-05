@@ -15,7 +15,7 @@ exports.createRequest = async (req, res) => {
         const roomNumber = req.params.id;
         const { 
             customNotes, total, towels, bathTowels, blankets, 
-            pillows, floorMats, bedSheets, robeCovers ,type,customer,robe
+            pillows, floorMats, bedSheets, robeCovers ,type,customer,robe,other
         } = req.body;
 
         console.log("robe",robe)
@@ -27,7 +27,7 @@ exports.createRequest = async (req, res) => {
             customNotes: customNotes,   
             customer,
             total: total || 0,
-            towels, bathTowels, blankets, pillows, floorMats, bedSheets, robeCovers,robe
+            towels, bathTowels, blankets, pillows, floorMats, bedSheets, robeCovers,robe,other
         };
 
         const savedRequest = await Request.create(newRequestData);

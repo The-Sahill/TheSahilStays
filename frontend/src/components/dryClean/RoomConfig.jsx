@@ -29,6 +29,7 @@ const RoomConfig = () => {
         { key: 'bedSheets', name: 'شراشف ' },
         { key: 'robeCovers', name: 'كفر  ' },
         { key: 'robe', name: 'روب' },
+        { key: 'other', name: 'اخرى' },
       ]
     }
   ];
