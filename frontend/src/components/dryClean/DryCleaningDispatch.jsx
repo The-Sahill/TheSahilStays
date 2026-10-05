@@ -47,6 +47,7 @@ const DryCleaningDispatch = () => {
     bedSheets: 'شراشف',
     robeCovers: 'كفر',
     robe: 'روب',
+    completePillows: 'مخدات كاملة',
     other: 'أخرى'
   };
 

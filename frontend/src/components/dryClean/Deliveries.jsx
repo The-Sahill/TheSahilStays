@@ -184,7 +184,9 @@ const DeliveryBatches = () => {
       pillows: 'وجوه مخدات',
       floorMats: ' ارضيات',
       robeCovers: 'كفر',
-      robe: 'روب'
+      robe: 'روب',
+      completePillows: 'مخدات كاملة',
+      other: 'أخرى'
     };
 
     const summaryMap = {};
@@ -602,7 +604,9 @@ toast.success("تم إرسال الملاحظة بنجاح!");
                                 pillows: 'وجوه مخدات',
                                 floorMats: ' ارضيات',
                                 robeCovers: 'كفر',
-                                robe: 'روب'
+                                robe: 'روب',
+                                completePillows: 'مخدات كاملة',
+                                other: 'أخرى'
                               };
                               const displayName = itemNamesAr[key] || key;
                               

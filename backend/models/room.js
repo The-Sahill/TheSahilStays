@@ -41,6 +41,12 @@ const roomSchema = new mongoose.Schema({
         count: { type: Number, default: 1 },
         price: { type: Number, default: 1 }
     },
+
+    completePillows: { // روب 
+        count: { type: Number, default: 1 },
+        price: { type: Number, default: 1.5 }
+    },
+
     other: { // اخرى 
         count: { type: Number, default: 0 },
         price: { type: Number, default: 0 }

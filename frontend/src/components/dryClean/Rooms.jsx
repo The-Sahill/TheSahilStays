@@ -35,6 +35,7 @@ const RoomsStatus = () => {
         { key: 'bedSheets', name: 'شراشف ' },
         { key: 'robeCovers', name: 'كفر  ' },
         { key: 'robe', name: 'روب' },
+        { key: 'completePillows', name: 'مخدات كاملة' },
         { key: 'other', name: 'اخرى' },
       ]
     },
@@ -100,6 +101,7 @@ const RoomsStatus = () => {
       bedSheets: { count: room.bedSheets?.count ?? 0, price: room.bedSheets?.price ?? 0 },
       robeCovers: { count: room.robeCovers?.count ?? 0, price: room.robeCovers?.price ?? 0 },
       robe: { count: room.robe?.count ?? 0, price: room.robe?.price ?? 0 },
+      completePillows: { count: room.robe?.count ?? 0, price: room.robe?.price ?? 0 },
       other: { count: selectedRoom.robe?.count ?? 0, price: selectedRoom.robe?.price ?? 0 },
     };
 
@@ -133,6 +135,7 @@ const RoomsStatus = () => {
       bedSheets: { count: selectedRoom.bedSheets?.count ?? 0, price: selectedRoom.bedSheets?.price ?? 0 },
       robeCovers: { count: selectedRoom.robeCovers?.count ?? 0, price: selectedRoom.robeCovers?.price ?? 0 },
       robe: { count: selectedRoom.robe?.count ?? 0, price: selectedRoom.robe?.price ?? 0 },
+      completePillows: { count: selectedRoom.robe?.count ?? 0, price: selectedRoom.robe?.price ?? 0 },
       other: { count: selectedRoom.robe?.count ?? 0, price: selectedRoom.robe?.price ?? 0 },
     });
   }
@@ -204,7 +207,7 @@ const RoomsStatus = () => {
 
   const calculateRoomTotalPrice = (room) => {
     let total = 0;
-    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe','other'];
+    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe','completePillows','other'];
     
     keys.forEach(key => {
       const count = room[key]?.count || 0;

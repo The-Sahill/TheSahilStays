@@ -23,7 +23,7 @@ exports.createBatchAndDispatch = async (req, res) => {
 
         // دالة لحساب عدد القطع لكل طلب
         const calculateItems = (item) => {
-            const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','other'];
+            const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','completePillows','other'];
             let sum = 0;
             keys.forEach(key => {
                 if (item[key] && typeof item[key].count === 'number') {

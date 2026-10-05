@@ -111,7 +111,7 @@ const DryCleaningRequests = () => {
 
   // دالة لحساب مجموع القطع ديناميكياً من الأغراض المخزنة
   const calculateTotalItems = (item) => {
-    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe','other'];
+    const keys = ['towels', 'bathTowels', 'blankets', 'pillows', 'floorMats', 'bedSheets', 'robeCovers','robe','completePillows','other'];
     let sum = 0;
     keys.forEach(key => {
       if (item[key] && typeof item[key].count === 'number') {
@@ -409,8 +409,9 @@ toast.error(error)
                   { key: 'floorMats', name: 'أغطية أرضيات (Floor Mats)' },
                   { key: 'bedSheets', name: 'شراشف (Bed Sheets)' },
                   { key: 'robeCovers', name: 'كفر  (Robe Covers)' },
-                  { key: 'robe', name: 'روب ' },
-                  { key: 'other', name: 'اخرى ' },
+                  { key: 'robe', name: 'روب' },
+                  { key: 'completePillows', name: 'مخدة كاملة' },
+                  { key: 'other', name: 'اخرى' },
                 ].map((item) => {
                   const itemData = selectedRequest[item.key];
                   if (!itemData || itemData.count <= 0) return null;

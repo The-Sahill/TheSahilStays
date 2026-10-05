@@ -67,6 +67,11 @@ approved:{
         price: { type: Number}
     },
 
+    completePillows: { // اخرى 
+        count: { type: Number},
+        price: { type: Number}
+    },
+
     other: { // اخرى 
         count: { type: Number},
         price: { type: Number}
